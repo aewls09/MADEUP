@@ -2,252 +2,527 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>MADEUP</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MADEUP — 스크롤로 완성하는 하나의 매듭</title>
+  <meta name="description" content="無의 상태에서 선들이 겹치며 하나의 매듭을 짓는 인터랙티브 스크롤 경험. MADEUP 브랜드 제안서.">
+  
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Noto+Serif+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="hanji-texture"></div>
-  <canvas id="inkCanvas"></canvas>
-
-  <video id="bgVideo" class="bg-video" autoplay loop muted playsinline webkit-playsinline>
-    <source src="background.mp4" type="video/mp4">
-  </video>
-
-  <!-- 헤더 영역 -->
-  <header class="header-nav">
-    <a href="#" class="brand-logo" onclick="goToSection(0); return false;">
-      <div class="brand-stamp"><img src="png" alt="MADEUP Logo"></div>
-      <span class="brand-name">MADEUP</span>
-    </a>
-
-    <!-- 데스크톱 내비게이션 -->
-    <ul class="chapter-nav">
-      <li class="chapter-item active" onclick="goToSection(0)">HOME</li>
-      <li class="chapter-item" onclick="goToSection(1)">Ch.01 TREND</li>
-      <li class="chapter-item" onclick="goToSection(2)">Ch.02 PRODUCT</li>
-      <li class="chapter-item" onclick="goToSection(3)">Ch.03 STORY</li>
-      <li class="chapter-item" onclick="goToSection(4)">Ch.04 CONTACT</li>
-    </ul>
-
-    <div class="header-right">
-      <button class="header-cta" onclick="goToSection(4)">
-        <span>문의하기</span>
-        <i class="fa-solid fa-arrow-right"></i>
-      </button>
-
-      <!-- 모바일 햄버거 토글 버튼 -->
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴 열기">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-    </div>
-  </header>
-
-  <!-- 모바일 드로어 내비게이션 -->
-  <div class="mobile-nav-overlay" id="mobileNavOverlay">
-    <button class="mobile-menu-close" id="mobileMenuClose" aria-label="메뉴 닫기">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-    <ul class="mobile-nav-list">
-      <li class="mobile-nav-item active" onclick="goToSection(0); closeMobileMenu();">HOME</li>
-      <li class="mobile-nav-item" onclick="goToSection(1); closeMobileMenu();">Ch.01 TREND</li>
-      <li class="mobile-nav-item" onclick="goToSection(2); closeMobileMenu();">Ch.02 PRODUCT</li>
-      <li class="mobile-nav-item" onclick="goToSection(3); closeMobileMenu();">Ch.03 STORY</li>
-      <li class="mobile-nav-item" onclick="goToSection(4); closeMobileMenu();">Ch.04 CONTACT</li>
-    </ul>
+  <!-- Custom Cursor & Grid Tracker -->
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
   </div>
 
-  <main class="app-container">
+  <!-- Main Scroller Wrapper -->
+  <div class="scroll-container" id="scrollContainer">
+    
+    <!-- Pinned Stage (Fixed Viewport) -->
+    <main class="stage" id="stage">
+      
+      <!-- 1. Background Interactive Knot Stream Canvas (스크롤 매듭 형성 캔버스) -->
+      <canvas class="knot-stream-canvas" id="knotStreamCanvas"></canvas>
+      
+      <!-- 2. Noise & Grain Filter Overlay -->
+      <div class="noise-overlay" aria-hidden="true"></div>
 
-    <!-- HERO SECTION -->
-    <section class="section hero-section active" id="sec-0">
-      <span class="hero-subtitle">SILENT LUXURY & EAST ASIAN HERITAGE</span>
-      <h1 class="hero-title">열 때도, 닫을 때도<br>매듭 자체로 완성되는 가방</h1>
-      <p class="hero-desc">
-        매듭(MADEUP)의 소리를 그대로 옮겨, 다 만들어졌다(MADE UP)는 완성의 순간을 담았습니다.<br>
-        지퍼와 벨크로 이전, 매듭이 가지고 있던 일상 속 자연스러운 마무리 의식을 다시 제안합니다.
-      </p>
-      <button class="hero-scroll-btn" onclick="nextSection()">
-        <span>EXPLORE BRAND</span>
-        <i class="fa-solid fa-chevron-down"></i>
-      </button>
-    </section>
+      <!-- 3. Line Progression Indicator (매듭 완성도 HUD) -->
+      <div class="knot-progress-hud" id="knotHud">
+        <span class="hud-label">KNOT TENSION</span>
+        <div class="hud-bar"><div class="hud-fill" id="hudFill"></div></div>
+        <span class="hud-val" id="hudVal">0%</span>
+      </div>
 
-    <!-- SECTION 1: TREND & BACKGROUND -->
-    <section class="section" id="sec-1">
-      <div class="sec1-container">
-        <div class="sec1-header">
-          <h2 class="sec1-title">
-            트렌드 분석 & 브랜드 배경<br>
-            조용한 럭셔리와 동아시아 매듭의 재해석
-          </h2>
-          <p class="sec1-desc">
-            로고 없는 조용한 명품과 스몰 럭셔리가 소비의 핵심 코드로 부상했습니다.<br>
-            MADEUP은 한국의 노리개, 중국의 판커우, 일본의 미즈히키 등 동아시아 전통 매듭의 실용성을 현대적으로 재해석하여,<br>
-            단순 장식이 아닌 가방을 여닫는 핵심 기능성 잠금장치로 제시합니다.
-          </p>
+      <!-- 4. Architectural Frame Overlay (Guides, Crosses, Navigation) -->
+      <div class="frame-overlay" id="frameOverlay">
+        
+        <!-- Guide Lines -->
+        <span class="guide-line guide-v left" id="guideV1"></span>
+        <span class="guide-line guide-v right" id="guideV2"></span>
+        <span class="guide-line guide-h top" id="guideH1"></span>
+        <span class="guide-line guide-h bottom" id="guideH2"></span>
+        
+        <!-- Intersection Star Crosses -->
+        <div class="cross-marker cross-tl" id="crossTL">
+          <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+        </div>
+        <div class="cross-marker cross-tr" id="crossTR">
+          <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+        </div>
+        <div class="cross-marker cross-bl" id="crossBL">
+          <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+        </div>
+        <div class="cross-marker cross-br" id="crossBR">
+          <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
         </div>
 
-        <div class="sec1-bottom-layout">
-          <div class="sec1-category-title">
-            <h3>Key Insights</h3>
+        <!-- Logo Mark (MADEUP logo_m.png) -->
+        <a class="brand-mark" href="#model" id="brandMark" aria-label="MADEUP Home">
+          <img src="png/logo_m.png" alt="MADEUP Knot Mark" class="brand-mark-img">
+        </a>
+
+        <!-- Top Right CTA -->
+        <nav class="top-nav">
+          <a class="nav-apply-btn" href="#apply" id="topApplyBtn">
+            <span>제안 문의</span>
+            <span class="arrow">→</span>
+          </a>
+        </nav>
+
+        <!-- Chapter Rail Navigation -->
+        <nav class="rail-nav" id="railNav" aria-label="Chapters">
+          <a href="#model" data-chapter="0" class="active">
+            <span class="dot"></span>
+            <span class="chapter-label">Ch. 1 <em>선(線)의 시작</em></span>
+          </a>
+          <a href="#work" data-chapter="1">
+            <span class="dot"></span>
+            <span class="chapter-label">Ch. 2 <em>교차와 결속</em></span>
+          </a>
+          <a href="#gallery" data-chapter="2">
+            <span class="dot"></span>
+            <span class="chapter-label">Ch. 3 <em>컬렉션 갤러리</em></span>
+          </a>
+          <a href="#questions" data-chapter="3">
+            <span class="dot"></span>
+            <span class="chapter-label">Ch. 4 <em>브랜드 Q&amp;A</em></span>
+          </a>
+        </nav>
+
+        <!-- Floating Badge Tag -->
+        <div class="stage-tag" id="stageTag">
+          <span>Quiet Luxury · Madeup</span>
+        </div>
+
+      </div>
+
+      <!-- ================= SCENE LAYERS ================= -->
+
+      <!-- LAYER 1: CHAPTER 1 (선의 시작 & 브랜드 정체성) -->
+      <section class="scene scene-model" id="sceneModel">
+        <div class="content-col col-hero" id="colHero">
+          
+          <!-- Beat 0: Main Hero Title -->
+          <div class="beat-block active" data-beat="0">
+            <h1 class="hero-headline">
+              <span class="line-mask"><span class="line-text">MADEUP</span></span>
+              <span class="line-mask"><span class="line-text"><em>매듭의 본질을 일상으로.</em></span></span>
+            </h1>
+            <p class="hero-subhead">
+              <span class="line-mask"><span class="line-text">열 때도, 닫을 때도</span></span>
+              <span class="line-mask"><span class="line-text">매듭 자체로 완성되는 가방.</span></span>
+            </p>
+            <a class="partnership-cta" href="#apply" id="heroCta">
+              <span class="btn-text">브랜드 제안서 확인하기 →</span>
+              <span class="btn-fill"></span>
+            </a>
           </div>
-          <div class="sec1-cards-group">
-            <div class="sec1-card" data-step="1">
-              <span class="dot"></span>
-              <h4 class="card-name">조용한 럭셔리 & 감성 소비</h4>
-              <p class="card-txt">
-                2030 타겟을 위해 로고 없이 절제된 디자인과 장인정신을 강조하며, 나를 위한 작은 사치와 고품격 기프팅 경험을 제공합니다.
+
+          <!-- Beat 1: 풀었다 열었다 자유롭게 -->
+          <div class="beat-block" data-beat="1">
+            <h2 class="beat-title">
+              <span class="line-mask"><span class="line-text">풀었다 열었다,</span></span>
+              <span class="line-mask"><span class="line-text">자유롭게.</span></span>
+            </h2>
+          </div>
+
+          <!-- Beat 2: 흩어진 것을 하나로 -->
+          <div class="beat-block" data-beat="2">
+            <h2 class="beat-title">
+              <span class="line-mask"><span class="line-text">흩어진 것을</span></span>
+              <span class="line-mask"><span class="line-text">하나로.</span></span>
+            </h2>
+          </div>
+
+          <!-- Beat 3: 익숙함을 새롭게 -->
+          <div class="beat-block" data-beat="3">
+            <h2 class="beat-title">
+              <span class="line-mask"><span class="line-text">익숙함을</span></span>
+              <span class="line-mask"><span class="line-text">새롭게.</span></span>
+            </h2>
+          </div>
+
+        </div>
+
+        <!-- Standalone Prose Reveal Column -->
+        <div class="content-col col-stand" id="colStand">
+          <p class="stand-prose" id="standProse">
+            매듭(MADEUP)의 소리를 그대로 옮겨, 다 만들어졌다(MADE UP)는 완성의 순간을 이름에 담았습니다. 아시아 각지의 매듭이 가진 ‘정성껏 마무리한다’는 마음은 그대로 지키고, 쓰는 방식은 오늘의 드로우스트링처럼 편하게 만듭니다. 묶는다는 행위가 다시 일상 속 자연스러운 마무리 의식이 됩니다.
+          </p>
+        </div>
+      </section>
+
+      <!-- LAYER 2: CHAPTER 2 (교차와 결속 & 트렌드 조사) -->
+      <section class="scene scene-work" id="sceneWork">
+        <!-- Vertical Progress Timeline & Metric -->
+        <div class="work-timeline" id="workTimeline">
+          <svg class="timeline-svg" viewBox="0 0 100 800" fill="none" preserveAspectRatio="none">
+            <line class="timeline-line-bg" x1="50" y1="0" x2="50" y2="800" />
+            <line class="timeline-line-active" id="timelineLineActive" x1="50" y1="0" x2="50" y2="800" />
+          </svg>
+          <div class="timeline-counter" id="timelineCounter">
+            <b id="counterVal">70.8%</b>
+            <span class="counter-label">조용한 럭셔리 선호도</span>
+          </div>
+        </div>
+
+        <!-- Work Service Cards (Switching in place) -->
+        <div class="work-content" id="workContent">
+          <!-- Item 1: 트렌드 지표 -->
+          <div class="work-card active" data-work="0">
+            <span class="category-chip">Trend Analysis · 01</span>
+            <h2 class="work-heading">
+              “로고 없는 조용한 명품이 더 세련됐다” 70.8%
+            </h2>
+            <p class="work-desc">
+              압축소비와 조용한 럭셔리(Quiet Luxury) 시대의 도래. 2030년 1,901억 달러에 달하는 글로벌 리유저블 패키징 시장과 함께, 한국(노리개)·중국(판커우)·일본(미즈히키) 3개국의 매듭 문화가 현대 디자인으로 동시 부상하고 있습니다.
+            </p>
+          </div>
+
+          <!-- Item 2: 기능의 근거 -->
+          <div class="work-card" data-work="1">
+            <span class="category-chip">Essence &amp; Origin · 02</span>
+            <h2 class="work-heading">
+              매듭은 장식이 아닌, 실용적인 ‘결속’의 도구.
+            </h2>
+            <p class="work-desc">
+              국가유산진흥원 학술 자료가 뒷받침하듯, 매듭의 기원은 단순한 장식이 아닌 실용 결속이었습니다. MADEUP은 매듭 자체를 여닫는 잠금장치로 설계하여 매듭을 본래의 자리로 되돌립니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- LAYER 3: CHAPTER 3 (LAFOUR STYLE HORIZONTAL SCROLL GALLERY: 1.png ~ 10.png) -->
+      <section class="scene scene-gallery" id="sceneGallery">
+        <!-- Gallery Header Bar -->
+        <div class="gallery-header-bar">
+          <div class="gallery-title-wrap">
+            <span class="gallery-tag">LOOKBOOK &amp; ARCHIVE · CH. 03</span>
+            <h2 class="gallery-main-title">Madeup Collection &amp; Structure</h2>
+          </div>
+          <div class="gallery-indicator">
+            <span class="gallery-index-current" id="galleryCurrentIdx">01</span>
+            <div class="gallery-progress-track">
+              <div class="gallery-progress-bar" id="galleryProgressBar"></div>
+            </div>
+            <span class="gallery-index-total">10</span>
+          </div>
+        </div>
+
+        <!-- Horizontal Scroll Viewport & Track -->
+        <div class="horizontal-gallery-wrapper" id="galleryWrapper">
+          <div class="horizontal-gallery-track" id="galleryTrack">
+            
+            <!-- Card 1 -->
+            <article class="gallery-item" data-index="1">
+              <div class="gallery-img-box">
+                <img src="png/1.png" alt="Madeup Lookbook 01" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback-placeholder"><span>01 · FORM</span></div>
+              </div>
+              <div class="gallery-item-info">
+                <span class="item-num">01 / 10</span>
+                <h3 class="item-title">결속의 시작</h3>
+                <p class="item-desc">단일 선에서 비롯된 유려한 실루엣과 드로우스트링 구조.</p>
+              </div>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="gallery-item" data-index="2">
+              <div class="gallery-img-box">
+                <img src="png/2.png" alt="Madeup Lookbook 02" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback-placeholder"><span>02 · KNOT</span></div>
+              </div>
+              <div class="gallery-item-info">
+                <span class="item-num">02 / 10</span>
+                <h3 class="item-title">조여지는 지점</h3>
+                <p class="item-desc">단 하나의 매듭 결속으로 완결되는 직관적 수납 메커니즘.</p>
+              </div>
+            </article>
+
+            <!-- Card 3 -->
+            <article class="gallery-item" data-index="3">
+              <div class="gallery-img-box">
+                <img src="png/3.png" alt="Madeup Lookbook 03" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback-placeholder"><span>03 · DETAIL</span></div>
+              </div>
+              <div class="gallery-item-info">
+                <span class="item-num">03 / 10</span>
+                <h3 class="item-title">장인정신과 텍스처</h3>
+                <p class="item-desc">절제된 동아시아 미감을 담아낸 고급 패브릭과 견고한 봉제.</p>
+              </div>
+            </article>
+
+            <!-- Card 4 -->
+            <article class="gallery-item" data-index="4">
+              <div class="gallery-img-box">
+                <img src="png/4.png" alt="Madeup Lookbook 04" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback-placeholder"><span>04 · VERSATILE</span></div>
+              </div>
+              <div class="gallery-item-info">
+                <span class="item-num">04 / 10</span>
+                <h3 class="item-title">멀티 유즈 파우치</h3>
+                <p class="item-desc">패키징에서 일상의 에센셜 파우치로 이어지는 라이프스타일 전환.</p>
+              </div>
+            </article>
+
+            <!-- Card 5 -->
+            <article class="gallery-item" data-index="5">
+              <div class="gallery-img-box">
+                <img src="png/5.png" alt="Madeup Lookbook 05" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback-placeholder"><span>05 · SILHOUETTE</span></div>
+              </div>
+              <div class="gallery-item-info">
+                <span class="item-num">05 / 10</span>
+                <h3 class="item-title">자연스러운 주름</h3>
+                <p class="item-desc">매듭을 당길 때 생기는 자연스러운 원단의 드레이프와 볼륨.</p>
+              </div>
+            </article>
+
+            <!-- Card 6 -->
+            <article class="gallery-item" data-index="6">
+              <div class="gallery-img-box">
+                <img src="png/6.png" alt="Madeup Lookbook 06" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback-placeholder"><span>06 · HARMONY</span></div>
+              </div>
+              <div class="gallery-item-info">
+                <span class="item-num">06 / 10</span>
+                <h3 class="item-title">일상의 조화</h3>
+                <p class="item-desc">어떤 오브제와도 자연스럽게 어우러지는 미니멀한 톤온톤 구성.</p>
+              </div>
+            </article>
+
+            <!-- Card 7 -->
+            <article class="gallery-item" data-index="7">
+              <div class="gallery-img-box">
+                <img src="png/7.png" alt="Madeup Lookbook 07" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback-placeholder"><span>07 · TACTILE</span></div>
+              </div>
+              <div class="gallery-item-info">
+                <span class="item-num">07 / 10</span>
+                <h3 class="item-title">손끝의 감각</h3>
+                <p class="item-desc">풀고 묶는 모든 과정에서 느껴지는 묵직하고 정돈된 촉각 경험.</p>
+              </div>
+            </article>
+
+            <!-- Card 8 -->
+            <article class="gallery-item" data-index="8">
+              <div class="gallery-img-box">
+                <img src="png/8.png" alt="Madeup Lookbook 08" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback-placeholder"><span>08 · ESSENTIAL</span></div>
+              </div>
+              <div class="gallery-item-info">
+                <span class="item-num">08 / 10</span>
+                <h3 class="item-title">소중한 것을 담다</h3>
+                <p class="item-desc">흩어진 일상의 소품들을 가장 단정한 형태로 묶어 보관.</p>
+              </div>
+            </article>
+
+            <!-- Card 9 -->
+            <article class="gallery-item" data-index="9">
+              <div class="gallery-img-box">
+                <img src="png/9.png" alt="Madeup Lookbook 09" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback-placeholder"><span>09 · HERITAGE</span></div>
+              </div>
+              <div class="gallery-item-info">
+                <span class="item-num">09 / 10</span>
+                <h3 class="item-title">전통의 현대적 재해석</h3>
+                <p class="item-desc">노리개와 미즈히키의 매듭 원리를 동시대의 라이프스타일로 재창조.</p>
+              </div>
+            </article>
+
+            <!-- Card 10 -->
+            <article class="gallery-item" data-index="10">
+              <div class="gallery-img-box">
+                <img src="png/10.png" alt="Madeup Lookbook 10" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback-placeholder"><span>10 · COMPLETE</span></div>
+              </div>
+              <div class="gallery-item-info">
+                <span class="item-num">10 / 10</span>
+                <h3 class="item-title">완성의 순간</h3>
+                <p class="item-desc">열 때도, 닫을 때도 매듭 자체로 완성되는 MADEUP 가방.</p>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- LAYER 4: CHAPTER 4 (루프의 완성 & 3D CYLINDER FAQ) -->
+      <section class="scene scene-questions" id="sceneQuestions">
+        <div class="faq-stage">
+          <div class="faq-header-tag">
+            <span>Frequently Asked Questions</span>
+          </div>
+
+          <!-- Dynamic Connecting Line -->
+          <svg class="faq-lead-line" id="faqLeadLine" fill="none">
+            <line id="leadLinePath" x1="0" y1="0" x2="0" y2="0" />
+            <circle id="leadLineDot" cx="0" cy="0" r="4" />
+          </svg>
+
+          <!-- 3D Carousel Cylinder Container -->
+          <div class="faq-cylinder" id="faqCylinder">
+            
+            <!-- FAQ 1: 브랜드 네이밍 -->
+            <div class="faq-card" data-index="0">
+              <span class="faq-corner a">
+                <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+              </span>
+              <span class="faq-corner b">
+                <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+              </span>
+              <span class="faq-number">01 · Identity</span>
+              <h3 class="faq-question">MADEUP의 이름에는 어떤 의미가 있나요?</h3>
+              <p class="faq-answer">
+                전통 ‘매듭(MADEUP)’의 소리를 알파벳으로 담아냄과 동시에, ‘다 만들어졌다(MADE UP)’는 완성의 순간을 중의적으로 표현한 이름입니다.
               </p>
             </div>
-            <div class="sec1-card" data-step="2">
-              <span class="dot"></span>
-              <h4 class="card-name">동아시아 매듭의 기능화</h4>
-              <p class="card-txt">
-                매듭의 본래 기원인 '실용 결속'에 집중하여 장식을 넘어 제품의 기능적 잠금장치로 활용하는 유일무이한 차별화를 이룹니다.
+
+            <!-- FAQ 2: 차별점 -->
+            <div class="faq-card" data-index="1">
+              <span class="faq-corner a">
+                <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+              </span>
+              <span class="faq-corner b">
+                <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+              </span>
+              <span class="faq-number">02 · Differentiation</span>
+              <h3 class="faq-question">다른 전통 브랜드와의 차별점은 무엇인가요?</h3>
+              <p class="faq-answer">
+                매듭을 겉장식으로 부착하는 기존 브랜드들과 달리, MADEUP은 매듭 자체를 여닫는 실질적인 잠금장치 메커니즘으로 활용하는 유일한 브랜드입니다.
               </p>
             </div>
-            <div class="sec1-card" data-step="3">
-              <span class="dot"></span>
-              <h4 class="card-name">지속가능 패키징 & 멀티유즈</h4>
-              <p class="card-txt">
-                포장이 파우치 및 가방으로 연결되는 경험을 선사하며, 리유저블 패키징 및 멀티유즈 트렌드를 실천합니다.
+
+            <!-- FAQ 3: 리유저블 경험 -->
+            <div class="faq-card" data-index="2">
+              <span class="faq-corner a">
+                <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+              </span>
+              <span class="faq-corner b">
+                <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+              </span>
+              <span class="faq-number">03 · Sustainable</span>
+              <h3 class="faq-question">포장이 어떻게 파우치로 이어지나요?</h3>
+              <p class="faq-answer">
+                한 번 열고 버려지는 일회용 포장 대신, 매듭 구조로 여닫는 고급스러운 패키징 자체가 일상에서 계속 사용할 수 있는 파우치로 자연스럽게 전환됩니다.
               </p>
             </div>
+
+            <!-- FAQ 4: 핵심 타겟 -->
+            <div class="faq-card" data-index="3">
+              <span class="faq-corner a">
+                <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+              </span>
+              <span class="faq-corner b">
+                <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+              </span>
+              <span class="faq-number">04 · Audience</span>
+              <h3 class="faq-question">MADEUP이 지향하는 타겟은 누구인가요?</h3>
+              <p class="faq-answer">
+                일상의 완성도를 아는 20~30대를 타겟으로 합니다. 20대에겐 감성적인 스몰 럭셔리로, 30대에겐 품격 있는 셀프 선물 및 비즈니스 기프팅으로 다가갑니다.
+              </p>
+            </div>
+
+            <!-- FAQ 5: 제품 확장성 -->
+            <div class="faq-card" data-index="4">
+              <span class="faq-corner a">
+                <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+              </span>
+              <span class="faq-corner b">
+                <svg viewBox="0 0 24 24"><path d="M12 0Q13.1 10.9 24 12Q13.1 13.1 12 24Q10.9 13.1 0 12Q10.9 10.9 12 0Z"/></svg>
+              </span>
+              <span class="faq-number">05 · Expansion</span>
+              <h3 class="faq-question">앞으로의 제품군 확장 방향은 어떻게 되나요?</h3>
+              <p class="faq-answer">
+                가방과 파우치를 시작으로, ‘손으로 직접 묶고 마무리하는 경험’을 일관되게 제공하는 프리미엄 라이프스타일 생활용품 전반으로 확장해 나갑니다.
+              </p>
+            </div>
+
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- SECTION 2: BRAND CORE & VALUES -->
-    <section class="section" id="sec-2">
-      <div class="two-column-layout">
-        <div class="sticky-left">
-          <span class="chapter-tag">Chapter 02</span>
-          <h2 class="chapter-heading">Hero Product</h2>
-          <p class="chapter-subtext">
-            일상의 완성도를 아는 20~30대를 위한<br>
-            MADEUP만의 정갈한 브랜드 철학과 컬렉션.
+      <!-- LAYER 5: APPLICATION FORM (제안서 및 협업 문의) -->
+      <section class="scene scene-apply" id="sceneApply">
+        <div class="apply-container">
+          <div class="apply-header">
+            <h2 class="apply-title">브랜드 파트너십 &amp; 제안 문의</h2>
+            <p class="apply-subtitle">
+              MADEUP의 매듭 구조 제품 및 B2B 기프팅·브랜드 협업 제안을 남겨주세요. 모든 문의는 검토 후 신속히 회신해 드립니다.
+            </p>
+          </div>
+
+          <form class="apply-form-3d" id="applyForm" onsubmit="event.preventDefault(); window.handleApplySubmit(event);">
+            <!-- Name Input -->
+            <div class="form-pill pill-sm">
+              <span class="pill-rim"></span>
+              <span class="pill-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+              </span>
+              <input type="text" name="name" id="applyName" placeholder="성함 / 회사명" required autocomplete="off">
+            </div>
+
+            <!-- Email Input -->
+            <div class="form-pill pill-sm">
+              <span class="pill-rim"></span>
+              <span class="pill-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+              </span>
+              <input type="email" name="email" id="applyEmail" placeholder="담당자 이메일" required autocomplete="off">
+            </div>
+
+            <!-- Grow Textarea -->
+            <div class="form-pill pill-lg">
+              <span class="pill-rim"></span>
+              <span class="pill-icon textarea-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <textarea name="grow" id="applyGrow" rows="4" placeholder="협업 희망 사항 또는 제품 문의 내용을 남겨주세요." required></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="apply-submit-btn" id="applySubmitBtn">
+              <span>제안서 문의 보내기</span>
+              <span class="btn-ripple"></span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- LAYER 6: OUTRO FOOTER (최종 매듭의 결속 및 완성) -->
+      <section class="scene scene-footer" id="sceneFooter">
+        <div class="footer-inner">
+          <div class="footer-monogram" id="footerMonogram">
+            <!-- 완성된 MADEUP 로고 (logo.png) -->
+            <img src="png/logo.png" alt="MADEUP Logo" class="footer-logo-img">
+          </div>
+          <p class="footer-tagline">
+            열 때도, 닫을 때도 매듭 자체로 완성되는 가방.
           </p>
-        </div>
-        <div class="product-grid">
-          <div class="product-card">
-            <div class="card-image-wrap">
-              <img src="1.png" alt="WOMAN JEANS HIGH WAIST CLOTHES">
-            </div>
-            <div class="card-info">
-              <h3 class="product-title">WOMAN JEANS HIGH WAIST CLOTHES WIDE LEG DENIM STRAIGHT...</h3>
-              <p class="product-price">KRW 89,000</p>
-            </div>
+          <div class="footer-meta-row">
+            <span class="meta-left">MADEUP BRAND PROPOSAL · 2026 EDITION · SEOUL</span>
+            <span class="meta-right"><a href="mailto:info@madeup.kr">INFO@MADEUP.KR</a></span>
           </div>
+        </div>
+      </section>
 
-          <div class="product-card">
-            <div class="card-image-wrap">
-              <img src="2.png" alt="KHAKI OVERSIZED BOMBER JACKET">
-            </div>
-            <div class="card-info">
-              <h3 class="product-title">KHAKI OVERSIZED BOMBER JACKET</h3>
-              <p class="product-price">KRW 195,000</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    </main>
 
-    <!-- SECTION 3: BRAND STORY & Q&A -->
-    <section class="section" id="sec-3">
-      <div class="two-column-layout">
-        <div class="sticky-left">
-          <span class="chapter-tag">Chapter 03</span>
-          <h2 class="chapter-heading">Brand Story</h2>
-          <p class="chapter-subtext">
-            행동을 디자인하는 브랜드,<br>
-            MADEUP이 전하는 이야기.
-          </p>
-        </div>
-        <div class="accordion-list">
-          <div class="accordion-item open">
-            <div class="accordion-header" onclick="toggleAccordion(this)">
-              <span>Q. MADEUP 브랜드 이름에는 어떤 의미가 담겨 있나요?</span>
-              <i class="fa-solid fa-chevron-down"></i>
-            </div>
-            <div class="accordion-content">
-              매듭(MADEUP)의 소리를 그대로 옮겨, '다 만들어졌다(MADE UP)'는 완벽한 완성의 순간을 뜻합니다. 정성껏 묶고 마무리하는 일상의 작은 의식을 상징합니다.
-            </div>
-          </div>
-          <div class="accordion-item">
-            <div class="accordion-header" onclick="toggleAccordion(this)">
-              <span>Q. 기존 매듭 브랜드 및 제품과 어떤 차별점이 있나요?</span>
-              <i class="fa-solid fa-chevron-down"></i>
-            </div>
-            <div class="accordion-content">
-              기존 브랜드들이 매듭을 단순 '장식'으로 사용할 때, MADEUP은 매듭 자체를 여닫는 '실용적인 잠금장치'로 사용합니다. 매듭의 본래 기능인 결속과 매끄러운 드로우스트링 사용성을 동시에 전달합니다.
-            </div>
-          </div>
-          <div class="accordion-item">
-            <div class="accordion-header" onclick="toggleAccordion(this)">
-              <span>Q. MADEUP이 지향하는 비전과 제품 확장 방향은 무엇인가요?</span>
-              <i class="fa-solid fa-chevron-down"></i>
-            </div>
-            <div class="accordion-content">
-              파우치와 가방을 시작으로 '묶고 마무리하는 경험'을 일관되게 선사하며, 일상의 다양한 라이프스타일 생활용품 영역으로 지속적으로 확장해 나갈 계획입니다.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- Virtual Scroll Spacer -->
+    <div class="virtual-scroll-spacer" id="scrollSpacer"></div>
 
-    <!-- SECTION 4: CONTACT -->
-    <section class="section" id="sec-4">
-      <div class="two-column-layout">
-        <div class="sticky-left">
-          <span class="chapter-tag">Chapter 04</span>
-          <h2 class="chapter-heading">Contact Us</h2>
-          <p class="chapter-subtext">
-            MADEUP과의 제휴 및 파트너십,<br>
-            제품 문의를 보내주세요.
-          </p>
-        </div>
-        <form class="contact-form" onsubmit="handleFormSubmit(event)">
-          <div class="form-group">
-            <label>성함 / 기업명</label>
-            <input type="text" class="form-input" placeholder="홍길동 (또는 브랜드/회사명)" required>
-          </div>
-          <div class="form-group">
-            <label>이메일 주소</label>
-            <input type="email" class="form-input" placeholder="example@brand.com" required>
-          </div>
-          <div class="form-group">
-            <label>문의 및 제안 내용</label>
-            <textarea class="form-textarea" rows="3" placeholder="MADEUP과 함께 나눌 제안이나 문의사항을 자유롭게 작성해 주세요." required></textarea>
-          </div>
-          <button type="submit" class="submit-btn">
-            <span>제안서 보내기</span>
-            <i class="fa-solid fa-paper-plane"></i>
-          </button>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <div class="toast-msg" id="toast">
-    <i class="fa-solid fa-circle-check" style="color: var(--gold-accent);"></i>
-    <span id="toastText">성공적으로 전달되었습니다.</span>
   </div>
 
-  <div id="introOverlay" class="intro-overlay">
-    <div class="intro-bundle"></div>
-    <div class="intro-content">
-      <h1 class="intro-logo">MADEUP</h1>
-    </div>
-  </div>
-
+  <!-- JavaScript -->
   <script src="script.js"></script>
 </body>
 </html>
