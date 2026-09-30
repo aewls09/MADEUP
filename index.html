@@ -12,6 +12,9 @@
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
   
+  <!-- Three.js (3D Pouch Viewer) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -82,19 +85,19 @@
         <nav class="rail-nav" id="railNav" aria-label="Chapters">
           <a href="#model" data-chapter="0" class="active">
             <span class="dot"></span>
-            <span class="chapter-label">Ch. 1 <em>선(線)의 시작</em></span>
+            <span class="chapter-label">Ch. 1 <em>매듭의 시작</em></span>
           </a>
-          <a href="#work" data-chapter="1">
+          <a href="#gallery" data-chapter="1">
             <span class="dot"></span>
-            <span class="chapter-label">Ch. 2 <em>교차와 결속</em></span>
+            <span class="chapter-label">Ch. 2 <em>히어로 제품</em></span>
           </a>
-          <a href="#gallery" data-chapter="2">
+          <a href="#scene3d" data-chapter="2">
             <span class="dot"></span>
-            <span class="chapter-label">Ch. 3 <em>컬렉션 갤러리</em></span>
+            <span class="chapter-label">Ch. 3 <em>3D 파우치</em></span>
           </a>
-          <a href="#questions" data-chapter="3">
+          <a href="#work" data-chapter="3">
             <span class="dot"></span>
-            <span class="chapter-label">Ch. 4 <em>브랜드 Q&amp;A</em></span>
+            <span class="chapter-label">Ch. 4 <em>브랜드 스토리</em></span>
           </a>
         </nav>
 
@@ -109,56 +112,29 @@
 
       <!-- LAYER 1: CHAPTER 1 (선의 시작 & 브랜드 정체성) -->
       <section class="scene scene-model" id="sceneModel">
-        <div class="content-col col-hero" id="colHero">
-          
-          <!-- Beat 0: Main Hero Title -->
-          <div class="beat-block active" data-beat="0">
-            <h1 class="hero-headline">
-              <span class="line-mask"><span class="line-text">MADEUP</span></span>
-              <span class="line-mask"><span class="line-text"><em>매듭의 본질을 일상으로.</em></span></span>
-            </h1>
-            <p class="hero-subhead">
-              <span class="line-mask"><span class="line-text">열 때도, 닫을 때도</span></span>
-              <span class="line-mask"><span class="line-text">매듭 자체로 완성되는 가방.</span></span>
-            </p>
-            <a class="partnership-cta" href="#apply" id="heroCta">
-              <span class="btn-text">브랜드 제안서 확인하기 →</span>
-              <span class="btn-fill"></span>
-            </a>
-          </div>
+        <video class="ch1-video-bg" autoplay loop muted playsinline>
+        <source src="video/bg_ch1.mp4" type="video/mp4">
+        </video>
+<!-- index.html의 <section id="sceneModel"> 내부 -->
+<section class="scene scene-model" id="sceneModel">
+  <!-- 1. 배경 비디오 추가 -->
+  <video class="ch1-video-bg" autoplay loop muted playsinline>
+    <source src="video/bg_ch1.mp4" type="video/mp4">
+  </video>
 
-          <!-- Beat 1: 풀었다 열었다 자유롭게 -->
-          <div class="beat-block" data-beat="1">
-            <h2 class="beat-title">
-              <span class="line-mask"><span class="line-text">풀었다 열었다,</span></span>
-              <span class="line-mask"><span class="line-text">자유롭게.</span></span>
-            </h2>
-          </div>
-
-          <!-- Beat 2: 흩어진 것을 하나로 -->
-          <div class="beat-block" data-beat="2">
-            <h2 class="beat-title">
-              <span class="line-mask"><span class="line-text">흩어진 것을</span></span>
-              <span class="line-mask"><span class="line-text">하나로.</span></span>
-            </h2>
-          </div>
-
-          <!-- Beat 3: 익숙함을 새롭게 -->
-          <div class="beat-block" data-beat="3">
-            <h2 class="beat-title">
-              <span class="line-mask"><span class="line-text">익숙함을</span></span>
-              <span class="line-mask"><span class="line-text">새롭게.</span></span>
-            </h2>
-          </div>
-
-        </div>
-
-        <!-- Standalone Prose Reveal Column -->
-        <div class="content-col col-stand" id="colStand">
-          <p class="stand-prose" id="standProse">
-            매듭(MADEUP)의 소리를 그대로 옮겨, 다 만들어졌다(MADE UP)는 완성의 순간을 이름에 담았습니다. 아시아 각지의 매듭이 가진 ‘정성껏 마무리한다’는 마음은 그대로 지키고, 쓰는 방식은 오늘의 드로우스트링처럼 편하게 만듭니다. 묶는다는 행위가 다시 일상 속 자연스러운 마무리 의식이 됩니다.
-          </p>
-        </div>
+  <!-- 2. 제목 전용 레이아웃만 남기기 (더미 데이터) -->
+  <div class="content-col col-hero" id="colHero">
+    <div class="beat-block active" data-beat="0">
+      <h1 class="hero-headline">
+        <span class="line-mask"><span class="line-text">MADEUP</span></span>
+        <span class="line-mask"><span class="line-text"><em>BRAND TITLE DUMMY</em></span></span>
+      </h1>
+      <p class="hero-subhead">
+        <span class="line-mask"><span class="line-text">더미 메인 슬로건 텍스트 영역입니다.</span></span>
+      </p>
+    </div>
+  </div>
+</section>
       </section>
 
       <!-- LAYER 2: CHAPTER 2 (교차와 결속 & 트렌드 조사) -->
@@ -206,7 +182,7 @@
         <!-- Gallery Header Bar -->
         <div class="gallery-header-bar">
           <div class="gallery-title-wrap">
-            <span class="gallery-tag">LOOKBOOK &amp; ARCHIVE · CH. 03</span>
+            <span class="gallery-tag">LOOKBOOK &amp; ARCHIVE · CH. 02</span>
             <h2 class="gallery-main-title">Madeup Collection &amp; Structure</h2>
           </div>
           <div class="gallery-indicator">
