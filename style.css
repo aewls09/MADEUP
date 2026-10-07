@@ -4,27 +4,27 @@
    ========================================================================== */
 
 :root {
-  /* Color Palette */
-  --bg-primary: #080706;
-  --bg-secondary: #11100e;
-  --bg-card: rgba(18, 17, 15, 0.76);
+--bg-primary: #1A0B09;            /* 기존 #080706 -> #1A0B09 로 변경 */
+  --bg-secondary: #24110E;          /* 배경과 어우러지도록 톤 조정 */
+  --bg-card: rgba(36, 17, 14, 0.76);
   --bg-glass: rgba(255, 255, 255, 0.04);
-  --text-primary: #eae7df;
-  --text-secondary: #a8a49c;
-  --text-muted: #6e6b65;
-  --accent-gold: #c8a86b;
-  --accent-gold-glow: rgba(200, 168, 107, 0.35);
-  --accent-light: #f5f3ec;
+  --text-primary: #F9F9F7;          /* 기존 #eae7df -> #F9F9F7 로 변경 */
+  --text-secondary: #D0CECB;        /* 뉴트럴 톤에 맞춰 조정 */
+  --text-muted: #918E88;
+  --accent-gold: #ACE3D9;           /* 메인 컬러: #ACE3D9 로 변경 */
+  --accent-gold-glow: rgba(172, 227, 217, 0.35);
+  --accent-light: #F9F9F7;
   
   /* Knot Thread Colors */
-  --thread-gold: #d4b06f;
-  --thread-bright: #fff3d6;
-  --thread-glow: rgba(212, 176, 111, 0.5);
+/* Knot Thread Colors (은빛 발광 효과 적용) */
+  --thread-gold: #E2F5F1;          /* 은빛 메인 실 컬러 */
+  --thread-bright: #FFFFFF;        /* 밝은 은빛 코어 */
+  --thread-glow: rgba(226, 245, 241, 0.6);
 
-  /* Grid & Frame */
-  --guide-color: rgba(234, 231, 223, 0.12);
-  --guide-active: rgba(200, 168, 107, 0.45);
-  --cross-color: #eae7df;
+/* Grid & Frame */
+  --guide-color: rgba(249, 249, 247, 0.12);
+  --guide-active: rgba(172, 227, 217, 0.45);
+  --cross-color: #F9F9F7;
 
   /* Typography */
   --font-serif: "Pretendard", "Instrument Serif", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -616,125 +616,93 @@ body:hover .cursor {
 }
 
 /* ==========================================================================
-   LAYER 2: CHAPTER 2 (교차와 결속 & 트렌드 조사)
+   CHAPTER 2: 3D INTERACTIVE POUCH VIEWER
    ========================================================================== */
-.scene-work {
+.scene-3d-container {
   display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 8vw;
-  align-items: center;
-  max-width: 1300px;
-  margin: 0 auto;
-}
-
-.work-timeline {
-  position: relative;
-  height: 460px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.timeline-svg {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20px;
-  height: 100%;
-}
-
-.timeline-line-bg {
-  stroke: rgba(255, 255, 255, 0.1);
-  stroke-width: 2;
-  stroke-dasharray: 4 4;
-}
-
-.timeline-line-active {
-  stroke: var(--accent-gold);
-  stroke-width: 3;
-  stroke-dasharray: 800;
-  stroke-dashoffset: 800;
-  transition: stroke-dashoffset 0.1s linear;
-}
-
-.timeline-counter {
-  position: relative;
-  z-index: 5;
-  background: var(--bg-card);
-  border: 1px solid rgba(200, 168, 107, 0.3);
-  backdrop-filter: blur(16px);
-  padding: 24px 20px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-}
-
-.timeline-counter b {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 2.8rem;
-  color: var(--accent-gold);
-  line-height: 1;
-  margin-bottom: 8px;
-}
-
-.timeline-counter .counter-label {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.work-content {
-  position: relative;
-  min-height: 360px;
-  display: flex;
-  align-items: center;
-}
-
-.work-card {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 4vw;
   width: 100%;
-  opacity: 0;
+  max-width: 1280px;
+  align-items: center;
+  z-index: 20;
+}
+
+.canvas-3d-wrapper {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  background: rgba(18, 17, 15, 0.65);
+  border: 1px solid rgba(200, 168, 107, 0.25);
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+  cursor: grab;
+}
+
+.canvas-3d-wrapper:active {
+  cursor: grabbing;
+}
+
+.canvas-3d-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.canvas-hint-tag {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--accent-gold);
+  background: rgba(8, 7, 6, 0.8);
+  border: 1px solid rgba(200, 168, 107, 0.3);
+  padding: 6px 14px;
+  border-radius: 999px;
   pointer-events: none;
-  transition: opacity 0.5s ease, transform 0.5s var(--ease-out-expo);
 }
 
-.work-card.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(-50%);
+.pouch-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
 }
 
-.category-chip {
-  display: inline-block;
+.pouch-btn {
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent-gold);
-  margin-bottom: 18px;
-}
-
-.work-heading {
-  font-family: var(--font-serif);
-  font-size: clamp(2.2rem, 4vw, 3.8rem);
-  font-weight: 400;
-  line-height: 1.25;
-  margin-bottom: 24px;
-}
-
-.work-desc {
-  font-size: clamp(1rem, 1.25vw, 1.2rem);
+  letter-spacing: 0.08em;
   color: var(--text-secondary);
-  line-height: 1.75;
-  max-width: 640px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 10px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pouch-btn:hover,
+.pouch-btn.active {
+  color: var(--bg-primary);
+  background: var(--accent-gold);
+  border-color: var(--accent-gold);
+}
+
+@media (max-width: 1024px) {
+  .scene-3d-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .canvas-3d-wrapper {
+    height: 380px;
+  }
 }
 
 /* ==========================================================================

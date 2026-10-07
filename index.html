@@ -89,11 +89,11 @@
           </a>
           <a href="#gallery" data-chapter="1">
             <span class="dot"></span>
-            <span class="chapter-label">Ch. 2 <em>히어로 제품</em></span>
+            <span class="chapter-label">Ch. 2 <em>3D 파우치</em></span>
           </a>
           <a href="#scene3d" data-chapter="2">
             <span class="dot"></span>
-            <span class="chapter-label">Ch. 3 <em>3D 파우치</em></span>
+            <span class="chapter-label">Ch. 3 <em>히어로 제품</em></span>
           </a>
           <a href="#work" data-chapter="3">
             <span class="dot"></span>
@@ -138,44 +138,37 @@
       </section>
 
       <!-- LAYER 2: CHAPTER 2 (교차와 결속 & 트렌드 조사) -->
-      <section class="scene scene-work" id="sceneWork">
-        <!-- Vertical Progress Timeline & Metric -->
-        <div class="work-timeline" id="workTimeline">
-          <svg class="timeline-svg" viewBox="0 0 100 800" fill="none" preserveAspectRatio="none">
-            <line class="timeline-line-bg" x1="50" y1="0" x2="50" y2="800" />
-            <line class="timeline-line-active" id="timelineLineActive" x1="50" y1="0" x2="50" y2="800" />
-          </svg>
-          <div class="timeline-counter" id="timelineCounter">
-            <b id="counterVal">70.8%</b>
-            <span class="counter-label">조용한 럭셔리 선호도</span>
-          </div>
-        </div>
+<section class="scene scene-work" id="sceneWork">
+  <div class="scene-3d-container">
+    <!-- 3D WebGL Canvas Wrapper -->
+    <div class="canvas-3d-wrapper" id="canvas3dWrapper">
+      <canvas id="pouch3dCanvas"></canvas>
+      <div class="canvas-hint-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+        </svg>
+        <span>DRAG TO ROTATE 3D POUCH</span>
+      </div>
+    </div>
 
-        <!-- Work Service Cards (Switching in place) -->
-        <div class="work-content" id="workContent">
-          <!-- Item 1: 트렌드 지표 -->
-          <div class="work-card active" data-work="0">
-            <span class="category-chip">Trend Analysis · 01</span>
-            <h2 class="work-heading">
-              “로고 없는 조용한 명품이 더 세련됐다” 70.8%
-            </h2>
-            <p class="work-desc">
-              압축소비와 조용한 럭셔리(Quiet Luxury) 시대의 도래. 2030년 1,901억 달러에 달하는 글로벌 리유저블 패키징 시장과 함께, 한국(노리개)·중국(판커우)·일본(미즈히키) 3개국의 매듭 문화가 현대 디자인으로 동시 부상하고 있습니다.
-            </p>
-          </div>
-
-          <!-- Item 2: 기능의 근거 -->
-          <div class="work-card" data-work="1">
-            <span class="category-chip">Essence &amp; Origin · 02</span>
-            <h2 class="work-heading">
-              매듭은 장식이 아닌, 실용적인 ‘결속’의 도구.
-            </h2>
-            <p class="work-desc">
-              국가유산진흥원 학술 자료가 뒷받침하듯, 매듭의 기원은 단순한 장식이 아닌 실용 결속이었습니다. MADEUP은 매듭 자체를 여닫는 잠금장치로 설계하여 매듭을 본래의 자리로 되돌립니다.
-            </p>
-          </div>
+    <!-- 3D Interactive Information Panel -->
+    <div class="work-content" id="workContent">
+      <div class="work-card active" data-work="0">
+        <span class="category-chip">3D INTERACTIVE FORM · CH. 02</span>
+        <h2 class="work-heading">
+          매듭의 Hero Product
+        </h2>
+        <p class="work-desc">
+          매듭을 끌어당기고 조이는 손끝의 감각을 3D 공간 상에서 직관적으로 탐색해보세요. 마우스 드래그로 파우치 구조를 360도로 회전하며 볼 수 있습니다.
+        </p>
+        <div class="pouch-controls">
+          <button class="pouch-btn active" id="btnKnotToggle">매듭 구조 보기</button>
+          <button class="pouch-btn" id="btnFabricToggle">질감 텍스처</button>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
       <!-- LAYER 3: CHAPTER 3 (LAFOUR STYLE HORIZONTAL SCROLL GALLERY: 1.png ~ 10.png) -->
       <section class="scene scene-gallery" id="sceneGallery">

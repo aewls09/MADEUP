@@ -1,8 +1,6 @@
 /**
  * ==========================================================================
  * MADEUP - KNOT WEAVING SCROLLYTELLING ENGINE
- * Concept: 無의 상태에서 출발하여 화면을 가로지르는 선들이 교차·모임점을 형성하고,
- *          최종 스크롤 지점에서 완벽한 '하나의 매듭'으로 조여지는 인터랙티브 시스템.
  * ==========================================================================
  */
 
@@ -116,53 +114,15 @@
   logoMImg.src = 'png/logo_m.png';
 
   // --- LOGO_M PARAMETRIC BEZIER SPLINE DEFINITION ---
-  // logo_m.png의 1개 단일 연속 선 궤적 (좌측 기둥 -> 좌측 아치 -> 중앙 하향 -> 물방울 루프 교차 -> 우측 아치 -> 우측 기둥)
   const LOGO_M_SPLINE = [
-    // 0. Left Leg ascending to Left Arch Peak
-    {
-      p0: { x: -0.42, y: 0.38 },
-      cp1: { x: -0.42, y: -0.15 },
-      cp2: { x: -0.42, y: -0.38 },
-      p1: { x: -0.23, y: -0.38 }
-    },
-    // 1. Left Arch curving over to Center-Crossing Entry
-    {
-      p0: { x: -0.23, y: -0.38 },
-      cp1: { x: -0.06, y: -0.38 },
-      cp2: { x: -0.04, y: -0.05 },
-      p1: { x: 0.00, y: 0.08 }
-    },
-    // 2. Loop Curve Down and Around (Teardrop Loop Bottom)
-    {
-      p0: { x: 0.00, y: 0.08 },
-      cp1: { x: 0.085, y: 0.22 },
-      cp2: { x: 0.095, y: 0.38 },
-      p1: { x: 0.00, y: 0.38 }
-    },
-    // 3. Loop Curve Up and Self-Crossing Exit (Self-intersects Segment 1!)
-    {
-      p0: { x: 0.00, y: 0.38 },
-      cp1: { x: -0.095, y: 0.38 },
-      cp2: { x: -0.085, y: 0.22 },
-      p1: { x: 0.00, y: 0.08 }
-    },
-    // 4. Center to Right Arch Peak
-    {
-      p0: { x: 0.00, y: 0.08 },
-      cp1: { x: 0.04, y: -0.05 },
-      cp2: { x: 0.06, y: -0.38 },
-      p1: { x: 0.23, y: -0.38 }
-    },
-    // 5. Right Arch descending to Right Leg Bottom
-    {
-      p0: { x: 0.23, y: -0.38 },
-      cp1: { x: 0.42, y: -0.38 },
-      cp2: { x: 0.42, y: -0.15 },
-      p1: { x: 0.42, y: 0.38 }
-    }
+    { p0: { x: -0.42, y: 0.38 }, cp1: { x: -0.42, y: -0.15 }, cp2: { x: -0.42, y: -0.38 }, p1: { x: -0.23, y: -0.38 } },
+    { p0: { x: -0.23, y: -0.38 }, cp1: { x: -0.06, y: -0.38 }, cp2: { x: -0.04, y: -0.05 }, p1: { x: 0.00, y: 0.08 } },
+    { p0: { x: 0.00, y: 0.08 }, cp1: { x: 0.085, y: 0.22 }, cp2: { x: 0.095, y: 0.38 }, p1: { x: 0.00, y: 0.38 } },
+    { p0: { x: 0.00, y: 0.38 }, cp1: { x: -0.095, y: 0.38 }, cp2: { x: -0.085, y: 0.22 }, p1: { x: 0.00, y: 0.08 } },
+    { p0: { x: 0.00, y: 0.08 }, cp1: { x: 0.04, y: -0.05 }, cp2: { x: 0.06, y: -0.38 }, p1: { x: 0.23, y: -0.38 } },
+    { p0: { x: 0.23, y: -0.38 }, cp1: { x: 0.42, y: -0.38 }, cp2: { x: 0.42, y: -0.15 }, p1: { x: 0.42, y: 0.38 } }
   ];
 
-  // Point on a Cubic Bezier curve
   function getCubicPoint(p0, cp1, cp2, p1, t) {
     const invT = 1 - t;
     return {
@@ -171,9 +131,8 @@
     };
   }
 
-  // Get point on full Logo_M path for global parameter T in [0, 1]
   function getLogoMPoint(globalT, scaleX, scaleY, cx, cy, mouseOffX, mouseOffY) {
-    const segCount = LOGO_M_SPLINE.length; // 6
+    const segCount = LOGO_M_SPLINE.length;
     const scaledT = clamp(globalT, 0, 1) * segCount;
     const segIdx = Math.min(segCount - 1, Math.floor(scaledT));
     const segT = scaledT - segIdx;
@@ -192,7 +151,7 @@
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fillStyle = color;
-    ctx.shadowColor = '#d4b06f';
+    ctx.shadowColor = '#e2f5f1';
     ctx.shadowBlur = 14;
     ctx.fill();
     ctx.restore();
@@ -201,7 +160,7 @@
   function drawGlowStar(ctx, x, y, size, color) {
     ctx.save();
     ctx.fillStyle = color;
-    ctx.shadowColor = '#ffe39f';
+    ctx.shadowColor = '#ffffff';
     ctx.shadowBlur = 22;
     ctx.beginPath();
     ctx.moveTo(x, y - size);
@@ -213,7 +172,7 @@
     ctx.restore();
   }
 
-  // --- RENDER KNOT STREAM (EXACT LOGO_M PROGRESSIVE STROKE) ---
+  // --- RENDER KNOT STREAM ---
   function renderKnotStream() {
     if (!ctx) return;
     ctx.clearRect(0, 0, width, height);
@@ -225,22 +184,19 @@
     const mouseOffX = (state.mouseX - cx) * 0.035;
     const mouseOffY = (state.mouseY - cy) * 0.035;
 
-    // Viewport responsive scale for logo_m
     const scaleBase = Math.min(width * 0.76, height * 0.88);
     const scaleX = scaleBase;
     const scaleY = scaleBase * 0.95;
 
-    // 1. Ambient Radial Glow Background
     const grad = ctx.createRadialGradient(
       state.mouseX, state.mouseY, 20,
       state.mouseX, state.mouseY, 480
     );
-    grad.addColorStop(0, 'rgba(200, 168, 107, 0.07)');
-    grad.addColorStop(1, 'rgba(8, 7, 6, 0)');
+    grad.addColorStop(0, 'rgba(172, 227, 217, 0.08)');
+    grad.addColorStop(1, 'rgba(26, 11, 9, 0)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);
 
-    // 2. Stroke Progress (스크롤 진행률에 따라 logo_m 궤적이 한 획으로 그어짐)
     const strokeProgress = clamp(state.progress * 1.12, 0, 1);
     if (strokeProgress <= 0.005) return;
 
@@ -248,7 +204,6 @@
     const currentSteps = Math.floor(totalSteps * strokeProgress);
 
     if (currentSteps >= 2) {
-      // Draw background ghost path (은은한 가이드라인)
       ctx.save();
       ctx.beginPath();
       for (let i = 0; i <= totalSteps; i++) {
@@ -256,12 +211,11 @@
         if (i === 0) ctx.moveTo(pt.x, pt.y);
         else ctx.lineTo(pt.x, pt.y);
       }
-      ctx.strokeStyle = 'rgba(200, 168, 107, 0.08)';
+      ctx.strokeStyle = 'rgba(172, 227, 217, 0.12)';
       ctx.lineWidth = 1.5;
       ctx.stroke();
       ctx.restore();
 
-      // Draw Active Luminous Logo_M Stroke (실시간으로 그어지는 메인 골드 라인)
       ctx.save();
       ctx.beginPath();
       for (let i = 0; i <= currentSteps; i++) {
@@ -269,37 +223,34 @@
         if (i === 0) ctx.moveTo(pt.x, pt.y);
         else ctx.lineTo(pt.x, pt.y);
       }
-      ctx.strokeStyle = '#d4b06f';
+      ctx.strokeStyle = '#ACE3D9';
       ctx.lineWidth = window.innerWidth < 768 ? 3.0 : 4.0;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.shadowColor = 'rgba(212, 176, 111, 0.65)';
-      ctx.shadowBlur = 14;
+      ctx.shadowColor = 'rgba(226, 245, 241, 0.85)';
+      ctx.shadowBlur = 16;
       ctx.stroke();
 
-      // Inner Bright Silk Core
-      ctx.strokeStyle = '#fff5df';
+      ctx.strokeStyle = '#FFFFFF';
       ctx.lineWidth = window.innerWidth < 768 ? 1.2 : 1.8;
-      ctx.shadowBlur = 4;
+      ctx.shadowBlur = 6;
       ctx.stroke();
       ctx.restore();
 
-      // 3. Leading Needle / Knot Tip (선두 발광점 & 스파클)
       if (strokeProgress < 0.98) {
         const headPt = getLogoMPoint(strokeProgress, scaleX, scaleY, cx, cy, mouseOffX, mouseOffY);
-        drawGlowPoint(ctx, headPt.x, headPt.y, 5.5, '#fff6e0');
+        drawGlowPoint(ctx, headPt.x, headPt.y, 5.5, '#FFFFFF');
 
         const pulse = Math.sin(state.time * 4) * 1.5;
-        drawGlowStar(ctx, headPt.x, headPt.y, 8 + pulse, 'rgba(255, 235, 185, 0.9)');
+        drawGlowStar(ctx, headPt.x, headPt.y, 8 + pulse, 'rgba(249, 249, 247, 0.95)');
       }
     }
 
-    // 4. Center Knot Loop Self-Crossing Highlight (루프가 완성되어 교차되는 순간)
     if (strokeProgress >= 0.58) {
       const crossPt = getLogoMPoint(0.58, scaleX, scaleY, cx, cy, mouseOffX, mouseOffY);
       const crossPulse = Math.sin(state.time * 3) * 2;
-      drawGlowPoint(ctx, crossPt.x, crossPt.y, 6 + crossPulse, 'rgba(255, 240, 200, 0.95)');
-      drawGlowStar(ctx, crossPt.x, crossPt.y, 14 + crossPulse, 'rgba(212, 176, 111, 0.85)');
+      drawGlowPoint(ctx, crossPt.x, crossPt.y, 6 + crossPulse, 'rgba(255, 255, 255, 0.95)');
+      drawGlowStar(ctx, crossPt.x, crossPt.y, 14 + crossPulse, 'rgba(172, 227, 217, 0.9)');
     }
   }
 
@@ -310,6 +261,7 @@
     setupEventListeners();
     setupFaq3DCylinder();
     setupProseSplit();
+    init3DPouchViewer(); // 3D 파우치 뷰어 초기화
     requestAnimationFrame(renderLoop);
   }
 
@@ -332,7 +284,6 @@
       state.mouseY = e.clientY;
     });
 
-    // Rail Navigation
     el.railLinks.forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -348,7 +299,6 @@
       });
     });
 
-    // Top CTA & Hero Buttons
     const heroCta = document.getElementById('heroCta');
     const topApplyBtn = document.getElementById('topApplyBtn');
     [heroCta, topApplyBtn].forEach(btn => {
@@ -363,7 +313,6 @@
       }
     });
 
-    // Gallery Drag & Wheel Interactivity (Lafour-style scrub)
     const galleryWrapper = el.galleryWrapper;
     if (galleryWrapper) {
       galleryWrapper.addEventListener('mousedown', (e) => {
@@ -379,7 +328,6 @@
         if (!state.isDraggingGallery) return;
         const deltaX = e.clientX - state.galleryDragStartX;
         state.galleryDragStartX = e.clientX;
-        // Dragging left moves scroll forward; dragging right moves scroll back
         window.scrollBy({ top: -deltaX * 3.5, behavior: 'auto' });
       });
 
@@ -406,7 +354,6 @@
       }, { passive: true });
     }
 
-    // FAQ Drag
     const faqContainer = el.faqCylinder;
     if (faqContainer) {
       faqContainer.addEventListener('mousedown', (e) => {
@@ -462,6 +409,7 @@
 
   function setupFaq3DCylinder() {
     const totalCards = el.faqCards.length;
+    if (totalCards === 0) return;
     const angleStep = 360 / totalCards;
     const radius = window.innerWidth < 768 ? 260 : 380;
 
@@ -474,39 +422,32 @@
 
   // --- TIMELINE STATE MACHINE ---
   function updateTimeline(p) {
-    // HUD Knot Tension update
     if (el.hudFill && el.hudVal) {
       const tensionPercent = Math.round(p * 100);
       el.hudFill.style.width = `${tensionPercent}%`;
       el.hudVal.textContent = `${tensionPercent}%`;
     }
 
-    // Chapter 1: The Model (Progress 0.00 - 0.18)
     const isModelActive = p >= 0.0 && p < 0.18;
     toggleScene(el.scenes.model, isModelActive);
     if (isModelActive) updateModelChapter(p);
 
-    // Chapter 2: The Work (Progress 0.18 - 0.35)
     const isWorkActive = p >= 0.18 && p < 0.35;
     toggleScene(el.scenes.work, isWorkActive);
     if (isWorkActive) updateWorkChapter(p);
 
-    // Chapter 3: The Collection Gallery (Progress 0.35 - 0.68)
     const isGalleryActive = p >= 0.35 && p < 0.68;
     toggleScene(el.scenes.gallery, isGalleryActive);
     if (isGalleryActive) updateGalleryChapter(p);
 
-    // Chapter 4: Questions (Progress 0.68 - 0.85) - Only after gallery is complete!
     const isQuestionsActive = p >= 0.68 && p < 0.85;
     toggleScene(el.scenes.questions, isQuestionsActive);
     if (isQuestionsActive) updateQuestionsChapter(p);
 
-    // Chapter 5: The Application (Progress 0.85 - 0.94)
     const isApplyActive = p >= 0.85 && p < 0.94;
     toggleScene(el.scenes.apply, isApplyActive);
     if (isApplyActive) updateApplyChapter(p);
 
-    // Outro: Footer (Progress 0.94 - 1.00)
     const isFooterActive = p >= 0.94;
     toggleScene(el.scenes.footer, isFooterActive);
 
@@ -561,23 +502,23 @@
       if (idx === activeWorkCard) card.classList.add('active');
       else card.classList.remove('active');
     });
+
+    // 3D Scene Render Call
+    render3DScene(subP);
   }
 
-  // --- CHAPTER 3: LAFOUR-STYLE HORIZONTAL SCROLL GALLERY LOGIC ---
   function updateGalleryChapter(p) {
     const subP = mapRange(p, 0.35, 0.68, 0, 1);
     const track = el.galleryTrack;
     const wrapper = el.galleryWrapper;
 
     if (track && wrapper) {
-      // Calculate total horizontal track overflow
       const maxScroll = Math.max(0, track.scrollWidth - wrapper.clientWidth + 60);
       state.galleryTargetX = -subP * maxScroll;
       state.galleryCurrentX = lerp(state.galleryCurrentX, state.galleryTargetX, 0.14);
       track.style.transform = `translate3d(${state.galleryCurrentX}px, 0, 0)`;
     }
 
-    // Update Current Index (01 to 10)
     const currentIdx = Math.min(10, Math.max(1, Math.floor(subP * 10) + 1));
     if (el.galleryCurrentIdx) {
       el.galleryCurrentIdx.textContent = String(currentIdx).padStart(2, '0');
@@ -586,7 +527,6 @@
       el.galleryProgressBar.style.width = `${Math.max(10, subP * 100)}%`;
     }
 
-    // Card Internal Parallax
     if (el.galleryItems) {
       el.galleryItems.forEach((item, idx) => {
         const img = item.querySelector('.gallery-img');
@@ -609,12 +549,11 @@
       el.faqCylinder.style.transform = `rotateY(${state.faqCurrentAngle}deg)`;
     }
 
-    const totalCards = el.faqCards.length;
     let closestIndex = 0;
     let minAngleDist = 999;
 
     el.faqCards.forEach((card, i) => {
-      const baseAngle = parseFloat(card.dataset.baseAngle);
+      const baseAngle = parseFloat(card.dataset.baseAngle || '0');
       let relativeAngle = (baseAngle + state.faqCurrentAngle) % 360;
       if (relativeAngle < -180) relativeAngle += 360;
       if (relativeAngle > 180) relativeAngle -= 360;
@@ -705,10 +644,7 @@
       state.progress = 0;
     }
 
-    // 1. Draw Knot Line System
     renderKnotStream();
-
-    // 2. Update UI Timeline
     updateTimeline(state.progress);
     updateGridMarkers();
     updateCursor();
@@ -716,6 +652,7 @@
     requestAnimationFrame(renderLoop);
   }
 
+  // 제출 버튼 핸들러
   window.handleApplySubmit = function (e) {
     e.preventDefault();
     const btn = el.applySubmitBtn;
@@ -723,8 +660,8 @@
 
     btn.disabled = true;
     btn.innerHTML = '<span>제안서 문의가 접수되었습니다 ✓</span>';
-    btn.style.backgroundColor = '#c8a86b';
-    btn.style.color = '#080706';
+    btn.style.backgroundColor = '#ACE3D9';
+    btn.style.color = '#1A0B09';
 
     setTimeout(() => {
       if (el.applyForm) el.applyForm.reset();
@@ -735,6 +672,107 @@
     }, 4000);
   };
 
+  // --- 3D INTERACTIVE POUCH VIEWER (THREE.JS INTEGRATION) ---
+  let scene3D, camera3D, renderer3D, pouchMesh, knotMeshGroup;
+  let is3DDragging = false, previousMouseX = 0, previousMouseY = 0;
+  let targetRotX = 0, targetRotY = 0;
+
+  function init3DPouchViewer() {
+    const wrapper = document.getElementById('canvas3dWrapper');
+    const canvas = document.getElementById('pouch3dCanvas');
+    if (!wrapper || !canvas || typeof THREE === 'undefined') return;
+
+    // 1. Scene & Camera
+    scene3D = new THREE.Scene();
+    camera3D = new THREE.PerspectiveCamera(45, wrapper.clientWidth / wrapper.clientHeight, 0.1, 1000);
+    camera3D.position.set(0, 0, 7.5);
+
+    // 2. Renderer
+    renderer3D = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    renderer3D.setSize(wrapper.clientWidth, wrapper.clientHeight);
+    renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // 3. Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    scene3D.add(ambientLight);
+
+    const silverDirLight = new THREE.DirectionalLight(0xe2f5f1, 2.5);
+    silverDirLight.position.set(5, 8, 5);
+    scene3D.add(silverDirLight);
+
+    const fillLight = new THREE.PointLight(0xffffff, 1.5, 10);
+    fillLight.position.set(-5, -2, 2);
+    scene3D.add(fillLight);
+
+    // 4. Create Pouch Body & Knot Geometry
+    const pouchGroup = new THREE.Group();
+
+    const bodyGeo = new THREE.CylinderGeometry(1.2, 1.0, 2.4, 32, 16);
+    const bodyMat = new THREE.MeshStandardMaterial({
+      color: 0x181715,
+      roughness: 0.4,
+      metalness: 0.1
+    });
+    pouchMesh = new THREE.Mesh(bodyGeo, bodyMat);
+    pouchGroup.add(pouchMesh);
+
+    knotMeshGroup = new THREE.Group();
+    const knotGeo = new THREE.TorusGeometry(0.85, 0.1, 16, 60);
+    const knotMat = new THREE.MeshStandardMaterial({
+      color: 0xace3d9,
+      roughness: 0.2,
+      metalness: 0.8
+    });
+    const knotRing = new THREE.Mesh(knotGeo, knotMat);
+    knotRing.rotation.x = Math.PI / 2;
+    knotRing.position.y = 1.1;
+    knotMeshGroup.add(knotRing);
+    pouchGroup.add(knotMeshGroup);
+
+    scene3D.add(pouchGroup);
+
+    // 5. Drag Interactions
+    wrapper.addEventListener('mousedown', (e) => {
+      is3DDragging = true;
+      previousMouseX = e.clientX;
+      previousMouseY = e.clientY;
+    });
+
+    window.addEventListener('mouseup', () => { is3DDragging = false; });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!is3DDragging || !pouchGroup) return;
+      const deltaX = e.clientX - previousMouseX;
+      const deltaY = e.clientY - previousMouseY;
+      
+      targetRotY += deltaX * 0.008;
+      targetRotX += deltaY * 0.008;
+      
+      previousMouseX = e.clientX;
+      previousMouseY = e.clientY;
+    });
+
+    window.addEventListener('resize', () => {
+      if (!wrapper || !renderer3D || !camera3D) return;
+      camera3D.aspect = wrapper.clientWidth / wrapper.clientHeight;
+      camera3D.updateProjectionMatrix();
+      renderer3D.setSize(wrapper.clientWidth, wrapper.clientHeight);
+    });
+  }
+
+  function render3DScene(progress) {
+    if (!scene3D || !renderer3D || !camera3D) return;
+
+    const pouchGroup = scene3D.children.find(c => c.type === 'Group');
+    if (pouchGroup) {
+      pouchGroup.rotation.y += (targetRotY + progress * Math.PI * 2 - pouchGroup.rotation.y) * 0.08;
+      pouchGroup.rotation.x += (targetRotX - pouchGroup.rotation.x) * 0.08;
+    }
+
+    renderer3D.render(scene3D, camera3D);
+  }
+
+  // --- START ENGINE ---
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
@@ -742,4 +780,3 @@
   }
 
 })();
-
