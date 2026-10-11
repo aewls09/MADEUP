@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1A0B09">
+  <title>3D Product</title>
+  <script>try{if(sessionStorage.getItem('pt'))document.documentElement.classList.add('pt-in')}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="info" class="is-dark">
+
+  <header class="bar is-light" id="bar">
+    <a class="bar__logo" href="index.html" aria-label="Home"><img src="logo.png" alt="Logo" onerror="this.outerHTML='<span>Logo</span>'"></a>
+    <a class="u" href="info.html">3D Product</a>
+    <span><a class="u" href="selected.html">Steel Cut</a>, <a class="u" href="archive.html">Story</a></span>
+    <span class="bar__clock num" data-clock>Seoul --:--:--</span>
+  </header>
+
+  <canvas id="gl" aria-hidden="true"></canvas>
+
+  <main class="info">
+    <section class="info-stage" data-cursor="Drag">
+      <div class="info-meta">
+        <span class="num">(<span id="info-idx">1</span>/4)</span>
+        <span class="info-state num" id="open-state">Closed</span>
+        <span class="k">(3D Product)</span>
+      </div>
+
+      <span class="info-load num" id="info-load">Loading 0%</span>
+
+      <!-- 스크롤 단계별 설명 (내용은 자유롭게 수정) -->
+      <div class="info-panels">
+        <article class="info-panel is-active">
+          <p class="k">(01) The Pouch</p>
+          <p>제품을 한 문장으로 소개해 주세요. Drag to turn it, scroll to open it.</p>
+        </article>
+        <article class="info-panel">
+          <p class="k">(02) Open</p>
+          <p>파우치가 열리는 구간입니다. 여는 방식이나 구조를 설명해 주세요.</p>
+        </article>
+        <article class="info-panel">
+          <p class="k">(03) Detail</p>
+          <ul>
+            <li><span>(Material)</span><span>소재</span></li>
+            <li><span>(Size)</span><span>00 × 00 cm</span></li>
+            <li><span>(Colour)</span><span>Mint, Ink</span></li>
+          </ul>
+        </article>
+        <article class="info-panel">
+          <p class="k">(04) Close</p>
+          <p>다시 닫히는 구간입니다. 마무리 문장이나 연락처를 적어 주세요.<br>
+             <a class="u" href="mailto:hello@yourdomain.com">hello@yourdomain.com</a></p>
+        </article>
+      </div>
+
+      <span class="info-step">Drag, Scroll, Tap</span>
+      <span class="info-hint num" data-clock>Seoul --:--:--</span>
+      <span class="info-progress"></span>
+    </section>
+  </main>
+
+  <footer class="foot tick">
+    <div class="foot__row"><a class="u" href="mailto:hello@yourdomain.com">hello@yourdomain.com</a><span>© 2026</span></div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
+  <script src="main.js"></script>
+  <script>
+  /* =========================================================
+     파우치 설정 — 파일 이름과 열리는 방향은 여기서만 바꾸면 됩니다.
+     파일은 site 폴더 안의 models 폴더에 넣으세요.
+     ========================================================= */
+  const POUCH = {
+    body:   'models/pouch-body.glb',    // 필수: 파우치 몸통 (덮개를 뺀 나머지)
+    flap:   'models/pouch-flap.glb',    // 필수: 열리고 닫히는 덮개
+    zipper: 'models/pouch-zipper.glb',  // 선택: 지퍼 손잡이 (없으면 무시)
+    inner:  'models/pouch-inner.glb',   // 선택: 안에 든 물건 (열릴 때 위로 살짝 올라옴, 없으면 무시)
+
+    size: 3.4,               // 화면 속 크기 (클수록 커짐)
+    turn: [0, 0, 0],         // 모델이 눕거나 뒤집혀 보이면 각도(도)로 보정. 예: [-90, 0, 0]
+
+    hinge: [0.5, 1, 0.5],    // 덮개가 꺾이는 축의 위치 (덮개 기준 0~1) [좌→우, 아래→위, 뒤→앞]
+    hingeAxis: 'x',          // 덮개가 도는 축 'x' | 'y' | 'z'
+    openAngle: -130,         // 다 열렸을 때 덮개 각도(도). 안쪽으로 파고들면 130 으로
+
+    zipperAxis: 'x',         // 지퍼가 움직이는 방향
+    zipperTravel: 0.8,       // 몸통 폭 대비 이동 거리 (반대 방향이면 -0.8)
+    innerLift: 0.35,         // 열릴 때 내용물이 올라오는 높이 (몸통 높이 대비)
+  };
+
+  (function () {
+    const MINT = 0xACE3D9, INK = 0x1A0B09, PAPER = 0xF9F9F7;
+    const canvas = document.getElementById('gl');
+    const stage = document.querySelector('.info-stage');
+    const loadEl = document.getElementById('info-load');
+    const stateEl = document.getElementById('open-state');
+    const rad = THREE.MathUtils.degToRad;
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const clamp01 = (v) => Math.max(0, Math.min(1, v));
+
+    /* ---------- 렌더러 · 씬 ---------- */
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, SITE.fine ? 2 : 1.6));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(INK, 10, 22);
+    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+
+    // 실사 재질(Meshy 텍스처)이 자연스럽게 보이도록 주변 반사광
+    if (THREE.RoomEnvironment) {
+      const pm = new THREE.PMREMGenerator(renderer);
+      scene.environment = pm.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
+    }
+    scene.add(new THREE.HemisphereLight(PAPER, INK, 0.7));
+    const key = new THREE.DirectionalLight(0xffffff, 1.3); key.position.set(3, 5, 4); scene.add(key);
+    const rim = new THREE.PointLight(MINT, 2.2, 20); rim.position.set(-4, -1, 3); scene.add(rim);
+
+    const holder = new THREE.Group();   // 회전·기울기는 여기에
+    scene.add(holder);
+
+    // 주변을 도는 입자 링
+    const COUNT = 700, pos = new Float32Array(COUNT * 3);
+    for (let i = 0; i < COUNT; i++) {
+      const a = Math.random() * Math.PI * 2, r = 2.6 + Math.random() * 1.2;
+      pos[i * 3] = Math.cos(a) * r; pos[i * 3 + 1] = (Math.random() - 0.5) * 0.5; pos[i * 3 + 2] = Math.sin(a) * r;
+    }
+    const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const ring = new THREE.Points(pg, new THREE.PointsMaterial({ color: MINT, size: 0.025, transparent: true, opacity: 0.75, depthWrite: false }));
+    ring.rotation.x = 0.35;
+    scene.add(ring);
+
+    /* ---------- 파우치 불러오기 ---------- */
+    const loader = THREE.GLTFLoader ? new THREE.GLTFLoader() : null;
+    const progress = {};
+    function showProgress() {
+      const v = Object.values(progress);
+      const pct = v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length * 100) : 0;
+      loadEl.textContent = 'Loading ' + pct + '%';
+    }
+    const load = (url) => new Promise((res, rej) => {
+      if (!loader) return rej(new Error('no loader'));
+      progress[url] = 0;
+      loader.load(url, res, (e) => { if (e.total) { progress[url] = e.loaded / e.total; showProgress(); } },
+        (err) => { delete progress[url]; rej(err); });
+    });
+    const tryLoad = (url) => (url ? load(url).catch(() => null) : Promise.resolve(null));
+
+    async function buildPouch() {
+      const [body, flap, zipper, inner] = await Promise.all([
+        load(POUCH.body), tryLoad(POUCH.flap), tryLoad(POUCH.zipper), tryLoad(POUCH.inner),
+      ]);
+
+      const root = new THREE.Group();      // 크기 맞춤
+      const space = new THREE.Group();     // 방향 보정 + 가운데 맞춤
+      root.add(space);
+      space.add(body.scene);
+
+      const bodyBox = new THREE.Box3().setFromObject(body.scene);
+      const bodySize = bodyBox.getSize(new THREE.Vector3());
+      const parts = { body: body.scene };
+
+      // 덮개: 지정한 축 위치로 회전 중심을 옮김
+      if (flap) {
+        space.add(flap.scene);
+        flap.scene.updateMatrixWorld(true);
+        const fb = new THREE.Box3().setFromObject(flap.scene);
+        const h = POUCH.hinge;
+        const pivotPos = new THREE.Vector3(lerp(fb.min.x, fb.max.x, h[0]), lerp(fb.min.y, fb.max.y, h[1]), lerp(fb.min.z, fb.max.z, h[2]));
+        const pivot = new THREE.Group();
+        pivot.position.copy(pivotPos);
+        space.add(pivot);
+        flap.scene.position.sub(pivotPos);
+        pivot.add(flap.scene);
+        parts.flap = pivot;
+      }
+      if (zipper) {
+        space.add(zipper.scene);
+        parts.zipper = zipper.scene;
+        parts.zipBase = zipper.scene.position[POUCH.zipperAxis];
+        parts.zipDist = bodySize[POUCH.zipperAxis] * POUCH.zipperTravel;
+      }
+      if (inner) {
+        space.add(inner.scene);
+        parts.inner = inner.scene;
+        parts.innerBase = inner.scene.position.y;
+        parts.innerDist = bodySize.y * POUCH.innerLift;
+      }
+
+      // 방향 보정 → 가운데 정렬 → 크기 맞춤
+      space.rotation.set(rad(POUCH.turn[0]), rad(POUCH.turn[1]), rad(POUCH.turn[2]));
+      root.updateMatrixWorld(true);
+      const all = new THREE.Box3().setFromObject(space);
+      const c = all.getCenter(new THREE.Vector3()), sz = all.getSize(new THREE.Vector3());
+      space.position.sub(c);
+      root.scale.setScalar(POUCH.size / Math.max(sz.x, sz.y, sz.z));
+
+      root.traverse((o) => {
+        if (o.isMesh && o.material) {
+          (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { m.envMapIntensity = 0.9; });
+        }
+      });
+
+      return {
+        group: root,
+        hasOpen: !!(parts.flap || parts.zipper || parts.inner),
+        update(open) {
+          // 덮개는 조금 늦게 따라와서 무게감이 느껴지게
+          const e = open < 0.5 ? 2 * open * open : 1 - Math.pow(-2 * open + 2, 2) / 2;
+          if (parts.flap) parts.flap.rotation[POUCH.hingeAxis] = rad(POUCH.openAngle) * e;
+          if (parts.zipper) parts.zipper.position[POUCH.zipperAxis] = parts.zipBase + parts.zipDist * clamp01(open * 1.4);
+          if (parts.inner) parts.inner.position.y = parts.innerBase + parts.innerDist * clamp01((open - 0.45) / 0.55);
+        },
+      };
+    }
+
+    /* ---------- 파우치가 없을 때 보이는 기본 오브젝트 ---------- */
+    function buildPlant() {
+      const plant = new THREE.Group();
+      const shape = new THREE.Shape();
+      shape.moveTo(0, 0);
+      shape.bezierCurveTo(0.36, 0.25, 0.34, 0.95, 0, 1.35);
+      shape.bezierCurveTo(-0.34, 0.95, -0.36, 0.25, 0, 0);
+      const leafGeo = new THREE.ShapeGeometry(shape, 28);
+      const p = leafGeo.attributes.position;
+      for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); p.setZ(i, -y * y * 0.16 + x * x * 0.7); }
+      leafGeo.computeVertexNormals();
+      const matMint = new THREE.MeshStandardMaterial({ color: MINT, roughness: 0.42, metalness: 0.05, side: THREE.DoubleSide });
+      const matPaper = new THREE.MeshStandardMaterial({ color: PAPER, roughness: 0.6, side: THREE.DoubleSide });
+      const leaves = [], N = 72, golden = Math.PI * (3 - Math.sqrt(5));
+      for (let i = 0; i < N; i++) {
+        const t = i / (N - 1), pivot = new THREE.Group();
+        pivot.position.y = -1.7 + t * 3.1; pivot.rotation.y = i * golden;
+        const mesh = new THREE.Mesh(leafGeo, i % 6 === 0 ? matPaper : matMint);
+        mesh.scale.setScalar(0.45 + Math.sin((1 - t) * Math.PI * 0.85) * 0.75);
+        pivot.add(mesh); plant.add(pivot);
+        leaves.push({ mesh, t, phase: Math.random() * Math.PI * 2 });
+      }
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.05, 3.4, 10), matPaper);
+      stem.position.y = -0.1; plant.add(stem);
+      let time = 0;
+      return {
+        group: plant, hasOpen: true,
+        update(open, t) {
+          time = t;
+          const u = 0.15 + open * 0.85;
+          for (const L of leaves) L.mesh.rotation.x = lerp(0.12, 0.6 + (1 - L.t) * 0.95, u) + Math.sin(time * 1.3 + L.phase) * 0.035;
+        },
+      };
+    }
+
+    let model = null;
+    function mount(m) {
+      model = m;
+      holder.add(m.group);
+      if (!SITE.reduce) gsap.from(m.group.scale, { x: 0.85, y: 0.85, z: 0.85, duration: 1.8, ease: 'power2.out' });
+      gsap.to(loadEl, { opacity: 0, duration: 0.4, onComplete: () => (loadEl.style.display = 'none') });
+    }
+    buildPouch().then(mount).catch((err) => {
+      console.info('[3D Product] 파우치 파일을 찾지 못해 기본 오브젝트를 보여줍니다:', POUCH.body, err && err.message);
+      mount(buildPlant());
+    });
+
+    /* ---------- 상태 ---------- */
+    const S = { open: 0, openT: 0, spin: 0, spinV: 0, mx: 0, my: 0, tmx: 0, tmy: 0, prog: 0, progT: 0, baseZ: 12 };
+
+    function resize() {
+      renderer.setSize(innerWidth, innerHeight, false);
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      S.baseZ = camera.aspect < 0.8 ? 12 : 9;
+    }
+    resize();
+    addEventListener('resize', resize);
+
+    addEventListener('pointermove', (e) => {
+      S.tmx = (e.clientX / innerWidth - 0.5) * 2;
+      S.tmy = (e.clientY / innerHeight - 0.5) * 2;
+    }, { passive: true });
+
+    /* ---------- 드래그 · 탭 ----------
+       좌우 드래그 = 돌리기
+       위아래 드래그(마우스) = 열기/닫기   ※ 휴대폰은 위아래가 스크롤이라 스크롤로 열림
+       짧게 탭/클릭 = 열기 ↔ 닫기 전환 */
+    let drag = null;
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('a,button')) return;
+      drag = { x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY, t: performance.now(), moved: 0, mouse: e.pointerType === 'mouse' };
+    });
+    addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.lx, dy = e.clientY - drag.ly;
+      drag.lx = e.clientX; drag.ly = e.clientY;
+      drag.moved += Math.abs(dx) + Math.abs(dy);
+      S.spinV += dx * 0.0009;
+      if (drag.mouse) S.openT = clamp01(S.openT - dy * 0.004);
+    });
+    const endDrag = () => {
+      if (drag && drag.moved < 8 && performance.now() - drag.t < 350) S.openT = S.openT > 0.5 ? 0 : 1;
+      drag = null;
+    };
+    addEventListener('pointerup', endDrag);
+    addEventListener('pointercancel', () => (drag = null));
+
+    /* ---------- 스크롤 핀 : 닫힘 → 열림 → 디테일 → 다시 닫힘 ---------- */
+    const panels = [...document.querySelectorAll('.info-panel')];
+    const idxEl = document.getElementById('info-idx');
+    let current = 0;
+    function showPanel(i) {
+      if (i === current) return;
+      const prev = panels[current], next = panels[i], dir = i > current ? 1 : -1;
+      current = i;
+      idxEl.textContent = i + 1;
+      gsap.to(prev, { opacity: 0, y: -10 * dir, duration: 0.5, ease: 'power2.inOut', onComplete: () => prev.classList.remove('is-active') });
+      next.classList.add('is-active');
+      gsap.fromTo(next, { opacity: 0, y: 10 * dir }, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out', delay: 0.35 });
+    }
+    gsap.set(panels[0], { opacity: 1 });
+
+    // 스크롤 진행도(0~1) → 열린 정도(0~1)
+    function openFromScroll(p) {
+      if (p < 0.15) return 0;
+      if (p < 0.45) return (p - 0.15) / 0.3;
+      if (p < 0.72) return 1;
+      if (p < 0.95) return 1 - (p - 0.72) / 0.23;
+      return 0;
+    }
+
+    if (!SITE.reduce) {
+      ScrollTrigger.create({
+        trigger: stage, start: 'top top', end: '+=360%', pin: true, scrub: true,
+        onUpdate(self) {
+          S.progT = self.progress;
+          S.openT = openFromScroll(self.progress);
+          showPanel(Math.min(panels.length - 1, Math.floor(self.progress * panels.length * 0.999)));
+          gsap.set('.info-progress', { scaleX: self.progress });
+        },
+      });
+      gsap.from(canvas, { opacity: 0, duration: 1.4, ease: 'power2.out' });
+      gsap.from('.info-panel.is-active, .info-meta', { opacity: 0, duration: 1.2, ease: 'power2.out', delay: 0.3 });
+    }
+
+    /* ---------- 렌더 루프 ---------- */
+    let running = true, lastState = '';
+    document.addEventListener('visibilitychange', () => (running = !document.hidden));
+    const clock = new THREE.Clock();
+
+    function frame() {
+      requestAnimationFrame(frame);
+      if (!running) return;
+      const time = clock.getElapsedTime();
+      S.open = lerp(S.open, S.openT, 0.08);
+      S.prog = lerp(S.prog, S.progT, 0.08);
+      S.mx = lerp(S.mx, S.tmx, 0.05);
+      S.my = lerp(S.my, S.tmy, 0.05);
+      S.spin += S.spinV; S.spinV *= 0.94;
+
+      holder.rotation.y = S.spin + S.prog * Math.PI * 1.6 + (SITE.reduce ? 0 : time * 0.06);
+      holder.rotation.x = S.my * 0.22;
+      holder.rotation.z = -S.mx * 0.1;
+      holder.position.y = Math.sin(time * 0.6) * 0.06;
+      if (model) model.update(S.open, time);
+
+      const pct = Math.round(S.open * 100);
+      const label = pct < 3 ? 'Closed' : pct > 97 ? 'Open' : 'Open ' + pct + '%';
+      if (label !== lastState) { stateEl.textContent = label; lastState = label; }
+
+      ring.rotation.y = -time * 0.05 - S.prog * 1.5;
+      camera.position.set(S.mx * 0.7, 0.3 - S.my * 0.4, S.baseZ - S.prog * 1.8);
+      camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera);
+    }
+    frame();
+  })();
+  </script>
+</body>
+</html>

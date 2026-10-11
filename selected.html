@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ACE3D9">
+  <title>Steel Cut</title>
+  <script>try{if(sessionStorage.getItem('pt'))document.documentElement.classList.add('pt-in')}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="selected">
+
+  <header class="bar" id="bar">
+    <a class="bar__logo" href="index.html" aria-label="Home"><img src="logo.png" alt="Logo" onerror="this.outerHTML='<span>Logo</span>'"></a>
+    <a class="u" href="info.html">3D Product</a>
+    <span><a class="u" href="selected.html">Steel Cut</a>, <a class="u" href="archive.html">Story</a></span>
+    <span class="bar__clock num" data-clock>Seoul --:--:--</span>
+  </header>
+
+  <main id="stack">
+    <section class="stack-item sel-intro">
+      <div class="stack-item__inner">
+        <div class="split">
+          <div>
+            <p class="k">(Steel Cut)</p>
+            <p class="num"><span class="k">(Works)</span> <span id="sel-count">06</span></p>
+          </div>
+          <p>A short edit of stills and film. Scroll — each piece slides over the last.</p>
+        </div>
+      </div>
+      <div class="stack-item__shade"></div>
+    </section>
+    <!-- 작업 카드는 아래 WORKS 목록에서 자동 생성 -->
+  </main>
+
+  <footer class="foot tick">
+    <div class="foot__cols">
+      <div class="foot__links">
+        <a class="u" href="archive.html">Next — Story</a>
+        <a class="u" href="mailto:hello@yourdomain.com">hello@yourdomain.com</a>
+      </div>
+      <p data-reveal>한두 문장의 짧은 소개를 적어 주세요. Based in Seoul, working worldwide.</p>
+    </div>
+    <div class="foot__row"><span class="num" data-clock>Seoul --:--:--</span><span>© 2026</span></div>
+  </footer>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Preview">
+    <button class="lightbox__close u" type="button">Close</button>
+    <div class="lightbox__body"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="main.js"></script>
+  <script>
+  /* =========================================================
+     작업 목록 — 파일명/제목/분류/연도만 바꾸면 됩니다.
+     파일은 이 html과 같은 폴더에 두세요. (png 5개 + mp4 1개)
+     tone: mint | paper  (카드 배경색)
+     ========================================================= */
+  const WORKS = [
+    { file: 'work-01.png', title: 'Project One',   cat: 'Brand Identity', year: '2026', tone: 'mint' },
+    { file: 'work-02.png', title: 'Project Two',   cat: 'Art Direction',  year: '2026', tone: 'mint' },
+    { file: 'work-03.png', title: 'Project Three', cat: 'Campaign',       year: '2025', tone: 'mint' },
+    { file: 'work-04.png', title: 'Project Four',  cat: 'Editorial',      year: '2025', tone: 'mint' },
+    { file: 'work-05.png', title: 'Project Five',  cat: 'Packaging',      year: '2024', tone: 'mint' },
+    { file: 'work-06.mp4', title: 'Project Six',   cat: 'Motion',         year: '2024', tone: 'mint' },
+  ];
+
+  (function () {
+    const esc = SITE.esc, stackEl = document.getElementById('stack');
+    const pad = (n) => String(n).padStart(2, '0');
+    document.getElementById('sel-count').textContent = pad(WORKS.length);
+
+    WORKS.forEach((w, i) => {
+      const isVideo = /\.(mp4|webm|mov)$/i.test(w.file);
+      const media = isVideo
+        ? '<video src="' + esc(w.file) + '" muted loop playsinline preload="metadata" data-fallback="' + esc(w.file) + '"></video>'
+        : '<img src="' + esc(w.file) + '" alt="' + esc(w.title) + '" loading="' + (i < 2 ? 'eager' : 'lazy') + '" decoding="async" data-fallback="' + esc(w.file) + '">';
+      const el = document.createElement('section');
+      el.className = 'stack-item tone-' + (w.tone || 'mint');
+      el.innerHTML =
+        '<div class="stack-item__inner"><div class="card tick">' +
+          '<div class="card__meta">' +
+            '<span class="num"><span class="k">(No.)</span> ' + pad(i + 1) + '/' + pad(WORKS.length) + '</span>' +
+            '<span><span class="k">(Title)</span> ' + esc(w.title) + '</span>' +
+            '<span><span class="k">(Category)</span> ' + esc(w.cat) + '</span>' +
+            '<span class="num"><span class="k">(Year)</span> ' + esc(w.year) + '</span>' +
+          '</div>' +
+          '<figure class="card__frame" data-cursor="' + (isVideo ? 'Play' : 'View') + '"><div class="card__media">' + media + '</div></figure>' +
+        '</div></div><div class="stack-item__shade"></div>';
+      stackEl.appendChild(el);
+    });
+    SITE.watchMedia(stackEl);
+    SITE.drawTicks(stackEl);
+
+    // 화면에 보일 때만 영상 재생
+    const io = new IntersectionObserver((ents) => ents.forEach((e) => {
+      const v = e.target; if (e.isIntersecting) v.play().catch(() => {}); else v.pause();
+    }), { threshold: 0.25 });
+    stackEl.querySelectorAll('video').forEach((v) => io.observe(v));
+
+    /* ---------- 스택 핀 : 다음 장이 이전 장을 천천히 덮음 ---------- */
+    const items = gsap.utils.toArray('.stack-item');
+    const last = items[items.length - 1];
+    if (!SITE.reduce) {
+      items.forEach((item, i) => {
+        if (i < items.length - 1) {
+          ScrollTrigger.create({ trigger: item, start: 'top top', endTrigger: last, end: 'top top', pin: true, pinSpacing: false });
+          const next = items[i + 1];
+          gsap.timeline({ scrollTrigger: { trigger: next, start: 'top bottom', end: 'top top', scrub: true } })
+            .to(item.querySelector('.stack-item__inner'), { scale: 0.96, ease: 'none' }, 0)
+            .to(item.querySelector('.stack-item__shade'), { opacity: 0.3, ease: 'none' }, 0);
+        }
+        const m = item.querySelector('.card__media');
+        if (m) gsap.fromTo(m, { scale: 1.08 }, { scale: 1, ease: 'none',
+          scrollTrigger: { trigger: item, start: 'top bottom', end: 'top top', scrub: true } });
+      });
+    }
+
+    /* ---------- 크게 보기 ---------- */
+    const lb = document.getElementById('lightbox'), lbBody = lb.querySelector('.lightbox__body');
+    function open(frame) {
+      const src = frame.querySelector('img, video');
+      if (!src) return;
+      const clone = src.tagName === 'VIDEO'
+        ? Object.assign(document.createElement('video'), { src: src.currentSrc || src.src, controls: true, autoplay: true, loop: true, playsInline: true })
+        : Object.assign(document.createElement('img'), { src: src.currentSrc || src.src, alt: src.alt });
+      lbBody.replaceChildren(clone);
+      lb.classList.add('is-open');
+      SITE.hideLabel();
+      SITE.lenis && SITE.lenis.stop();
+    }
+    function close() {
+      lb.classList.remove('is-open');
+      setTimeout(() => lbBody.replaceChildren(), 600);
+      SITE.lenis && SITE.lenis.start();
+    }
+    stackEl.addEventListener('click', (e) => { const f = e.target.closest('.card__frame'); if (f) open(f); });
+    lb.addEventListener('click', (e) => { if (!e.target.closest('video')) close(); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && lb.classList.contains('is-open')) close(); });
+
+    ScrollTrigger.refresh();
+  })();
+  </script>
+</body>
+</html>

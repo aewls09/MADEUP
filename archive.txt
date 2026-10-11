@@ -1,0 +1,21 @@
+# ===============================================================
+#  STORY — 이 파일만 고치면 Story 페이지와 팝업이 바뀝니다.
+#
+#  한 줄 = 항목 1개 (지금 8개)
+#  형식:  제목 | 분류 | 한 줄 소개 | 사진 파일 | 본문
+#
+#  - 칸은 세로선( | )으로 구분합니다.
+#  - 사진 파일은 이 폴더에 넣고 이름만 적으세요. (예: story-01.png)
+#  - 본문에서 문단을 나누려면 문장 사이에 두 개의 빗금(//)을 넣으세요.
+#  - # 으로 시작하는 줄과 빈 줄은 무시됩니다.
+#  - 위에 있을수록 목록 위쪽에 표시됩니다. 번호(01~08)는 자동으로 붙습니다.
+# ===============================================================
+
+Story 1 | Story | Where it all begins | story-01.png | 프로젝트의 출발점이 되는 이야기를 적어 주세요. // 여기는 두 번째 문단입니다.
+Keyword 1 | Keyword | First keyword in one line | story-02.png | 첫 번째 키워드가 무엇이고 왜 중요한지 설명하는 본문입니다.
+Keyword 2 | Keyword | Second keyword in one line | story-03.png | 두 번째 키워드에 대한 설명을 적어 주세요.
+Keyword 3 | Keyword | Third keyword in one line | story-04.png | 세 번째 키워드에 대한 설명을 적어 주세요.
+Moodboard 1 | Moodboard | Colour and texture | story-05.png | 첫 번째 무드보드의 방향과 레퍼런스를 설명해 주세요.
+Moodboard 2 | Moodboard | Form and material | story-06.png | 두 번째 무드보드의 방향과 레퍼런스를 설명해 주세요.
+Moodboard 3 | Moodboard | Light and space | story-07.png | 세 번째 무드보드의 방향과 레퍼런스를 설명해 주세요.
+Mock-up | Mock-up | The final form | story-08.png | 최종 목업에 대한 설명을 적어 주세요. // 사용한 재료, 크기, 의도 등을 자유롭게 정리하면 됩니다.

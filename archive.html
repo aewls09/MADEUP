@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ACE3D9">
+  <title>Story</title>
+  <script>try{if(sessionStorage.getItem('pt'))document.documentElement.classList.add('pt-in')}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="archive">
+
+  <header class="bar" id="bar">
+    <a class="bar__logo" href="index.html" aria-label="Home"><img src="logo.png" alt="Logo" onerror="this.outerHTML='<span>Logo</span>'"></a>
+    <a class="u" href="info.html">3D Product</a>
+    <span><a class="u" href="selected.html">Steel Cut</a>, <a class="u" href="archive.html">Story</a></span>
+    <span class="bar__clock num" data-clock>Seoul --:--:--</span>
+  </header>
+
+  <main>
+    <!-- 소개는 핀 고정, 목록이 그 위로 천천히 덮으며 올라옴 -->
+    <section class="arch-head">
+      <div class="arch-head__inner split">
+        <div>
+          <p class="k">(Story)</p>
+          <p class="num"><span class="k">(Entries)</span> <span id="arch-count">00</span></p>
+        </div>
+        <p>From the first idea to the final mock-up. Select any line to open it.</p>
+      </div>
+    </section>
+
+    <section class="arch-sheet">
+      <div class="arch-bar">
+        <span>(No.)</span><span>(Title)</span><span>(Category)</span><span>(Note)</span>
+        <span class="num" id="arch-pos" style="justify-self:end">00/00</span>
+      </div>
+      <ol class="arch-list" id="arch-list"></ol>
+    </section>
+  </main>
+
+  <footer class="foot tick">
+    <div class="foot__cols">
+      <div class="foot__links">
+        <a class="u" href="mailto:hello@yourdomain.com">hello@yourdomain.com</a>
+        <a class="u" href="https://instagram.com/" target="_blank" rel="noopener">@instagram</a>
+      </div>
+      <p data-reveal>한두 문장의 짧은 소개를 적어 주세요. Based in Seoul, working worldwide.</p>
+    </div>
+    <div class="foot__row"><span class="num" data-clock>Seoul --:--:--</span><span>© 2026</span></div>
+  </footer>
+
+  <!-- 팝업 : 텍스트 + 사진 -->
+  <div class="story-pop" id="story-pop" role="dialog" aria-modal="true" aria-labelledby="sp-title" aria-hidden="true">
+    <article class="story-pop__sheet" data-lenis-prevent>
+      <header class="story-pop__head">
+        <span class="num" id="sp-no">01/08</span>
+        <button class="u" type="button" data-close>Close</button>
+      </header>
+      <figure class="story-pop__fig" id="sp-fig"></figure>
+      <div class="story-pop__text">
+        <div class="sp-meta">
+          <span><span class="k">(Title)</span> <span id="sp-title"></span></span>
+          <span><span class="k">(Category)</span> <span id="sp-cat"></span></span>
+          <span><span class="k">(Note)</span> <span id="sp-kicker"></span></span>
+        </div>
+        <div class="sp-body" id="sp-body"></div>
+      </div>
+      <footer class="story-pop__foot tick">
+        <button class="u" type="button" data-step="-1">Previous</button>
+        <button class="u" type="button" data-step="1">Next</button>
+      </footer>
+    </article>
+  </div>
+
+  <!--
+    예비 데이터: html 파일을 더블클릭으로 바로 열면(file://) 브라우저가 archive.txt를 읽지 못해서
+    그때만 이 내용을 씁니다. 서버/호스팅에 올리면 항상 archive.txt가 우선입니다.
+  -->
+  <script type="text/plain" id="archive-fallback">
+Story 1 | Story | Where it all begins | story-01.png | 프로젝트의 출발점이 되는 이야기를 적어 주세요. // 여기는 두 번째 문단입니다.
+Keyword 1 | Keyword | First keyword in one line | story-02.png | 첫 번째 키워드가 무엇이고 왜 중요한지 설명하는 본문입니다.
+Keyword 2 | Keyword | Second keyword in one line | story-03.png | 두 번째 키워드에 대한 설명을 적어 주세요.
+Keyword 3 | Keyword | Third keyword in one line | story-04.png | 세 번째 키워드에 대한 설명을 적어 주세요.
+Moodboard 1 | Moodboard | Colour and texture | story-05.png | 첫 번째 무드보드의 방향과 레퍼런스를 설명해 주세요.
+Moodboard 2 | Moodboard | Form and material | story-06.png | 두 번째 무드보드의 방향과 레퍼런스를 설명해 주세요.
+Moodboard 3 | Moodboard | Light and space | story-07.png | 세 번째 무드보드의 방향과 레퍼런스를 설명해 주세요.
+Mock-up | Mock-up | The final form | story-08.png | 최종 목업에 대한 설명을 적어 주세요. // 사용한 재료, 크기, 의도 등을 자유롭게 정리하면 됩니다.
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="main.js"></script>
+  <script>
+  (async function () {
+    const esc = SITE.esc, pad = (n) => String(n).padStart(2, '0');
+
+    async function loadText() {
+      try {
+        const r = await fetch('archive.txt', { cache: 'no-store' });
+        if (!r.ok) throw new Error(r.status);
+        return await r.text();
+      } catch (e) {
+        return document.getElementById('archive-fallback').textContent;
+      }
+    }
+    // 형식: 제목 | 분류 | 한 줄 소개 | 사진 파일 | 본문
+    const parse = (txt) => txt.split(/\r?\n/).map((l) => l.trim())
+      .filter((l) => l && !l.startsWith('#'))
+      .map((l) => {
+        const [title = '', cat = '', kicker = '', image = '', ...rest] = l.split('|').map((s) => s.trim());
+        return { title, cat, kicker, image, body: rest.join(' | ') };
+      });
+
+    const rows = parse(await loadText());
+    const total = rows.length;
+    const list = document.getElementById('arch-list');
+    const posEl = document.getElementById('arch-pos');
+    document.getElementById('arch-count').textContent = pad(total);
+    posEl.textContent = '01/' + pad(total);
+
+    list.innerHTML = rows.map((r, i) =>
+      '<li class="row"><button type="button" class="row__in tick" data-i="' + i + '" data-cursor="Open">' +
+        '<span class="num"><span class="k">(No.)</span> ' + pad(i + 1) + '</span>' +
+        '<span><span class="k">(Title)</span> <span class="u">' + esc(r.title) + '</span></span>' +
+        '<span><span class="k">(Category)</span> ' + esc(r.cat) + '</span>' +
+        '<span><span class="k">(Note)</span> ' + esc(r.kicker) + '</span>' +
+        '<span class="row__open">Open</span>' +
+      '</button></li>'
+    ).join('');
+    SITE.drawTicks(list);
+
+    const items = gsap.utils.toArray('.row');
+    items.forEach((row, i) => {
+      ScrollTrigger.create({
+        trigger: row, start: 'top 55%', end: 'bottom 55%',
+        onToggle: (self) => { if (self.isActive) posEl.textContent = pad(i + 1) + '/' + pad(total); },
+      });
+    });
+
+    if (!SITE.reduce) {
+      ScrollTrigger.create({ trigger: '.arch-head', start: 'top top', endTrigger: '.arch-sheet', end: 'top top', pin: true, pinSpacing: false });
+      gsap.to('.arch-head__inner', { opacity: 0.15, ease: 'none',
+        scrollTrigger: { trigger: '.arch-sheet', start: 'top bottom', end: 'top top', scrub: true } });
+      gsap.set(items, { opacity: 0 });
+      ScrollTrigger.batch(items, {
+        start: 'top 94%',
+        onEnter: (b) => gsap.to(b, { opacity: 1, duration: 1.2, ease: 'power2.out', stagger: 0.08, overwrite: true, clearProps: 'opacity' }),
+      });
+    }
+
+    /* =========================================================
+       팝업 : 클릭/터치 → 텍스트 + 사진
+       화면 전체가 조용히 바뀌고, 사진은 아래에서 위로 드러남
+       ========================================================= */
+    const pop = document.getElementById('story-pop');
+    const sheet = pop.querySelector('.story-pop__sheet');
+    const fig = document.getElementById('sp-fig');
+    const els = {
+      no: document.getElementById('sp-no'), cat: document.getElementById('sp-cat'),
+      title: document.getElementById('sp-title'), kicker: document.getElementById('sp-kicker'), body: document.getElementById('sp-body'),
+    };
+    const textBox = pop.querySelector('.story-pop__text');
+    let current = -1, lastFocus = null, busy = false;
+
+    function fill(i) {
+      const r = rows[i];
+      els.no.textContent = pad(i + 1) + '/' + pad(total);
+      els.cat.textContent = r.cat;
+      els.title.textContent = r.title;
+      els.kicker.textContent = r.kicker;
+      els.body.innerHTML = r.body.split('//').map((p) => p.trim()).filter(Boolean).map((p) => '<p>' + esc(p) + '</p>').join('');
+      fig.innerHTML = r.image
+        ? '<img src="' + esc(r.image) + '" alt="' + esc(r.title) + '" decoding="async" data-fallback="' + esc(r.image) + '">'
+        : '<div class="ph"><span>no image</span></div>';
+      SITE.watchMedia(fig);
+      sheet.scrollTop = 0; textBox.scrollTop = 0;
+    }
+
+    function reveal() {
+      if (SITE.reduce) return;
+      gsap.fromTo(fig, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'power2.inOut' });
+      gsap.fromTo(fig.firstElementChild, { scale: 1.06 }, { scale: 1, duration: 1.6, ease: 'power2.out' });
+      gsap.fromTo(textBox, { opacity: 0 }, { opacity: 1, duration: 0.9, ease: 'power2.out', delay: 0.3 });
+    }
+
+    function open(i) {
+      if (busy) return;
+      current = i;
+      lastFocus = document.activeElement;
+      fill(i);
+      SITE.hideLabel();
+      pop.classList.add('is-open');
+      pop.setAttribute('aria-hidden', 'false');
+      SITE.lenis && SITE.lenis.stop();
+      document.documentElement.classList.add('pop-lock');
+      if (SITE.reduce) gsap.set(pop, { opacity: 1 });
+      else { gsap.to(pop, { opacity: 1, duration: 0.6, ease: 'power2.inOut' }); reveal(); }
+      setTimeout(() => pop.querySelector('[data-close]').focus({ preventScroll: true }), 50);
+    }
+
+    function close() {
+      if (current < 0 || busy) return;
+      busy = true;
+      gsap.to(pop, { opacity: 0, duration: SITE.reduce ? 0 : 0.6, ease: 'power2.inOut', onComplete: () => {
+        pop.classList.remove('is-open');
+        pop.setAttribute('aria-hidden', 'true');
+        SITE.lenis && SITE.lenis.start();
+        document.documentElement.classList.remove('pop-lock');
+        current = -1; busy = false;
+        lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true });
+      } });
+    }
+
+    function step(d) {
+      if (current < 0 || busy) return;
+      const next = (current + d + total) % total;
+      current = next;
+      if (SITE.reduce) return fill(next);
+      busy = true;
+      gsap.to([fig, textBox], { opacity: 0, duration: 0.4, ease: 'power2.inOut', onComplete: () => {
+        fill(next);
+        gsap.set([fig, textBox], { opacity: 1 });
+        reveal();
+        busy = false;
+      } });
+    }
+
+    list.addEventListener('click', (e) => {
+      const b = e.target.closest('.row__in');
+      if (b) open(+b.dataset.i);
+    });
+    pop.addEventListener('click', (e) => {
+      if (e.target.closest('[data-close]')) close();
+      const s = e.target.closest('[data-step]');
+      if (s) step(+s.dataset.step);
+    });
+    addEventListener('keydown', (e) => {
+      if (current < 0) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowRight') step(1);
+      if (e.key === 'ArrowLeft') step(-1);
+    });
+
+    // 휴대폰 : 좌우로 밀면 이전/다음, 맨 위에서 아래로 끌면 닫기
+    let sx = 0, sy = 0, st = 0;
+    sheet.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = sheet.scrollTop; }, { passive: true });
+    sheet.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.4) step(dx < 0 ? 1 : -1);
+      else if (dy > 110 && st <= 0 && Math.abs(dy) > Math.abs(dx) * 1.4) close();
+    }, { passive: true });
+
+    ScrollTrigger.refresh();
+  })();
+  </script>
+</body>
+</html>
