@@ -78,8 +78,6 @@ p{ max-width:62ch; }
 @media (min-width:760px){ .bar__logo img{ height:20px; max-width:220px; } }
 /* 어두운 배경(영상 위, 3D Product)에서 로고를 흰색으로 — 원치 않으면 이 줄을 지우세요 */
 .bar.is-light .bar__logo img, .is-dark .bar__logo img{ filter:brightness(0) invert(1); }
-.bar__clock{ display:none; }
-@media (min-width:600px){ .bar__clock{ display:inline; } }
 
 /* =========================================================
    전환 · 호버 라벨
@@ -164,6 +162,7 @@ body[data-page="info"] .veil{ background:var(--ink); }
 @media (min-width:760px){ .foot__cols{ grid-template-columns:minmax(0,314px) minmax(0,918px); gap:55px; } }
 .foot__links{ display:flex; flex-direction:column; align-items:flex-start; }
 .foot__row{ display:flex; justify-content:space-between; gap:16px; }
+.foot__row > :last-child{ margin-left:auto; }
 body[data-page="info"] .foot{ color:var(--paper); }
 
 /* =========================================================
@@ -181,7 +180,7 @@ body[data-page="info"] .foot{ color:var(--paper); }
   display:flex; justify-content:space-between; gap:16px;
 }
 .info-state{ text-align:center; min-width:9ch; }
-.info-load{ position:absolute; z-index:2; left:50%; top:50%; transform:translate(-50%,-50%); opacity:.6; }
+.info-load{ position:absolute; z-index:2; left:50%; top:50%; transform:translate(-50%,-50%); opacity:.6; width:min(90vw,520px); text-align:center; }
 .info-panels{
   position:absolute; z-index:2; left:var(--pad); right:var(--pad);
   bottom:calc(var(--pad) * 2 + 20px + env(safe-area-inset-bottom));
@@ -194,7 +193,6 @@ body[data-page="info"] .foot{ color:var(--paper); }
 .info-panel.is-active{ visibility:visible; }
 .info-panel ul{ display:grid; }
 .info-panel li{ display:flex; justify-content:space-between; gap:16px; padding:6px 0; border-top:1px solid rgba(249,249,247,.25); }
-.info-hint{ position:absolute; z-index:2; right:var(--pad); bottom:calc(var(--pad) + env(safe-area-inset-bottom)); opacity:.6; }
 .info-step{ position:absolute; z-index:2; left:var(--pad); bottom:calc(var(--pad) + env(safe-area-inset-bottom)); opacity:.6; }
 .info-progress{
   position:absolute; z-index:2; left:0; bottom:0; height:1px; width:100%;
@@ -202,7 +200,7 @@ body[data-page="info"] .foot{ color:var(--paper); }
 }
 
 /* =========================================================
-   STEEL CUT (스택)
+   STILL CUT (스택)
    ========================================================= */
 .stack-item{ position:relative; height:100svh; overflow:hidden; background:var(--mint); }
 .stack-item.tone-paper{ background:var(--paper); }
@@ -243,7 +241,7 @@ body[data-page="info"] .foot{ color:var(--paper); }
 .lightbox__close{ position:absolute; top:var(--pad); right:var(--pad); }
 
 /* =========================================================
-   STORY
+   ABOUT (archive.html)
    ========================================================= */
 .arch-head{ height:100svh; position:relative; }
 .arch-head__inner{
@@ -274,7 +272,7 @@ body[data-page="info"] .foot{ color:var(--paper); }
 }
 .row__in:focus-visible{ outline:1px solid var(--ink); outline-offset:4px; }
 
-/* Story 팝업 (텍스트 + 사진) */
+/* About 팝업 (텍스트 + 사진) */
 html.pop-lock, html.pop-lock body{ overflow:hidden; }
 .story-pop{
   position:fixed; inset:0; z-index:85; visibility:hidden; pointer-events:none;

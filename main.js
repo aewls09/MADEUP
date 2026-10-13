@@ -45,14 +45,6 @@
     }
   });
 
-  /* ---------- 서울 시계 ---------- */
-  const clocks = document.querySelectorAll('[data-clock]');
-  if (clocks.length) {
-    const f = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Seoul', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-    const tick = () => { const s = 'Seoul ' + f.format(new Date()); clocks.forEach((c) => (c.textContent = s)); };
-    tick(); setInterval(tick, 1000);
-  }
-
   /* ---------- 미디어 파일이 없을 때 자리표시 ---------- */
   function toPlaceholder(el) {
     if (!el.isConnected || el.dataset.ph) return;
