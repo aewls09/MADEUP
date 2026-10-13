@@ -76,7 +76,8 @@ p{ max-width:62ch; }
 .bar__logo{ display:inline-flex; align-items:center; height:calc(var(--fs) * var(--lh)); }
 .bar__logo img{ height:18px; width:auto; max-width:30vw; object-fit:contain; transition:filter .6s var(--ease); }
 @media (min-width:760px){ .bar__logo img{ height:20px; max-width:220px; } }
-/* 어두운 배경(영상 위, 3D Product)에서 로고를 흰색으로 — 원치 않으면 이 줄을 지우세요 */
+/* 로고 색: 밝은 민트 배경에서는 검정, 어두운 배경(영상 위, 3D Product)에서는 흰색 */
+.bar__logo img{ filter:brightness(0); }
 .bar.is-light .bar__logo img, .is-dark .bar__logo img{ filter:brightness(0) invert(1); }
 
 /* =========================================================
