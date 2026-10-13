@@ -137,11 +137,30 @@
     const pct = v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length * 100) : 0;
     loadEl.textContent = 'Loading ' + pct + '%';
   }
-  const load = (url) => new Promise((res, rej) => {
+  const loadFile = (url) => new Promise((res, rej) => {
     progress[url] = 0;
     loader.load(url, res, (e) => { if (e.total) { progress[url] = e.loaded / e.total; showProgress(); } },
       (err) => { delete progress[url]; rej(err); });
   });
+
+  // 더블클릭(file://)으로 열면 브라우저가 .glb 읽기를 막아서, 글자로 담아 둔 예비 파일(models/pouch-data.js)을 씀
+  let backup = null;
+  const loadBackup = () => backup || (backup = new Promise((res, rej) => {
+    if (window.POUCH_DATA) return res(window.POUCH_DATA);
+    const s = document.createElement('script');
+    s.src = 'models/pouch-data.js';
+    s.onload = () => (window.POUCH_DATA ? res(window.POUCH_DATA) : rej(new Error('pouch-data.js is empty')));
+    s.onerror = () => rej(new Error('models/pouch-data.js not found'));
+    document.head.appendChild(s);
+  }));
+  async function loadFromBackup(url) {
+    const data = await loadBackup();
+    if (!data[url]) throw new Error(url + ' is not in pouch-data.js');
+    const bin = atob(data[url]), buf = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+    return new Promise((res, rej) => loader.parse(buf.buffer, '', res, rej));
+  }
+  const load = (url) => (location.protocol === 'file:' ? loadFromBackup(url) : loadFile(url).catch(() => loadFromBackup(url)));
   function firstGeometry(gltf) {
     let geo = null;
     gltf.scene.updateMatrixWorld(true);
@@ -335,9 +354,7 @@
   }
   buildPouch().then((m) => { isPouch = true; mount(m); }).catch((err) => {
     console.error('[3D Product] 파우치 파일을 불러오지 못했습니다:', POUCH.closed, POUCH.open, err);
-    loadEl.textContent = location.protocol === 'file:'
-      ? '파일을 더블클릭해서 열면 브라우저가 3D 모델을 막아요. VS Code의 Live Server(Go Live)로 열어 주세요.'
-      : 'models 폴더의 closed.glb, open.glb를 불러오지 못했어요 (' + ((err && err.message) || err) + ')';
+    loadEl.textContent = 'models 폴더의 closed.glb, open.glb, pouch-data.js를 확인해 주세요 (' + ((err && err.message) || err) + ')';
   });
 
   /* ---------- 상태 ---------- */
