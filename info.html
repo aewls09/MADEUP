@@ -90,13 +90,29 @@
     open:   'models/open.glb',       // 펼쳐진 파우치
 
     size: 3.2,                // 닫힌 파우치의 화면 속 너비 (클수록 커짐)
-    organza: '#7a6894',       // 겉감
-    lining:  '#141217',       // 안감
+    // 겉감 색: 페이지에 들어올 때마다 이 중 하나가 무작위로 골라짐 (색을 더하거나 빼도 됨)
+    organzaColors: ['#77B4AA', '#7D8BB0', '#E69C8D', '#EBB456'],
+    lining:  '#F6F1E3',       // 안감 (아이보리, 고정)
     cord:    '#2b2730',       // 끈 (검은 배경에서도 보이도록 아주 살짝 밝게)
-    sheen:   '#dccbf5',       // 천 가장자리 광채
+    sheen:   '#ffffff',       // 천 가장자리 광채
     grain:   0.45,            // 까슬한 결의 세기 (0~1)
+    sheer:   0.55,            // 겉감 불투명도: 낮출수록 안이 더 비침 (0.3 = 많이 비침, 1 = 안 비침)
     lookDown: 52,             // 다 열렸을 때 위에서 내려다보는 각도(도)
+
+    folds:  0.06,             // 열릴 때 몸통에 생기는 큰 물결 주름의 깊이 (0 = 없음)
+    pleats: 0.03,             // 입구 둘레의 촘촘한 개더 주름 깊이 (0 = 없음)
+    pleatCount: 24,           // 입구 둘레 주름 개수
   };
+
+  // 겉감 색 고르기: 바로 전에 본 색은 피해서 새로고침할 때마다 다른 색이 나오게
+  (function pickOrganza() {
+    const list = POUCH.organzaColors;
+    let last = null;
+    try { last = sessionStorage.getItem('pouchColor'); } catch (e) {}
+    const pool = list.length > 1 ? list.filter((c) => c !== last) : list;
+    POUCH.organza = pool[Math.floor(Math.random() * pool.length)];
+    try { sessionStorage.setItem('pouchColor', POUCH.organza); } catch (e) {}
+  })();
 
   const SITE = window.SITE, gsap = window.gsap, ScrollTrigger = window.ScrollTrigger;
   const MINT = 0xACE3D9, INK = 0x1A0B09, PAPER = 0xF9F9F7;
@@ -206,12 +222,14 @@
       normalMap: grain, normalScale: new THREE.Vector2(POUCH.grain, POUCH.grain),
       alphaHash: true, envMapIntensity: 0.9, ...extra,
     });
-    const matOuter = fabric({ side: THREE.FrontSide });
-    const matCap = fabric({ side: THREE.FrontSide });
-    const matOpen = fabric({ side: THREE.DoubleSide, opacity: 0 });
+    // 겉감은 반투명 → 뒤에 있는 안감이 비쳐 보임 (끈은 꼭짓점별 투명도로 불투명 유지)
+    const sheerFabric = (extra) => fabric({ alphaHash: false, transparent: true, depthWrite: true, ...extra });
+    const matOuter = sheerFabric({ side: THREE.FrontSide });
+    const matCap = sheerFabric({ side: THREE.FrontSide });
+    const matOpen = sheerFabric({ side: THREE.DoubleSide, opacity: 0 });
     const matLining = new THREE.MeshPhysicalMaterial({
       vertexColors: true, side: THREE.BackSide, roughness: 0.32, sheen: 0.6,
-      sheenColor: new THREE.Color('#7d7290'), alphaHash: true,
+      sheenColor: new THREE.Color('#ffffff'), alphaHash: true,
     });
 
     /* 닫힌 파우치: 몸통 중심 찾기 (끈은 위쪽에만 있으니 아래 절반으로 계산) */
@@ -240,41 +258,50 @@
 
     /* 꼭짓점마다 '구'의 좌표로 바꿔 둠 → 이걸 원판으로 펼침 */
     const theta = new Float32Array(n), cphi = new Float32Array(n), sphi = new Float32Array(n), bump = new Float32Array(n);
+    const foldW = new Float32Array(n), pleatW = new Float32Array(n);   // 주름 모양 (미리 계산)
     const uv = new Float32Array(n * 2);
     for (let i = 0; i < n; i++) {
       const dx = P[i * 3] - cx, dy = P[i * 3 + 1] - cy, dz = P[i * 3 + 2] - cz;
       const r = Math.hypot(dx, dy, dz) || 1e-6, phi = Math.atan2(dz, dx);
       theta[i] = Math.acos(Math.max(-1, Math.min(1, -dy / r)));
       cphi[i] = Math.cos(phi); sphi[i] = Math.sin(phi); bump[i] = r - R0;
+      const u = theta[i] / Math.PI;
+      // 바닥에서 입구 쪽으로 퍼지는 큰 물결 (두 물결을 섞어 불규칙하게)
+      foldW[i] = (0.6 * Math.sin(9 * phi + 1.3 + 1.5 * u) + 0.4 * Math.sin(14 * phi + 2.7 - 2.2 * u)) * Math.pow(u, 1.5);
+      pleatW[i] = Math.sin(POUCH.pleatCount * phi);
       uv[i * 2] = (phi / (2 * Math.PI) + 0.5) * 9; uv[i * 2 + 1] = theta[i] / Math.PI * 5;
     }
     const P0 = Float32Array.from(P);
 
+    // 입구(조여진 목) 경계: 이보다 위쪽 면은 '뚜껑'으로 따로 빼고, 경계 근처 주름은 열릴 때 펴줌
+    const MOUTH = 2.75;   // 각도(라디안). 줄이면 입구가 넓어지고, 키우면 좁아짐 (최대 3.14)
+    const rimW = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      rimW[i] = smooth(MOUTH - 0.45, MOUTH, theta[i]);
+      pleatW[i] *= smooth(MOUTH - 0.55, MOUTH - 0.05, theta[i]);   // 개더는 입구 띠에만
+    }
+
     // 구의 세로선이 펴지면서 납작한 원판이 되고, 주름은 그 위에 얹혀서 따라감
     function writeMorph(out, t) {
       const L = Math.PI * R0 + (Rf - Math.PI * R0) * t;
-      const k = (1 - t) * Math.PI / L, keep = 1 - 0.75 * t;
+      const k = (1 - t) * Math.PI / L, keep = 1 - 0.75 * t, rimFlat = Math.min(1, t / 0.25);
+      const fA = POUCH.folds * smooth(0, 0.3, t), pA = POUCH.pleats * smooth(0, 0.15, t);
       for (let i = 0; i < n; i++) {
         const s = theta[i] * L / Math.PI, a = k * s;
         let rho, h;
         if (a > 1e-4) { rho = Math.sin(a) / k; h = (1 - Math.cos(a)) / k; } else { rho = s; h = 0; }
-        const o = bump[i] * keep, nr = Math.sin(a) * o;
+        const o = bump[i] * keep * (1 - rimFlat * rimW[i]) + fA * foldW[i] + pA * pleatW[i], nr = Math.sin(a) * o;
         out[i * 3] = cx + (rho + nr) * cphi[i];
         out[i * 3 + 1] = minY + h - Math.cos(a) * o;
         out[i * 3 + 2] = cz + (rho + nr) * sphi[i];
       }
     }
 
-    // 입구를 막고 있던 '뚜껑' 면 찾기: 펼쳤을 때 크게 찢어지는 삼각형
-    const flat = new Float32Array(n * 3);
-    writeMorph(flat, 1);
-    const edge = (A, a, b) => Math.hypot(A[a * 3] - A[b * 3], A[a * 3 + 1] - A[b * 3 + 1], A[a * 3 + 2] - A[b * 3 + 2]);
+    // 입구를 막고 있던 '뚜껑' 면: 입구 경계선(MOUTH)보다 위에 있는 삼각형
     const main = [], cap = [];
     for (let f = 0; f < idx.length; f += 3) {
       const a = idx[f], b = idx[f + 1], c = idx[f + 2];
-      const e0 = Math.max(edge(P, a, b), edge(P, b, c), edge(P, c, a));
-      const e1 = Math.max(edge(flat, a, b), edge(flat, b, c), edge(flat, c, a));
-      (e1 / (e0 + 1e-9) > 3 ? cap : main).push(a, b, c);
+      (Math.max(theta[a], theta[b], theta[c]) > MOUTH ? cap : main).push(a, b, c);
     }
 
     const posAttr = closedGeo.attributes.position;
@@ -291,7 +318,17 @@
       for (let i = 0; i < count; i++) { fn(i, c); arr[i * 3] = c.r; arr[i * 3 + 1] = c.g; arr[i * 3 + 2] = c.b; }
       return new THREE.BufferAttribute(arr, 3);
     };
-    const outerCol = colors(n, (i, c) => c.copy(P[i * 3] < x0 - 0.03 ? cCord : cOrg));
+    // 색 + 투명도(4번째 값): fn이 숫자를 돌려주면 그 값이 투명도
+    const colorsA = (count, fn) => {
+      const arr = new Float32Array(count * 4), c = new THREE.Color();
+      for (let i = 0; i < count; i++) {
+        const a = fn(i, c);
+        arr[i * 4] = c.r; arr[i * 4 + 1] = c.g; arr[i * 4 + 2] = c.b; arr[i * 4 + 3] = typeof a === 'number' ? a : 1;
+      }
+      return new THREE.BufferAttribute(arr, 4);
+    };
+    const isCord = (i) => P[i * 3] < x0 - 0.03;
+    const outerCol = colorsA(n, (i, c) => { c.copy(isCord(i) ? cCord : cOrg); return isCord(i) ? 1 : POUCH.sheer; });
     const innerCol = colors(n, (i, c) => c.copy(cLin).lerp(cOrg, smooth(0.8, 0.9, theta[i] / Math.PI)));
     const geo = (index, color) => {
       const g = new THREE.BufferGeometry();
@@ -306,10 +343,12 @@
     const ouv = new Float32Array(on * 2);
     for (let i = 0; i < on; i++) { ouv[i * 2] = OP[i * 3] * 4.5; ouv[i * 2 + 1] = OP[i * 3 + 2] * 4.5; }
     openGeo.setAttribute('uv', new THREE.BufferAttribute(ouv, 2));
-    openGeo.setAttribute('color', colors(on, (i, c) => {
+    openGeo.setAttribute('color', colorsA(on, (i, c) => {
       const rr = radii[i] / Rf;
-      if (rr > 1.0) return c.copy(cCord);
-      c.copy(cOrg).lerp(cLin, (1 - smooth(0.74, 0.86, rr)) * smooth(-0.1, 0.4, ON[i * 3 + 1]));
+      if (rr > 1.0) { c.copy(cCord); return 1; }
+      const w = (1 - smooth(0.74, 0.86, rr)) * smooth(-0.1, 0.4, ON[i * 3 + 1]);   // 1 = 안감, 0 = 겉감
+      c.copy(cOrg).lerp(cLin, w);
+      return lerp(POUCH.sheer, 1, w);
     }));
     const openMesh = new THREE.Mesh(openGeo, matOpen);
 
@@ -318,6 +357,7 @@
     space.position.set(-cx, -cy, -cz);
     space.add(outer, inner, capMesh, openMesh);
     for (const m of [outer, inner, capMesh, openMesh]) m.frustumCulled = false;
+    inner.renderOrder = 0; outer.renderOrder = 1; capMesh.renderOrder = 1; openMesh.renderOrder = 2;   // 안감 먼저, 겉감은 그 위에
     const root = new THREE.Group();
     root.add(space);
     const scale = POUCH.size / closedWidth;
@@ -335,7 +375,7 @@
           posAttr.needsUpdate = true;
           all.computeVertexNormals();
         }
-        const capFade = 1 - smooth(0.02, 0.16, open);
+        const capFade = 1 - smooth(0.01, 0.06, open);
         const reveal = smooth(0.7, 0.95, open);
         matCap.opacity = capFade; capMesh.visible = capFade > 0.001;
         matOuter.opacity = matLining.opacity = 1 - reveal;
