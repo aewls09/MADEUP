@@ -16,9 +16,10 @@
   <!-- 상단 바: 메인에서는 영상 한가운데에 있다가 스크롤하면 위로 올라감 -->
   <header class="bar is-light" id="bar">
     <a class="bar__logo" href="index.html" aria-label="Home"><img src="m_logo.png" alt="M" onerror="this.outerHTML='<span>M</span>'"></a>
-    <a class="u" href="info.html">3D Product</a>
-    <a class="u" href="selected.html">Still Cut</a>
-    <a class="u" href="archive.html">About</a>
+    <!-- 메뉴 글자는 고유 폰트 이미지 (이미지가 없으면 글자로 표시) -->
+    <a class="u bar__word" href="info.html" aria-label="3D Product"><img src="Pouch.png" alt="Pouch" onerror="this.outerHTML='Pouch'"></a>
+    <a class="u bar__word" href="selected.html" aria-label="Still Cut"><img src="Photo.png" alt="Photo" onerror="this.outerHTML='Photo'"></a>
+    <a class="u bar__word" href="archive.html" aria-label="About"><img src="About.png" alt="About" onerror="this.outerHTML='About'"></a>
   </header>
 
   <main>
@@ -29,13 +30,13 @@
                disablepictureinpicture disableremoteplayback data-fallback="background.mp4"></video>
       </div>
       <div class="hero__foot"><span>(Showreel)</span><span>Scroll</span></div>
-      <div class="hero__cap"><span><span class="k">(Showreel)</span> Moving image &amp; visual design</span><span class="num"><span class="k">(Seoul)</span> 2026</span></div>
+      <div class="hero__cap"><span><span class="k">(Showreel)</span> <span data-t="home.caption">Moving image &amp; visual design</span></span><span class="num"><span class="k">(<span data-t="home.city">Seoul</span>)</span> <span data-t="home.year">2026</span></span></div>
     </section>
 
     <!-- 02 STATEMENT : 고정된 화면에서 문장이 한 단어씩 짙어짐 -->
     <section class="statement split">
       <p class="k">(About)</p>
-      <p class="statement__text">A practice built on motion, rhythm and restraint — images that move so you don’t have to. Framed with care, left quiet on purpose.</p>
+      <p class="statement__text" data-t="home.statement">A practice built on motion, rhythm and restraint — images that move so you don’t have to. Framed with care, left quiet on purpose.</p>
     </section>
 
     <!-- 03 INDEX : 세로 스크롤이 가로 이동으로 바뀜 -->
@@ -45,26 +46,26 @@
         <a class="panel tick" href="info.html" data-cursor="Open">
           <span class="panel__meta">
             <span><span class="k">(No.)</span> 01</span>
-            <span><span class="k">(Page)</span> 3D Product</span>
-            <span><span class="k">(Note)</span> Turn it, open it, look closer</span>
+            <span><span class="k">(Page)</span> <span data-t="page1.name">3D Product</span></span>
+            <span><span class="k">(Note)</span> <span data-t="page1.note">Turn it, open it, look closer</span></span>
           </span>
-          <span class="panel__title u">3D Product</span>
+          <span class="panel__title u" data-t="page1.name">3D Product</span>
         </a>
         <a class="panel tick" href="selected.html" data-cursor="Open">
           <span class="panel__meta">
             <span><span class="k">(No.)</span> 02</span>
-            <span><span class="k">(Page)</span> Still Cut</span>
-            <span><span class="k">(Note)</span> Five stills and one film</span>
+            <span><span class="k">(Page)</span> <span data-t="page2.name">Still Cut</span></span>
+            <span><span class="k">(Note)</span> <span data-t="page2.note">Five stills and one film</span></span>
           </span>
-          <span class="panel__title u">Still Cut</span>
+          <span class="panel__title u" data-t="page2.name">Still Cut</span>
         </a>
         <a class="panel tick" href="archive.html" data-cursor="Open">
           <span class="panel__meta">
             <span><span class="k">(No.)</span> 03</span>
-            <span><span class="k">(Page)</span> About</span>
-            <span><span class="k">(Note)</span> Story, keywords, moodboards, mock-up</span>
+            <span><span class="k">(Page)</span> <span data-t="page3.name">About</span></span>
+            <span><span class="k">(Note)</span> <span data-t="page3.note">Story, keywords, moodboards, mock-up</span></span>
           </span>
-          <span class="panel__title u">About</span>
+          <span class="panel__title u" data-t="page3.name">About</span>
         </a>
       </div>
     </section>
@@ -73,12 +74,12 @@
   <footer class="foot tick">
     <div class="foot__cols">
       <div class="foot__links">
-        <a class="u" href="mailto:hello@yourdomain.com">hello@yourdomain.com</a>
-        <a class="u" href="https://instagram.com/" target="_blank" rel="noopener">@instagram</a>
+        <a class="u" href="mailto:hello@yourdomain.com" data-t="email" data-mail>hello@yourdomain.com</a>
+        <a class="u" href="https://instagram.com/" target="_blank" rel="noopener" data-t="instagram" data-href="instagram.link">@instagram</a>
       </div>
-      <p data-reveal>한두 문장의 짧은 소개를 적어 주세요. Based in Seoul, working worldwide.</p>
+      <p data-reveal data-t="footer.intro">한두 문장의 짧은 소개를 적어 주세요. Based in Seoul, working worldwide.</p>
     </div>
-    <div class="foot__row"><span>© 2026</span></div>
+    <div class="foot__row"><span data-t="copyright">© 2026</span></div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -109,6 +110,8 @@
         .to('.hero__foot', { opacity: 0, ease: 'none', duration: 0.25 }, 0)
         .to('.hero__cap', { opacity: 1, ease: 'none', duration: 0.3 }, 0.7);
 
+      // 02·03 — text.txt의 문장이 들어온 뒤에 실행 (한 단어씩 나누기 때문)
+      SITE.textReady.then(() => {
       // 02 STATEMENT — 한 단어씩 짙어짐
       const words = SITE.splitWords(document.querySelector('.statement__text'));
       gsap.timeline({ scrollTrigger: { trigger: '.statement', start: 'top top', end: '+=150%', pin: true, scrub: true } })
@@ -120,6 +123,8 @@
       gsap.to(track, {
         x: () => -dist(), ease: 'none',
         scrollTrigger: { trigger: '.rail', start: 'top top', end: () => '+=' + Math.max(dist(), innerHeight * 0.5), pin: true, scrub: true, invalidateOnRefresh: true },
+      });
+      ScrollTrigger.refresh();
       });
     })();
   </script>

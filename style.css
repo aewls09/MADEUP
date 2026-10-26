@@ -77,8 +77,16 @@ p{ max-width:62ch; }
 .bar__logo img{ height:18px; width:auto; max-width:30vw; object-fit:contain; transition:filter .6s var(--ease); }
 @media (min-width:760px){ .bar__logo img{ height:20px; max-width:220px; } }
 /* 로고 색: 밝은 민트 배경에서는 검정, 어두운 배경(영상 위, 3D Product)에서는 흰색 */
-.bar__logo img{ filter:brightness(0); }
-.bar.is-light .bar__logo img, .is-dark .bar__logo img{ filter:brightness(0) invert(1); }
+/* 로고(M)와 메뉴 글자 이미지(Pouch / Photo / About)는 한 규칙으로 묶어 항상 같은 색:
+   민트 배경에서는 검정, 영상 위·어두운 화면(3D Product)에서는 흰색 */
+.bar__logo img, .bar__word img{ filter:brightness(0); transition:filter .6s var(--ease); }
+.bar.is-light .bar__logo img, .is-dark .bar__logo img,
+.bar.is-light .bar__word img, .is-dark .bar__word img{ filter:brightness(0) invert(1); }
+
+.bar__word{ display:inline-flex; align-items:center; height:calc(var(--fs) * var(--lh)); }
+.bar__word img{ height:18px; width:auto; }
+@media (min-width:760px){ .bar__word img{ height:22px; } }
+.bar__word.u::after{ bottom:-5px; }
 
 /* =========================================================
    전환 · 호버 라벨
@@ -90,13 +98,6 @@ p{ max-width:62ch; }
 body[data-page="info"] .veil{ background:var(--ink); }
 .pt-in .veil{ opacity:1; }
 
-.hover-label{
-  position:fixed; left:0; top:0; z-index:100; pointer-events:none;
-  color:#fff; mix-blend-mode:difference;
-  opacity:0; transition:opacity .4s var(--ease);
-  white-space:nowrap;
-}
-.hover-label.is-on{ opacity:1; }
 
 /* 미디어가 없을 때 자리표시 */
 .ph{

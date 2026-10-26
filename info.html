@@ -15,9 +15,10 @@
 
   <header class="bar is-light" id="bar">
     <a class="bar__logo" href="index.html" aria-label="Home"><img src="m_logo.png" alt="M" onerror="this.outerHTML='<span>M</span>'"></a>
-    <a class="u" href="info.html">3D Product</a>
-    <a class="u" href="selected.html">Still Cut</a>
-    <a class="u" href="archive.html">About</a>
+    <!-- 메뉴 글자는 고유 폰트 이미지 (색은 로고와 항상 같음, 이미지가 없으면 글자로 표시) -->
+    <a class="u bar__word" href="info.html" aria-label="3D Product"><img src="Pouch.png" alt="Pouch" onerror="this.outerHTML='Pouch'"></a>
+    <a class="u bar__word" href="selected.html" aria-label="Still Cut"><img src="Photo.png" alt="Photo" onerror="this.outerHTML='Photo'"></a>
+    <a class="u bar__word" href="archive.html" aria-label="About"><img src="About.png" alt="About" onerror="this.outerHTML='About'"></a>
   </header>
 
   <canvas id="gl" aria-hidden="true"></canvas>
@@ -35,35 +36,35 @@
       <!-- 스크롤 단계별 설명 (내용은 자유롭게 수정) -->
       <div class="info-panels">
         <article class="info-panel is-active">
-          <p class="k">(01) The Pouch</p>
-          <p>제품을 한 문장으로 소개해 주세요. Drag to turn it, scroll to open it.</p>
+          <p class="k" data-t="pouch.1.title">(01) The Pouch</p>
+          <p data-t="pouch.1.text">제품을 한 문장으로 소개해 주세요. Drag to turn it, scroll to open it.</p>
         </article>
         <article class="info-panel">
-          <p class="k">(02) Open</p>
-          <p>파우치가 열리는 구간입니다. 여는 방식이나 구조를 설명해 주세요.</p>
+          <p class="k" data-t="pouch.2.title">(02) Open</p>
+          <p data-t="pouch.2.text">파우치가 열리는 구간입니다. 여는 방식이나 구조를 설명해 주세요.</p>
         </article>
         <article class="info-panel">
-          <p class="k">(03) Detail</p>
+          <p class="k" data-t="pouch.3.title">(03) Detail</p>
           <ul>
-            <li><span>(Material)</span><span>Organza, satin lining</span></li>
-            <li><span>(Size)</span><span>00 × 00 cm</span></li>
-            <li><span>(Colour)</span><span>Dusty purple, black</span></li>
+            <li><span data-t="pouch.detail1.label">(Material)</span><span data-t="pouch.detail1.value">Organza, satin lining</span></li>
+            <li><span data-t="pouch.detail2.label">(Size)</span><span data-t="pouch.detail2.value">00 × 00 cm</span></li>
+            <li><span data-t="pouch.detail3.label">(Colour)</span><span data-t="pouch.detail3.value">Dusty purple, black</span></li>
           </ul>
         </article>
         <article class="info-panel">
-          <p class="k">(04) Close</p>
-          <p>다시 닫히는 구간입니다. 마무리 문장이나 연락처를 적어 주세요.<br>
-             <a class="u" href="mailto:hello@yourdomain.com">hello@yourdomain.com</a></p>
+          <p class="k" data-t="pouch.4.title">(04) Close</p>
+          <p><span data-t="pouch.4.text">다시 닫히는 구간입니다. 마무리 문장이나 연락처를 적어 주세요.</span><br>
+             <a class="u" href="mailto:hello@yourdomain.com" data-t="email" data-mail>hello@yourdomain.com</a></p>
         </article>
       </div>
 
-      <span class="info-step">Drag, Scroll, Tap</span>
+      <span class="info-step" data-t="pouch.hint">Drag, Scroll, Tap</span>
       <span class="info-progress"></span>
     </section>
   </main>
 
   <footer class="foot tick">
-    <div class="foot__row"><a class="u" href="mailto:hello@yourdomain.com">hello@yourdomain.com</a><span>© 2026</span></div>
+    <div class="foot__row"><a class="u" href="mailto:hello@yourdomain.com" data-t="email" data-mail>hello@yourdomain.com</a><span data-t="copyright">© 2026</span></div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -90,10 +91,14 @@
     open:   'models/open.glb',       // 펼쳐진 파우치
 
     size: 3.2,                // 닫힌 파우치의 화면 속 너비 (클수록 커짐)
-    // 겉감 색: 페이지에 들어올 때마다 이 중 하나가 무작위로 골라짐 (색을 더하거나 빼도 됨)
-    organzaColors: ['#77B4AA', '#7D8BB0', '#E69C8D', '#EBB456'],
+    // 천 색 + 끈 색 짝: 페이지에 들어올 때마다 이 중 한 쌍이 무작위로 골라짐 (짝을 더하거나 빼도 됨)
+    colorSets: [
+      { organza: '#75C0D9', cord: '#AD2020' },
+      { organza: '#9CBA21', cord: '#F3B3E2' },
+      { organza: '#E69C8D', cord: '#A9ECFF' },
+      { organza: '#EBBC42', cord: '#00CA9B' },
+    ],
     lining:  '#F6F1E3',       // 안감 (아이보리, 고정)
-    cord:    '#2b2730',       // 끈 (검은 배경에서도 보이도록 아주 살짝 밝게)
     sheen:   '#ffffff',       // 천 가장자리 광채
     grain:   0.45,            // 까슬한 결의 세기 (0~1)
     sheer:   0.55,            // 겉감 불투명도: 낮출수록 안이 더 비침 (0.3 = 많이 비침, 1 = 안 비침)
@@ -104,14 +109,16 @@
     pleatCount: 24,           // 입구 둘레 주름 개수
   };
 
-  // 겉감 색 고르기: 바로 전에 본 색은 피해서 새로고침할 때마다 다른 색이 나오게
-  (function pickOrganza() {
-    const list = POUCH.organzaColors;
+  // 천·끈 색 짝 고르기: 바로 전에 본 짝은 피해서 새로고침할 때마다 다른 색이 나오게
+  (function pickColors() {
+    const list = POUCH.colorSets;
     let last = null;
     try { last = sessionStorage.getItem('pouchColor'); } catch (e) {}
-    const pool = list.length > 1 ? list.filter((c) => c !== last) : list;
-    POUCH.organza = pool[Math.floor(Math.random() * pool.length)];
-    try { sessionStorage.setItem('pouchColor', POUCH.organza); } catch (e) {}
+    const pool = list.length > 1 ? list.filter((s) => s.organza !== last) : list;
+    const set = pool[Math.floor(Math.random() * pool.length)];
+    POUCH.organza = set.organza;
+    POUCH.cord = set.cord;
+    try { sessionStorage.setItem('pouchColor', set.organza); } catch (e) {}
   })();
 
   const SITE = window.SITE, gsap = window.gsap, ScrollTrigger = window.ScrollTrigger;
@@ -385,6 +392,32 @@
     };
   }
 
+  /* ---------- 반복 애니메이션 : 천천히 열렸다가 빠르게 닫히기를 반복 ----------
+     페이지 맨 위에 있고 아무 조작이 없을 때 계속 반복됨.
+     스크롤·드래그·클릭하면 멈추고, 맨 위에서 손을 떼고 잠시 지나면 다시 시작.
+     숫자를 바꾸면 속도 조절 (초 단위) */
+  const LOOP = {
+    start: 0.6,      // 페이지에 들어와서 처음 열리기 시작할 때까지
+    open:  2.8,      // 열리는 시간 (천천히)
+    hold:  0.5,      // 다 열린 채로 머무는 시간
+    close: 2.8,      // 닫히는 시간 (열리는 시간과 같게)
+    rest:  1.2,      // 닫힌 뒤 다음 번 열릴 때까지 쉬는 시간
+    idle:  4,        // 조작을 멈춘 뒤 반복이 다시 시작될 때까지
+  };
+  let loopT = -1, lastTouch = -Infinity, lastNow = performance.now();
+  const touched = () => { lastTouch = performance.now() / 1000; };
+  function loopValue(t) {
+    let x = t - LOOP.start;
+    if (x < 0) return 0;
+    x %= LOOP.open + LOOP.hold + LOOP.close + LOOP.rest;
+    if (x < LOOP.open) return 0.5 - 0.5 * Math.cos(Math.PI * x / LOOP.open);   // 천천히 열림
+    x -= LOOP.open;
+    if (x < LOOP.hold) return 1;
+    x -= LOOP.hold;
+    if (x < LOOP.close) return 0.5 + 0.5 * Math.cos(Math.PI * x / LOOP.close); // 열릴 때와 같은 움직임으로 닫힘
+    return 0;
+  }
+
   let model = null, isPouch = false;
   function mount(m) {
     model = m;
@@ -421,6 +454,7 @@
   let drag = null;
   stage.addEventListener('pointerdown', (e) => {
     if (e.target.closest('a,button')) return;
+    touched();
     drag = { x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY, t: performance.now(), moved: 0, mouse: e.pointerType === 'mouse' };
   });
   addEventListener('pointermove', (e) => {
@@ -466,6 +500,7 @@
     ScrollTrigger.create({
       trigger: stage, start: 'top top', end: '+=360%', pin: true, scrub: true,
       onUpdate(self) {
+        if (self.progress > 0.005) touched();
         S.progT = self.progress;
         S.openT = openFromScroll(self.progress);
         showPanel(Math.min(panels.length - 1, Math.floor(self.progress * panels.length * 0.999)));
@@ -486,8 +521,23 @@
     requestAnimationFrame(frame);
     if (!running) return;
     const time = clock.getElapsedTime();
-    S.open = lerp(S.open, S.openT, 0.08);
-    if (Math.abs(S.open - S.openT) < 1e-4) S.open = S.openT;
+    // 반복 애니메이션: 맨 위 + 조작 없음 + 파우치 로드 완료일 때만
+    const nowMs = performance.now(), dt = Math.min(0.1, (nowMs - lastNow) / 1000);
+    lastNow = nowMs;
+    const canLoop = !SITE.reduce && model && !drag && S.progT < 0.005 && nowMs / 1000 - lastTouch > LOOP.idle;
+    if (!canLoop) loopT = -1;
+    else if (loopT < 0) {
+      // 다시 시작할 땐 먼저 닫힌 상태로 돌아간 뒤에 시작 (처음 들어올 때는 바로)
+      S.openT = 0;
+      if (S.open < 0.01) loopT = lastTouch === -Infinity ? 0 : LOOP.start;
+    }
+    if (loopT >= 0) {
+      loopT += dt;
+      S.open = S.openT = loopValue(loopT);
+    } else {
+      S.open = lerp(S.open, S.openT, 0.08);
+      if (Math.abs(S.open - S.openT) < 1e-4) S.open = S.openT;
+    }
     S.prog = lerp(S.prog, S.progT, 0.08);
     S.mx = lerp(S.mx, S.tmx, 0.05);
     S.my = lerp(S.my, S.tmy, 0.05);

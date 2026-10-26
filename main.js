@@ -37,6 +37,45 @@
     },
   };
 
+  /* ---------- 사이트 글 : text.txt 를 읽어 data-t 가 붙은 곳의 글을 바꿈 ----------
+     형식:  이름 = 내용   ( // 는 줄바꿈 )
+     text.txt 를 못 읽으면(더블클릭으로 연 경우 등) html 안의 원래 글이 그대로 보임 */
+  SITE.text = {};
+  function setText(el, v) {
+    el.textContent = '';
+    v.split('//').forEach((part, i) => {
+      if (i) el.appendChild(document.createElement('br'));
+      el.appendChild(document.createTextNode(part.trim()));
+    });
+  }
+  SITE.applyText = function (root) {
+    const T = SITE.text;
+    (root || document).querySelectorAll('[data-t]').forEach((el) => {
+      const v = T[el.dataset.t];
+      if (v == null) return;
+      setText(el, v);
+      if (el.hasAttribute('data-mail')) el.href = 'mailto:' + v;
+    });
+    (root || document).querySelectorAll('[data-href]').forEach((el) => {
+      const v = T[el.dataset.href];
+      if (v) el.href = v;
+    });
+  };
+  SITE.textReady = fetch('text.txt', { cache: 'no-store' })
+    .then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then((txt) => {
+      txt.split(/\r?\n/).forEach((line) => {
+        const l = line.trim();
+        if (!l || l[0] === '#' || l[0] === '[') return;
+        const eq = l.indexOf('=');
+        if (eq < 1) return;
+        SITE.text[l.slice(0, eq).trim()] = l.slice(eq + 1).trim();
+      });
+      SITE.applyText(document);
+      ScrollTrigger.refresh();
+    })
+    .catch(() => {});
+
   /* ---------- 현재 페이지 밑줄 ---------- */
   document.querySelectorAll('.bar a.u').forEach((a) => {
     if (a.getAttribute('href') === page + '.html') {
@@ -119,30 +158,9 @@
   });
   addEventListener('pageshow', (e) => { if (e.persisted) location.reload(); });
 
-  /* ---------- 호버 라벨 (마우스 기기만) : 작은 글자가 커서를 따라옴 ---------- */
-  if (fine && !reduce) {
-    const lab = document.createElement('div');
-    lab.className = 'hover-label';
-    body.appendChild(lab);
-    let x = 0, y = 0, tx = 0, ty = 0;
-    addEventListener('pointermove', (e) => { tx = e.clientX + 14; ty = e.clientY + 14; }, { passive: true });
-    gsap.ticker.add(() => {
-      x += (tx - x) * 0.18; y += (ty - y) * 0.18;
-      lab.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
-    });
-    document.addEventListener('pointerover', (e) => {
-      const t = e.target.closest('[data-cursor]');
-      if (t) { lab.textContent = t.dataset.cursor; lab.classList.add('is-on'); }
-    });
-    document.addEventListener('pointerout', (e) => {
-      const t = e.target.closest('[data-cursor]');
-      if (!t || (e.relatedTarget && t.contains(e.relatedTarget))) return;
-      lab.classList.remove('is-on');
-    });
-    SITE.hideLabel = () => lab.classList.remove('is-on');
-  } else {
-    SITE.hideLabel = () => {};
-  }
+  /* 커서를 따라다니던 글자(View, Open, Drag 등)는 사용하지 않음.
+     다른 페이지에서 부르는 함수라 빈 함수로만 남겨 둠. */
+  SITE.hideLabel = () => {};
 
   /* ---------- 선 긋기 · 리빌 ---------- */
   SITE.drawTicks = function (root) {

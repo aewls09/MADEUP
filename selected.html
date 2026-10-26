@@ -15,9 +15,10 @@
 
   <header class="bar" id="bar">
     <a class="bar__logo" href="index.html" aria-label="Home"><img src="m_logo.png" alt="M" onerror="this.outerHTML='<span>M</span>'"></a>
-    <a class="u" href="info.html">3D Product</a>
-    <a class="u" href="selected.html">Still Cut</a>
-    <a class="u" href="archive.html">About</a>
+    <!-- 메뉴 글자는 고유 폰트 이미지 (색은 로고와 항상 같음, 이미지가 없으면 글자로 표시) -->
+    <a class="u bar__word" href="info.html" aria-label="3D Product"><img src="Pouch.png" alt="Pouch" onerror="this.outerHTML='Pouch'"></a>
+    <a class="u bar__word" href="selected.html" aria-label="Still Cut"><img src="Photo.png" alt="Photo" onerror="this.outerHTML='Photo'"></a>
+    <a class="u bar__word" href="archive.html" aria-label="About"><img src="About.png" alt="About" onerror="this.outerHTML='About'"></a>
   </header>
 
   <main id="stack">
@@ -28,7 +29,7 @@
             <p class="k">(Still Cut)</p>
             <p class="num"><span class="k">(Works)</span> <span id="sel-count">06</span></p>
           </div>
-          <p>A short edit of stills and film. Scroll — each piece slides over the last.</p>
+          <p data-t="still.intro">A short edit of stills and film. Scroll — each piece slides over the last.</p>
         </div>
       </div>
       <div class="stack-item__shade"></div>
@@ -40,11 +41,11 @@
     <div class="foot__cols">
       <div class="foot__links">
         <a class="u" href="archive.html">Next — About</a>
-        <a class="u" href="mailto:hello@yourdomain.com">hello@yourdomain.com</a>
+        <a class="u" href="mailto:hello@yourdomain.com" data-t="email" data-mail>hello@yourdomain.com</a>
       </div>
-      <p data-reveal>한두 문장의 짧은 소개를 적어 주세요. Based in Seoul, working worldwide.</p>
+      <p data-reveal data-t="footer.intro">한두 문장의 짧은 소개를 적어 주세요. Based in Seoul, working worldwide.</p>
     </div>
-    <div class="foot__row"><span>© 2026</span></div>
+    <div class="foot__row"><span data-t="copyright">© 2026</span></div>
   </footer>
 
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Preview">
@@ -58,7 +59,8 @@
   <script src="main.js"></script>
   <script>
   /* =========================================================
-     작업 목록 — 파일명/제목/분류/연도만 바꾸면 됩니다.
+     작업 목록 — 파일명과 카드 색은 여기서 바꿉니다.
+     제목·분류·연도는 text.txt (work1.title 등)에서 바꾸면 그쪽이 우선입니다.
      파일은 이 html과 같은 폴더에 두세요. (png 5개 + mp4 1개)
      tone: mint | paper  (카드 배경색)
      ========================================================= */
@@ -87,9 +89,9 @@
         '<div class="stack-item__inner"><div class="card tick">' +
           '<div class="card__meta">' +
             '<span class="num"><span class="k">(No.)</span> ' + pad(i + 1) + '/' + pad(WORKS.length) + '</span>' +
-            '<span><span class="k">(Title)</span> ' + esc(w.title) + '</span>' +
-            '<span><span class="k">(Category)</span> ' + esc(w.cat) + '</span>' +
-            '<span class="num"><span class="k">(Year)</span> ' + esc(w.year) + '</span>' +
+            '<span><span class="k">(Title)</span> <span data-t="work' + (i + 1) + '.title">' + esc(w.title) + '</span></span>' +
+            '<span><span class="k">(Category)</span> <span data-t="work' + (i + 1) + '.category">' + esc(w.cat) + '</span></span>' +
+            '<span class="num"><span class="k">(Year)</span> <span data-t="work' + (i + 1) + '.year">' + esc(w.year) + '</span></span>' +
           '</div>' +
           '<figure class="card__frame" data-cursor="' + (isVideo ? 'Play' : 'View') + '"><div class="card__media">' + media + '</div></figure>' +
         '</div></div><div class="stack-item__shade"></div>';
@@ -97,6 +99,7 @@
     });
     SITE.watchMedia(stackEl);
     SITE.drawTicks(stackEl);
+    SITE.textReady.then(() => SITE.applyText(stackEl));
 
     // 화면에 보일 때만 영상 재생
     const io = new IntersectionObserver((ents) => ents.forEach((e) => {

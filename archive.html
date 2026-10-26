@@ -15,9 +15,10 @@
 
   <header class="bar" id="bar">
     <a class="bar__logo" href="index.html" aria-label="Home"><img src="m_logo.png" alt="M" onerror="this.outerHTML='<span>M</span>'"></a>
-    <a class="u" href="info.html">3D Product</a>
-    <a class="u" href="selected.html">Still Cut</a>
-    <a class="u" href="archive.html">About</a>
+    <!-- 메뉴 글자는 고유 폰트 이미지 (색은 로고와 항상 같음, 이미지가 없으면 글자로 표시) -->
+    <a class="u bar__word" href="info.html" aria-label="3D Product"><img src="Pouch.png" alt="Pouch" onerror="this.outerHTML='Pouch'"></a>
+    <a class="u bar__word" href="selected.html" aria-label="Still Cut"><img src="Photo.png" alt="Photo" onerror="this.outerHTML='Photo'"></a>
+    <a class="u bar__word" href="archive.html" aria-label="About"><img src="About.png" alt="About" onerror="this.outerHTML='About'"></a>
   </header>
 
   <main>
@@ -28,7 +29,7 @@
           <p class="k">(About)</p>
           <p class="num"><span class="k">(Entries)</span> <span id="arch-count">00</span></p>
         </div>
-        <p>From the first idea to the final mock-up. Select any line to open it.</p>
+        <p data-t="about.intro">From the first idea to the final mock-up. Select any line to open it.</p>
       </div>
     </section>
 
@@ -44,12 +45,12 @@
   <footer class="foot tick">
     <div class="foot__cols">
       <div class="foot__links">
-        <a class="u" href="mailto:hello@yourdomain.com">hello@yourdomain.com</a>
-        <a class="u" href="https://instagram.com/" target="_blank" rel="noopener">@instagram</a>
+        <a class="u" href="mailto:hello@yourdomain.com" data-t="email" data-mail>hello@yourdomain.com</a>
+        <a class="u" href="https://instagram.com/" target="_blank" rel="noopener" data-t="instagram" data-href="instagram.link">@instagram</a>
       </div>
-      <p data-reveal>한두 문장의 짧은 소개를 적어 주세요. Based in Seoul, working worldwide.</p>
+      <p data-reveal data-t="footer.intro">한두 문장의 짧은 소개를 적어 주세요. Based in Seoul, working worldwide.</p>
     </div>
-    <div class="foot__row"><span>© 2026</span></div>
+    <div class="foot__row"><span data-t="copyright">© 2026</span></div>
   </footer>
 
   <!-- 팝업 : 텍스트 + 사진 -->
