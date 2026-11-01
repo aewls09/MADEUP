@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="no-scroll">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ACE3D9">
-  <title>Still Cut</title>
+  <title>Story</title>
   <script>try{if(sessionStorage.getItem('pt'))document.documentElement.classList.add('pt-in')}catch(e){}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,137 +17,225 @@
     <a class="bar__logo" href="index.html" aria-label="Home"><img src="m_logo.png" alt="M" onerror="this.outerHTML='<span>M</span>'"></a>
     <!-- 메뉴 글자는 고유 폰트 이미지 (색은 로고와 항상 같음, 이미지가 없으면 글자로 표시) -->
     <a class="u bar__word" href="info.html" aria-label="3D Product"><img src="Pouch.png" alt="Pouch" onerror="this.outerHTML='Pouch'"></a>
-    <a class="u bar__word" href="selected.html" aria-label="Still Cut"><img src="Photo.png" alt="Photo" onerror="this.outerHTML='Photo'"></a>
+    <a class="u bar__word bar__word--desc" href="selected.html" aria-label="Story"><img src="Story.png" alt="Story" onerror="this.outerHTML='Story'"></a>
     <a class="u bar__word" href="archive.html" aria-label="About"><img src="About.png" alt="About" onerror="this.outerHTML='About'"></a>
   </header>
 
-  <main id="stack">
-    <section class="stack-item sel-intro">
-      <div class="stack-item__inner">
-        <div class="split">
-          <div>
-            <p class="k">(Still Cut)</p>
-            <p class="num"><span class="k">(Works)</span> <span id="sel-count">06</span></p>
-          </div>
-          <p data-t="still.intro">A short edit of stills and film. Scroll — each piece slides over the last.</p>
+  <!-- =========================================================
+       BRAND STORY — 사진 없이 글 중심
+       한 번 스크롤(또는 한 번 밀기)에 한 장씩 넘어갑니다.
+       글은 모두 text.txt 의 [Story] 부분에서 고칩니다.
+       ========================================================= -->
+  <main class="deck" id="deck" aria-live="polite">
+
+    <!-- 00 인트로 -->
+    <section class="slide" data-label="Intro">
+      <div class="slide__inner slide__inner--intro">
+        <p class="k">(Brand Story)</p>
+        <h1 class="slide__display" data-split data-t="story.title">Made up,<br>made yours.</h1>
+        <p class="slide__lead" data-fade data-t="story.lead">MADEUP은 감추기 위한 화장이 아니라, 스스로 만들어 가는 아름다움을 이야기합니다. 가방 속 작은 파우치에서 시작된 이야기입니다.</p>
+      </div>
+    </section>
+
+    <!-- 01~04 챕터 -->
+    <section class="slide" data-label="Origin">
+      <div class="slide__inner">
+        <div class="slide__top"><span class="slide__rule"></span>
+          <span class="num"><span class="k">(Chapter)</span> 01</span>
+          <span data-t="story.1.label">Origin</span>
+        </div>
+        <div class="slide__text">
+          <h2 class="slide__head" data-split data-t="story.1.head">It began with a bag full of small things.</h2>
+          <p class="slide__body" data-fade data-t="story.1.text">립스틱 하나, 작은 거울 하나, 오늘의 기분 하나. 가방 속에서 늘 흩어지던 물건들을 바라보다 MADEUP을 시작했습니다. (더미 텍스트입니다. 실제 브랜드 이야기로 바꿔 주세요.)</p>
         </div>
       </div>
-      <div class="stack-item__shade"></div>
     </section>
-    <!-- 작업 카드는 아래 WORKS 목록에서 자동 생성 -->
+
+    <section class="slide" data-label="Philosophy">
+      <div class="slide__inner">
+        <div class="slide__top"><span class="slide__rule"></span>
+          <span class="num"><span class="k">(Chapter)</span> 02</span>
+          <span data-t="story.2.label">Philosophy</span>
+        </div>
+        <div class="slide__text">
+          <h2 class="slide__head" data-split data-t="story.2.head">Beauty isn’t covered up. It is made up, every day.</h2>
+          <p class="slide__body" data-fade data-t="story.2.text">‘Make up’에는 ‘꾸며내다’와 ‘만들어 가다’라는 두 가지 뜻이 있습니다. 우리는 두 번째 뜻을 믿습니다. 매일 아침의 짧은 의식이 하루를 만드는 방식에 대해 이야기합니다. (더미 텍스트)</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-label="Material">
+      <div class="slide__inner">
+        <div class="slide__top"><span class="slide__rule"></span>
+          <span class="num"><span class="k">(Chapter)</span> 03</span>
+          <span data-t="story.3.label">Material</span>
+        </div>
+        <div class="slide__text">
+          <h2 class="slide__head" data-split data-t="story.3.head">Sheer organza, soft satin — nothing to hide.</h2>
+          <p class="slide__body" data-fade data-t="story.3.text">속이 비치는 오간자는 담긴 것을 숨기지 않고, 안쪽의 새틴은 그것을 부드럽게 감쌉니다. 가볍지만 가볍게 만들지 않은 소재를 고릅니다. (더미 텍스트)</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-label="Promise">
+      <div class="slide__inner">
+        <div class="slide__top"><span class="slide__rule"></span>
+          <span class="num"><span class="k">(Chapter)</span> 04</span>
+          <span data-t="story.4.label">Promise</span>
+        </div>
+        <div class="slide__text">
+          <h2 class="slide__head" data-split data-t="story.4.head">Something you carry, something that carries you.</h2>
+          <p class="slide__body" data-fade data-t="story.4.text">오래 들고 다녀도 질리지 않는 물건, 꺼낼 때마다 기분이 조금 좋아지는 물건을 만듭니다. 그것이 MADEUP의 약속입니다. (더미 텍스트)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 브랜드 문장 + 마무리 -->
+    <section class="slide" data-label="Manifesto">
+      <div class="slide__inner">
+        <div class="slide__top"><span class="slide__rule"></span>
+          <span class="k">(Manifesto)</span>
+        </div>
+        <div class="slide__text">
+          <p class="slide__head slide__head--words" data-words data-t="story.manifesto">We make things to be opened, used and carried — light enough to forget, considered enough to remember. Made up, made yours.</p>
+          <p class="slide__sign" data-fade><span class="k">—</span> <span data-t="story.sign">MADEUP, Seoul 2026</span></p>
+          <div class="slide__end" data-fade>
+            <a class="u" href="archive.html">Next — About</a>
+            <a class="u" href="mailto:hello@yourdomain.com" data-t="email" data-mail>hello@yourdomain.com</a>
+            <span data-t="copyright">© 2026</span>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="foot tick">
-    <div class="foot__cols">
-      <div class="foot__links">
-        <a class="u" href="archive.html">Next — About</a>
-        <a class="u" href="mailto:hello@yourdomain.com" data-t="email" data-mail>hello@yourdomain.com</a>
-      </div>
-      <p data-reveal data-t="footer.intro">한두 문장의 짧은 소개를 적어 주세요. Based in Seoul, working worldwide.</p>
-    </div>
-    <div class="foot__row"><span data-t="copyright">© 2026</span></div>
-  </footer>
-
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Preview">
-    <button class="lightbox__close u" type="button">Close</button>
-    <div class="lightbox__body"></div>
-  </div>
+  <!-- 진행 표시 : 아래쪽 한 줄 -->
+  <nav class="deck-ui" aria-label="Story navigation">
+    <span class="num"><span id="deck-no">01</span>/<span id="deck-total">06</span> <span class="deck-ui__label" id="deck-label">Intro</span></span>
+    <button class="u" type="button" id="deck-next">Next</button>
+    <span class="deck-ui__line"><span id="deck-bar"></span></span>
+  </nav>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="main.js"></script>
   <script>
-  /* =========================================================
-     작업 목록 — 파일명과 카드 색은 여기서 바꿉니다.
-     제목·분류·연도는 text.txt (work1.title 등)에서 바꾸면 그쪽이 우선입니다.
-     파일은 이 html과 같은 폴더에 두세요. (png 5개 + mp4 1개)
-     tone: mint | paper  (카드 배경색)
-     ========================================================= */
-  const WORKS = [
-    { file: 'work-01.png', title: 'Project One',   cat: 'Brand Identity', year: '2026', tone: 'mint' },
-    { file: 'work-02.png', title: 'Project Two',   cat: 'Art Direction',  year: '2026', tone: 'mint' },
-    { file: 'work-03.png', title: 'Project Three', cat: 'Campaign',       year: '2025', tone: 'mint' },
-    { file: 'work-04.png', title: 'Project Four',  cat: 'Editorial',      year: '2025', tone: 'mint' },
-    { file: 'work-05.png', title: 'Project Five',  cat: 'Packaging',      year: '2024', tone: 'mint' },
-    { file: 'work-06.mp4', title: 'Project Six',   cat: 'Motion',         year: '2024', tone: 'mint' },
-  ];
-
   (function () {
-    const esc = SITE.esc, stackEl = document.getElementById('stack');
+    SITE.lenis && SITE.lenis.stop();             // 이 페이지는 스크롤 대신 한 장씩 넘김
+    const slides = gsap.utils.toArray('.slide');
+    const total = slides.length;
     const pad = (n) => String(n).padStart(2, '0');
-    document.getElementById('sel-count').textContent = pad(WORKS.length);
+    const noEl = document.getElementById('deck-no'), labelEl = document.getElementById('deck-label');
+    const nextBtn = document.getElementById('deck-next'), barEl = document.getElementById('deck-bar');
+    document.getElementById('deck-total').textContent = pad(total);
+    const reduce = SITE.reduce;
+    let current = 0, busy = false, z = 10;
 
-    WORKS.forEach((w, i) => {
-      const isVideo = /\.(mp4|webm|mov)$/i.test(w.file);
-      const media = isVideo
-        ? '<video src="' + esc(w.file) + '" muted loop playsinline preload="metadata" data-fallback="' + esc(w.file) + '"></video>'
-        : '<img src="' + esc(w.file) + '" alt="' + esc(w.title) + '" loading="' + (i < 2 ? 'eager' : 'lazy') + '" decoding="async" data-fallback="' + esc(w.file) + '">';
-      const el = document.createElement('section');
-      el.className = 'stack-item tone-' + (w.tone || 'mint');
-      el.innerHTML =
-        '<div class="stack-item__inner"><div class="card tick">' +
-          '<div class="card__meta">' +
-            '<span class="num"><span class="k">(No.)</span> ' + pad(i + 1) + '/' + pad(WORKS.length) + '</span>' +
-            '<span><span class="k">(Title)</span> <span data-t="work' + (i + 1) + '.title">' + esc(w.title) + '</span></span>' +
-            '<span><span class="k">(Category)</span> <span data-t="work' + (i + 1) + '.category">' + esc(w.cat) + '</span></span>' +
-            '<span class="num"><span class="k">(Year)</span> <span data-t="work' + (i + 1) + '.year">' + esc(w.year) + '</span></span>' +
-          '</div>' +
-          '<figure class="card__frame" data-cursor="' + (isVideo ? 'Play' : 'View') + '"><div class="card__media">' + media + '</div></figure>' +
-        '</div></div><div class="stack-item__shade"></div>';
-      stackEl.appendChild(el);
-    });
-    SITE.watchMedia(stackEl);
-    SITE.drawTicks(stackEl);
-    SITE.textReady.then(() => SITE.applyText(stackEl));
-
-    // 화면에 보일 때만 영상 재생
-    const io = new IntersectionObserver((ents) => ents.forEach((e) => {
-      const v = e.target; if (e.isIntersecting) v.play().catch(() => {}); else v.pause();
-    }), { threshold: 0.25 });
-    stackEl.querySelectorAll('video').forEach((v) => io.observe(v));
-
-    /* ---------- 스택 핀 : 다음 장이 이전 장을 천천히 덮음 ---------- */
-    const items = gsap.utils.toArray('.stack-item');
-    const last = items[items.length - 1];
-    if (!SITE.reduce) {
-      items.forEach((item, i) => {
-        if (i < items.length - 1) {
-          ScrollTrigger.create({ trigger: item, start: 'top top', endTrigger: last, end: 'top top', pin: true, pinSpacing: false });
-          const next = items[i + 1];
-          gsap.timeline({ scrollTrigger: { trigger: next, start: 'top bottom', end: 'top top', scrub: true } })
-            .to(item.querySelector('.stack-item__inner'), { scale: 0.96, ease: 'none' }, 0)
-            .to(item.querySelector('.stack-item__shade'), { opacity: 0.3, ease: 'none' }, 0);
-        }
-        const m = item.querySelector('.card__media');
-        if (m) gsap.fromTo(m, { scale: 1.08 }, { scale: 1, ease: 'none',
-          scrollTrigger: { trigger: item, start: 'top bottom', end: 'top top', scrub: true } });
+    /* ---------- 글자 나누기 : 단어마다 가림막을 씌워 아래에서 올라오게 ---------- */
+    function prepare() {
+      document.querySelectorAll('[data-split]').forEach((el) => {
+        const parts = el.innerHTML.split(/<br\s*\/?>/i);
+        el.innerHTML = parts.map((p) => {
+          const tmp = document.createElement('div'); tmp.innerHTML = p;
+          return tmp.textContent.trim().split(/\s+/).filter(Boolean).map((w) =>
+            '<span class="mw"><span class="mw__in">' + SITE.esc(w) + '</span></span>').join(' ');
+        }).join('<br>');
       });
+      document.querySelectorAll('[data-words]').forEach((el) => SITE.splitWords(el));
     }
 
-    /* ---------- 크게 보기 ---------- */
-    const lb = document.getElementById('lightbox'), lbBody = lb.querySelector('.lightbox__body');
-    function open(frame) {
-      const src = frame.querySelector('img, video');
-      if (!src) return;
-      const clone = src.tagName === 'VIDEO'
-        ? Object.assign(document.createElement('video'), { src: src.currentSrc || src.src, controls: true, autoplay: true, loop: true, playsInline: true })
-        : Object.assign(document.createElement('img'), { src: src.currentSrc || src.src, alt: src.alt });
-      lbBody.replaceChildren(clone);
-      lb.classList.add('is-open');
-      SITE.hideLabel();
-      SITE.lenis && SITE.lenis.stop();
+    function setUI(i) {
+      noEl.textContent = pad(i + 1);
+      labelEl.textContent = slides[i].dataset.label || '';
+      nextBtn.textContent = i === total - 1 ? 'Back to top' : 'Next';
+      gsap.to(barEl, { scaleX: (i + 1) / total, duration: reduce ? 0 : 0.9, ease: 'power2.inOut' });
     }
-    function close() {
-      lb.classList.remove('is-open');
-      setTimeout(() => lbBody.replaceChildren(), 600);
-      SITE.lenis && SITE.lenis.start();
-    }
-    stackEl.addEventListener('click', (e) => { const f = e.target.closest('.card__frame'); if (f) open(f); });
-    lb.addEventListener('click', (e) => { if (!e.target.closest('video')) close(); });
-    addEventListener('keydown', (e) => { if (e.key === 'Escape' && lb.classList.contains('is-open')) close(); });
 
-    ScrollTrigger.refresh();
+    /* 한 장의 글이 나타나는 순서 : 선 → 큰 글(단어마다 위로) → 본문 */
+    function reveal(slide) {
+      const tl = gsap.timeline();
+      const rule = slide.querySelector('.slide__rule');
+      const words = slide.querySelectorAll('.mw__in');
+      const dim = slide.querySelectorAll('[data-words] .w');
+      const fades = slide.querySelectorAll('[data-fade], .slide__top > :not(.slide__rule), .slide__inner--intro > .k');
+      if (rule) tl.fromTo(rule, { scaleX: 0 }, { scaleX: 1, duration: 1.1, ease: 'power2.inOut' }, 0);
+      if (words.length) tl.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1, ease: 'power3.out', stagger: 0.035 }, 0.1);
+      if (dim.length) tl.fromTo(dim, { opacity: 0.12 }, { opacity: 1, duration: 0.5, ease: 'none', stagger: 0.06 }, 0.15);
+      tl.fromTo(fades, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out', stagger: 0.08 }, words.length ? 0.45 : 0.3);
+      return tl;
+    }
+
+    /* ---------- 넘기기 : 다음 장이 아래에서 덮으며 올라옴 / 이전 장은 아래로 걷힘 ---------- */
+    function go(target) {
+      if (busy || target === current || target < 0 || target >= total) return;
+      const from = slides[current], to = slides[target], dir = target > current ? 1 : -1;
+      busy = true;
+      current = target;
+      setUI(target);
+      if (reduce) {
+        gsap.set(from, { autoAlpha: 0 }); gsap.set(to, { autoAlpha: 1, yPercent: 0 });
+        busy = false; return;
+      }
+      const fromInner = from.querySelector('.slide__inner'), toInner = to.querySelector('.slide__inner');
+      // 화면 이동(약 1초)이 끝나면 바로 다음 입력을 받음 — 글자 연출은 따로 이어서 재생
+      const tl = gsap.timeline({ onComplete: quietWait });
+      if (dir > 0) {
+        gsap.set(to, { zIndex: ++z, autoAlpha: 1, yPercent: 100 });
+        tl.to(to, { yPercent: 0, duration: 1.05, ease: 'power3.inOut' }, 0)
+          .to(fromInner, { yPercent: -6, opacity: 0, duration: 0.9, ease: 'power2.inOut' }, 0)
+          .set(from, { autoAlpha: 0 })
+          .set(fromInner, { yPercent: 0, opacity: 1 });
+      } else {
+        gsap.set(from, { zIndex: ++z });
+        gsap.set(to, { zIndex: z - 1, autoAlpha: 1, yPercent: 0 });
+        tl.to(from, { yPercent: 100, duration: 1.05, ease: 'power3.inOut' }, 0)
+          .fromTo(toInner, { yPercent: -6, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1, ease: 'power2.out' }, 0.2)
+          .set(from, { autoAlpha: 0, yPercent: 0 });
+      }
+      reveal(to).delay(dir > 0 ? 0.55 : 0.35);
+    }
+
+    /* 트랙패드처럼 관성으로 계속 들어오는 휠 신호가 멈출 때까지 기다렸다가 다음 입력을 받음
+       → 한 번 쓸어 넘기면 정확히 한 장만 넘어감 */
+    let lastWheel = 0;
+    function quietWait() {
+      const check = () => (performance.now() - lastWheel > 220 ? (busy = false) : setTimeout(check, 60));
+      check();
+    }
+    addEventListener('wheel', (e) => {
+      e.preventDefault();
+      lastWheel = performance.now();
+      if (busy || Math.abs(e.deltaY) < 12) return;
+      go(current + (e.deltaY > 0 ? 1 : -1));
+    }, { passive: false });
+
+    // 휴대폰 : 위로 밀면 다음, 아래로 밀면 이전
+    let ty = 0, tx = 0;
+    addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; tx = e.touches[0].clientX; }, { passive: true });
+    addEventListener('touchmove', (e) => { if (!e.target.closest('a,button')) e.preventDefault(); }, { passive: false });
+    addEventListener('touchend', (e) => {
+      const dy = ty - e.changedTouches[0].clientY, dx = tx - e.changedTouches[0].clientX;
+      if (Math.abs(dy) > 40 && Math.abs(dy) > Math.abs(dx)) go(current + (dy > 0 ? 1 : -1));
+    }, { passive: true });
+
+    addEventListener('keydown', (e) => {
+      const onCtrl = e.target.closest && e.target.closest('a,button');
+      if (['ArrowDown', 'PageDown', ' '].includes(e.key) && !onCtrl) { e.preventDefault(); go(current + 1); }
+      if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(current - 1); }
+      if (e.key === 'Home') go(0);
+      if (e.key === 'End') go(total - 1);
+    });
+    nextBtn.addEventListener('click', () => go(current === total - 1 ? 0 : current + 1));
+
+    /* ---------- 시작 : text.txt 글이 들어온 뒤 글자를 나누고 첫 장을 보여줌 ---------- */
+    gsap.set(slides, { autoAlpha: 0 });
+    SITE.textReady.then(() => {
+      prepare();
+      gsap.set(slides[0], { autoAlpha: 1, zIndex: z });
+      setUI(0);
+      if (!reduce) reveal(slides[0]).delay(0.25);
+    });
   })();
   </script>
 </body>

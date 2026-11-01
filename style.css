@@ -87,6 +87,10 @@ p{ max-width:62ch; }
 .bar__word img{ height:18px; width:auto; }
 @media (min-width:760px){ .bar__word img{ height:22px; } }
 .bar__word.u::after{ bottom:-5px; }
+/* Story.png 처럼 아래로 내려가는 글자(y)가 있는 이미지 :
+   글자 크기와 기준선이 Pouch·About과 같아 보이도록 조금 키우고 아래로 내림 */
+.bar__word--desc img{ height:calc(18px * 1.105); transform:translateY(calc(18px * .149)); }
+@media (min-width:760px){ .bar__word--desc img{ height:calc(22px * 1.105); transform:translateY(calc(22px * .149)); } }
 
 /* =========================================================
    전환 · 호버 라벨
@@ -241,6 +245,57 @@ body[data-page="info"] .foot{ color:var(--paper); }
 .lightbox.is-open{ opacity:1; visibility:visible; }
 .lightbox img, .lightbox video{ max-width:100%; max-height:calc(100svh - var(--bar-h) - var(--pad) * 2); object-fit:contain; }
 .lightbox__close{ position:absolute; top:var(--pad); right:var(--pad); }
+
+/* =========================================================
+   STORY — 브랜드 스토리 (selected.html)
+   사진 없이 글 중심. 한 화면씩 넘기는 구성 (스크롤 대신 한 번에 한 장)
+   ========================================================= */
+.deck{ position:fixed; inset:0; overflow:hidden; }
+.slide{ position:absolute; inset:0; background:var(--mint); visibility:hidden; will-change:transform; }
+.slide__inner{
+  position:absolute; inset:0;
+  padding:calc(var(--bar-h) + 20px) var(--pad) calc(var(--pad) * 2 + 36px + env(safe-area-inset-bottom));
+  display:flex; flex-direction:column; justify-content:space-between; gap:32px;
+}
+.slide__inner--intro{ justify-content:flex-end; gap:24px; }
+.slide__display{ font-size:clamp(48px,14vw,168px); font-weight:300; line-height:.98; letter-spacing:-.045em; }
+.slide__lead{ max-width:40ch; word-break:keep-all; }
+
+.slide__top{ position:relative; display:flex; flex-direction:column; padding:13px 40px 0 0; }
+.slide__rule{
+  position:absolute; left:0; right:0; top:0; height:28px; pointer-events:none;
+  border-top:1px solid currentColor; border-right:1px solid currentColor; transform-origin:left;
+}
+.slide__text{ display:grid; gap:24px; }
+.slide__head{ font-size:clamp(32px,8.4vw,88px); font-weight:300; line-height:1.04; letter-spacing:-.035em; max-width:16ch; }
+.slide__head--words{ font-size:clamp(26px,6.4vw,60px); line-height:1.12; max-width:22ch; }
+.slide__head--words .w{ display:inline-block; }
+.slide__body{ max-width:42ch; word-break:keep-all; }
+.slide__end{ display:flex; flex-wrap:wrap; gap:6px 24px; padding-top:8px; }
+
+/* 단어 가림막 : 글자가 아래에서 위로 올라오며 나타남 */
+.mw{ display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.1em; margin-bottom:-.1em; }
+.mw__in{ display:inline-block; will-change:transform; }
+
+@media (min-width:760px){
+  .slide__text{ grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); column-gap:55px; align-items:end; }
+  .slide__head{ grid-column:1; }
+  .slide__body{ grid-column:2; padding-bottom:.5em; }
+  .slide__head--words, .slide__sign, .slide__end{ grid-column:1 / -1; }
+}
+
+/* 아래쪽 진행 표시 */
+.deck-ui{
+  position:fixed; z-index:50; left:var(--pad); right:var(--pad);
+  bottom:calc(var(--pad) + env(safe-area-inset-bottom));
+  display:flex; justify-content:space-between; align-items:center;
+}
+.deck-ui__label{ margin-left:10px; opacity:.55; }
+.deck-ui__line{ position:absolute; left:0; right:0; top:-14px; height:1px; background:rgba(26,11,9,.15); }
+#deck-bar{ display:block; height:100%; background:var(--ink); transform-origin:left; transform:scaleX(0); }
+
+/* 메인 : 스크롤 없는 한 화면 */
+html.no-scroll, html.no-scroll body{ height:100%; overflow:hidden; overscroll-behavior:none; }
 
 /* =========================================================
    ABOUT (archive.html)

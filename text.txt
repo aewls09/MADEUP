@@ -16,18 +16,10 @@ instagram.link = https://instagram.com/
 footer.intro = 2026학년도 명지전문대 커뮤니케이션디자인과 졸업전시회 콘텐츠캡스톤디자인 102팀 MADEUP.
 copyright = © 2026
 
-[메인 (index.html)]
+[메인 (index.html) · 스크롤 없는 한 화면, 아래 한 줄]
 home.caption = Brand Film
 home.city = Seoul
 home.year = 2026
-home.statement = A practice built on motion, rhythm and restraint — images that move so you don’t have to. Framed with care, left quiet on purpose. 
-
-page1.name = 3D Product
-page1.note = Turn it, open it, look closer
-page2.name = Still Cut
-page2.note = Still Cuts & Branding 
-page3.name = About
-page3.note = Story, keywords, moodboards, mock-up
 
 [Pouch · 3D Product (info.html)]
 pouch.1.title = (01) MADEUP Pouch
@@ -45,27 +37,29 @@ pouch.4.title = (04) Close
 pouch.4.text = 마우스 클릭으로도 빠르게 열고 닫을 수 있습니다.
 pouch.hint = Drag, Scroll, Tap
 
-[Photo · Still Cut (selected.html)]
-still.intro = A short edit of stills and film. Scroll — each piece slides over the last.
+[Story · 브랜드 스토리 (selected.html)]
+# 아래는 모두 더미 텍스트입니다. 실제 브랜드 이야기로 바꿔 주세요.
+story.title = Made up, // made yours.
+story.lead = MADEUP은 감추기 위한 화장이 아니라, 스스로 만들어 가는 아름다움을 이야기합니다. 가방 속 작은 파우치에서 시작된 이야기입니다.
 
-work1.title = Project One
-work1.category = Brand Identity
-work1.year = 2026
-work2.title = Project Two
-work2.category = Art Direction
-work2.year = 2026
-work3.title = Project Three
-work3.category = Campaign
-work3.year = 2025
-work4.title = Project Four
-work4.category = Editorial
-work4.year = 2025
-work5.title = Project Five
-work5.category = Packaging
-work5.year = 2024
-work6.title = Project Six
-work6.category = Motion
-work6.year = 2024
+story.1.label = Origin
+story.1.head = It began with a bag full of small things.
+story.1.text = 립스틱 하나, 작은 거울 하나, 오늘의 기분 하나. 가방 속에서 늘 흩어지던 물건들을 바라보다 MADEUP을 시작했습니다. (더미 텍스트입니다. 실제 브랜드 이야기로 바꿔 주세요.)
+
+story.2.label = Philosophy
+story.2.head = Beauty isn’t covered up. It is made up, every day.
+story.2.text = ‘Make up’에는 ‘꾸며내다’와 ‘만들어 가다’라는 두 가지 뜻이 있습니다. 우리는 두 번째 뜻을 믿습니다. 매일 아침의 짧은 의식이 하루를 만드는 방식에 대해 이야기합니다. (더미 텍스트)
+
+story.3.label = Material
+story.3.head = Sheer organza, soft satin — nothing to hide.
+story.3.text = 속이 비치는 오간자는 담긴 것을 숨기지 않고, 안쪽의 새틴은 그것을 부드럽게 감쌉니다. 가볍지만 가볍게 만들지 않은 소재를 고릅니다. (더미 텍스트)
+
+story.4.label = Promise
+story.4.head = Something you carry, something that carries you.
+story.4.text = 오래 들고 다녀도 질리지 않는 물건, 꺼낼 때마다 기분이 조금 좋아지는 물건을 만듭니다. 그것이 MADEUP의 약속입니다. (더미 텍스트)
+
+story.manifesto = We make things to be opened, used and carried — light enough to forget, considered enough to remember. Made up, made yours.
+story.sign = MADEUP, Seoul 2026
 
 [About (archive.html)]
 about.intro = From the first idea to the final mock-up. Select any line to open it.
