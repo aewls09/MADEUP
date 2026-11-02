@@ -126,6 +126,8 @@ body[data-page="info"] .veil{ background:var(--ink); }
   display:flex; justify-content:space-between; gap:16px;
 }
 .hero__foot{ bottom:calc(var(--pad) + env(safe-area-inset-bottom)); color:var(--paper); }
+.hero__right{ display:inline-flex; gap:24px; align-items:baseline; }
+.sound[hidden]{ display:none; }
 .hero__cap{ top:calc(80% + 12px); opacity:0; }
 
 .statement{ height:100svh; align-content:center; }

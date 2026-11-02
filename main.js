@@ -99,7 +99,9 @@
       else img.addEventListener('error', () => toPlaceholder(img));
     });
     (root || document).querySelectorAll('video[data-fallback]').forEach((v) => {
-      if (v.error || v.networkState === 3) return toPlaceholder(v);
+      // 진짜 불러오기 실패(error)일 때만 자리표시로 바꿈
+      // (불러오기 시작 직전에는 브라우저가 잠깐 '소스 없음' 상태를 보고하므로 그 값은 보지 않음)
+      if (v.error) return toPlaceholder(v);
       v.addEventListener('error', () => toPlaceholder(v));
       if (v.autoplay) {
         v.muted = true;
