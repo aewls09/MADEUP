@@ -31,7 +31,11 @@
       </div>
       <div class="hero__foot">
         <span><span class="k">(<span data-t="home.caption">Brand Film</span>)</span> <span class="num"><span data-t="home.city">Seoul</span> <span data-t="home.year">2026</span></span></span>
-        <span data-t="copyright">© 2026</span>
+        <span class="hero__right">
+          <!-- 소리 켜기/끄기 : 브라우저가 첫 클릭 전에는 소리를 막으므로, 막히면 첫 클릭·터치 때 켜짐 -->
+          <button class="u sound" type="button" id="sound" aria-pressed="false" hidden>Sound On</button>
+          <span data-t="copyright">© 2026</span>
+        </span>
       </div>
     </section>
   </main>
@@ -49,6 +53,57 @@
       place();
       addEventListener('resize', place);
       if (!SITE.reduce) gsap.from('.hero__foot', { opacity: 0, duration: 1.2, ease: 'power2.out', delay: 0.4 });
+
+      /* ---------- 배경 영상 소리 ----------
+         · 브라우저가 허락하면(이 사이트를 이미 클릭한 적 있는 경우 등) 들어오자마자 소리가 남
+         · 허락하지 않으면 소리 없이 재생하다가, 첫 클릭·터치·키 입력 때 소리가 부드럽게 켜짐
+         · 오른쪽 아래 Sound On / Sound Off 로 직접 켜고 끔 (끈 상태는 다시 와도 유지) */
+      const v = document.querySelector('.hero__media video');
+      const btn = document.getElementById('sound');
+      if (!v || !btn) return;
+      btn.hidden = false;
+      const store = { get: () => { try { return sessionStorage.getItem('sound'); } catch (e) { return null; } },
+                      set: (x) => { try { sessionStorage.setItem('sound', x); } catch (e) {} } };
+      const ui = (on) => { btn.textContent = on ? 'Sound Off' : 'Sound On'; btn.setAttribute('aria-pressed', on); };
+      const fade = (to, d, done) => gsap.to(v, { volume: to, duration: d, ease: 'power1.inOut', overwrite: true, onComplete: done });
+
+      function soundOn() {
+        v.muted = false;
+        v.volume = 0;
+        const p = v.play();
+        (p && p.then ? p : Promise.resolve())
+          .then(() => { fade(1, 1.5); ui(true); })
+          .catch(() => { v.muted = true; v.play().catch(() => {}); ui(false); armFirstTouch(); });
+      }
+      function soundOff() { fade(0, 0.5, () => { v.muted = true; }); ui(false); }
+
+      // 첫 사용자 동작에 소리 켜기 (소리 버튼 자체를 누른 경우는 버튼이 처리)
+      let armed = false;
+      const evs = ['pointerdown', 'keydown', 'touchend'];
+      function onFirst(e) {
+        if (e.target.closest && e.target.closest('#sound')) return;
+        evs.forEach((n) => removeEventListener(n, onFirst, true));
+        armed = false;
+        if (store.get() !== 'off') soundOn();
+      }
+      function armFirstTouch() {
+        if (armed) return; armed = true;
+        evs.forEach((n) => addEventListener(n, onFirst, true));
+      }
+
+      btn.addEventListener('click', () => {
+        if (v.muted || v.paused) { store.set('on'); soundOn(); }
+        else { store.set('off'); soundOff(); }
+      });
+
+      // 다른 페이지로 넘어갈 때 소리를 조용히 줄임
+      document.addEventListener('click', (e) => {
+        const a = e.target.closest('a[href$=".html"]');
+        if (a && !v.muted) fade(0, 0.6);
+      });
+
+      ui(false);
+      if (store.get() !== 'off') soundOn();   // 바로 소리 내기 시도 → 막히면 첫 클릭을 기다림
     })();
   </script>
 </body>
