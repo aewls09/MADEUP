@@ -3,13 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ACE3D9">
+  <meta name="theme-color" content="#6DC7E6">
   <title>Story</title>
   <script>try{if(sessionStorage.getItem('pt'))document.documentElement.classList.add('pt-in')}catch(e){}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- 라인아트 이미지를 미리 받아 둠 -->
+  <link rel="preload" as="image" href="red.png"><link rel="preload" as="image" href="green.png">
+  <link rel="preload" as="image" href="blue.png"><link rel="preload" as="image" href="pink.png">
 </head>
 <body data-page="selected">
 
@@ -22,96 +25,56 @@
   </header>
 
   <!-- =========================================================
-       BRAND STORY — 사진 없이 글 중심
-       한 번 스크롤(또는 한 번 밀기)에 한 장씩 넘어갑니다.
-       글은 모두 text.txt 의 [Story] 부분에서 고칩니다.
+       STORY — 4 파트
+       · 한 번 스크롤(또는 한 번 밀기)에 한 파트씩 넘어감
+       · 넘길 때 지금 선이 왼쪽→오른쪽으로 지워지고, 배경색이 바뀐 뒤
+         다음 선이 화면 왼쪽 끝(0vw)에서 오른쪽 끝(100vw)까지 한붓그리기로 그려짐
+       · 배경색 : data-bg / 라인아트 : data-line (red · green · blue · pink)
+       · 그리는 방향 : 기본은 왼쪽→오른쪽, data-dir="rtl" 이면 오른쪽→왼쪽 (지금 Part 2 · 4)
+       · 글 : text.txt 의 [Story] 부분
        ========================================================= -->
-  <main class="deck" id="deck" aria-live="polite">
+  <main class="parts" id="parts">
 
-    <!-- 00 인트로 -->
-    <section class="slide" data-label="Intro">
-      <div class="slide__inner slide__inner--intro">
-        <p class="k">(Brand Story)</p>
-        <h1 class="slide__display" data-split data-t="story.title">Made up,<br>made yours.</h1>
-        <p class="slide__lead" data-fade data-t="story.lead">MADEUP은 감추기 위한 화장이 아니라, 스스로 만들어 가는 아름다움을 이야기합니다. 가방 속 작은 파우치에서 시작된 이야기입니다.</p>
+    <section class="part" data-bg="#6DC7E6" data-line="red" data-label="Origin">
+      <div class="part__top">
+        <p class="part__meta"><span class="num"><span class="k">(Part)</span> 01/04</span> <span data-t="story.1.label">Origin</span></p>
+        <h2 class="part__head" data-split data-t="story.1.head">It began with a bag full of small things.</h2>
       </div>
+      <div class="part__art" aria-hidden="true"></div>
+      <p class="part__body" data-t="story.1.text">립스틱 하나, 작은 거울 하나, 오늘의 기분 하나. 가방 속에서 늘 흩어지던 물건들을 바라보다 MADEUP을 시작했습니다. (더미 텍스트입니다. 실제 브랜드 이야기로 바꿔 주세요.)</p>
     </section>
 
-    <!-- 01~04 챕터 -->
-    <section class="slide" data-label="Origin">
-      <div class="slide__inner">
-        <div class="slide__top"><span class="slide__rule"></span>
-          <span class="num"><span class="k">(Chapter)</span> 01</span>
-          <span data-t="story.1.label">Origin</span>
-        </div>
-        <div class="slide__text">
-          <h2 class="slide__head" data-split data-t="story.1.head">It began with a bag full of small things.</h2>
-          <p class="slide__body" data-fade data-t="story.1.text">립스틱 하나, 작은 거울 하나, 오늘의 기분 하나. 가방 속에서 늘 흩어지던 물건들을 바라보다 MADEUP을 시작했습니다. (더미 텍스트입니다. 실제 브랜드 이야기로 바꿔 주세요.)</p>
-        </div>
+    <section class="part" data-bg="#FFA594" data-line="green" data-label="Philosophy" data-dir="rtl">
+      <div class="part__top">
+        <p class="part__meta"><span class="num"><span class="k">(Part)</span> 02/04</span> <span data-t="story.2.label">Philosophy</span></p>
+        <h2 class="part__head" data-split data-t="story.2.head">Beauty isn’t covered up. It is made up, every day.</h2>
       </div>
+      <div class="part__art" aria-hidden="true"></div>
+      <p class="part__body" data-t="story.2.text">‘Make up’에는 ‘꾸며내다’와 ‘만들어 가다’라는 두 가지 뜻이 있습니다. 우리는 두 번째 뜻을 믿습니다. 매일 아침의 짧은 의식이 하루를 만드는 방식에 대해 이야기합니다. (더미 텍스트)</p>
     </section>
 
-    <section class="slide" data-label="Philosophy">
-      <div class="slide__inner">
-        <div class="slide__top"><span class="slide__rule"></span>
-          <span class="num"><span class="k">(Chapter)</span> 02</span>
-          <span data-t="story.2.label">Philosophy</span>
-        </div>
-        <div class="slide__text">
-          <h2 class="slide__head" data-split data-t="story.2.head">Beauty isn’t covered up. It is made up, every day.</h2>
-          <p class="slide__body" data-fade data-t="story.2.text">‘Make up’에는 ‘꾸며내다’와 ‘만들어 가다’라는 두 가지 뜻이 있습니다. 우리는 두 번째 뜻을 믿습니다. 매일 아침의 짧은 의식이 하루를 만드는 방식에 대해 이야기합니다. (더미 텍스트)</p>
-        </div>
+    <section class="part" data-bg="#F9C235" data-line="blue" data-label="Material">
+      <div class="part__top">
+        <p class="part__meta"><span class="num"><span class="k">(Part)</span> 03/04</span> <span data-t="story.3.label">Material</span></p>
+        <h2 class="part__head" data-split data-t="story.3.head">Sheer organza, soft satin — nothing to hide.</h2>
       </div>
+      <div class="part__art" aria-hidden="true"></div>
+      <p class="part__body" data-t="story.3.text">속이 비치는 오간자는 담긴 것을 숨기지 않고, 안쪽의 새틴은 그것을 부드럽게 감쌉니다. 가볍지만 가볍게 만들지 않은 소재를 고릅니다. (더미 텍스트)</p>
     </section>
 
-    <section class="slide" data-label="Material">
-      <div class="slide__inner">
-        <div class="slide__top"><span class="slide__rule"></span>
-          <span class="num"><span class="k">(Chapter)</span> 03</span>
-          <span data-t="story.3.label">Material</span>
-        </div>
-        <div class="slide__text">
-          <h2 class="slide__head" data-split data-t="story.3.head">Sheer organza, soft satin — nothing to hide.</h2>
-          <p class="slide__body" data-fade data-t="story.3.text">속이 비치는 오간자는 담긴 것을 숨기지 않고, 안쪽의 새틴은 그것을 부드럽게 감쌉니다. 가볍지만 가볍게 만들지 않은 소재를 고릅니다. (더미 텍스트)</p>
-        </div>
+    <section class="part" data-bg="#74C43C" data-line="pink" data-label="Promise" data-dir="rtl">
+      <div class="part__top">
+        <p class="part__meta"><span class="num"><span class="k">(Part)</span> 04/04</span> <span data-t="story.4.label">Promise</span></p>
+        <h2 class="part__head" data-split data-t="story.4.head">Something you carry, something that carries you.</h2>
       </div>
-    </section>
-
-    <section class="slide" data-label="Promise">
-      <div class="slide__inner">
-        <div class="slide__top"><span class="slide__rule"></span>
-          <span class="num"><span class="k">(Chapter)</span> 04</span>
-          <span data-t="story.4.label">Promise</span>
-        </div>
-        <div class="slide__text">
-          <h2 class="slide__head" data-split data-t="story.4.head">Something you carry, something that carries you.</h2>
-          <p class="slide__body" data-fade data-t="story.4.text">오래 들고 다녀도 질리지 않는 물건, 꺼낼 때마다 기분이 조금 좋아지는 물건을 만듭니다. 그것이 MADEUP의 약속입니다. (더미 텍스트)</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 05 브랜드 문장 + 마무리 -->
-    <section class="slide" data-label="Manifesto">
-      <div class="slide__inner">
-        <div class="slide__top"><span class="slide__rule"></span>
-          <span class="k">(Manifesto)</span>
-        </div>
-        <div class="slide__text">
-          <p class="slide__head slide__head--words" data-words data-t="story.manifesto">We make things to be opened, used and carried — light enough to forget, considered enough to remember. Made up, made yours.</p>
-          <p class="slide__sign" data-fade><span class="k">—</span> <span data-t="story.sign">MADEUP, Seoul 2026</span></p>
-          <div class="slide__end" data-fade>
-            <a class="u" href="archive.html">Next — About</a>
-            <a class="u" href="mailto:hello@yourdomain.com" data-t="email" data-mail>hello@yourdomain.com</a>
-            <span data-t="copyright">© 2026</span>
-          </div>
-        </div>
-      </div>
+      <div class="part__art" aria-hidden="true"></div>
+      <p class="part__body" data-t="story.4.text">오래 들고 다녀도 질리지 않는 물건, 꺼낼 때마다 기분이 조금 좋아지는 물건을 만듭니다. 그것이 MADEUP의 약속입니다. (더미 텍스트)</p>
     </section>
   </main>
 
   <!-- 진행 표시 : 아래쪽 한 줄 -->
   <nav class="deck-ui" aria-label="Story navigation">
-    <span class="num"><span id="deck-no">01</span>/<span id="deck-total">06</span> <span class="deck-ui__label" id="deck-label">Intro</span></span>
+    <span class="num"><span id="deck-no">01</span>/<span id="deck-total">04</span> <span class="deck-ui__label" id="deck-label">Origin</span></span>
     <button class="u" type="button" id="deck-next">Next</button>
     <span class="deck-ui__line"><span id="deck-bar"></span></span>
   </nav>
@@ -120,84 +83,122 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="main.js"></script>
+  <script src="story-lines.js"></script>
   <script>
   (function () {
-    SITE.lenis && SITE.lenis.stop();             // 이 페이지는 스크롤 대신 한 장씩 넘김
-    const slides = gsap.utils.toArray('.slide');
-    const total = slides.length;
+    SITE.lenis && SITE.lenis.stop();               // 이 페이지는 스크롤 대신 한 파트씩 넘김
+    const NS = 'http://www.w3.org/2000/svg';
+    const root = document.getElementById('parts');
+    const parts = gsap.utils.toArray('.part');
+    const total = parts.length;
     const pad = (n) => String(n).padStart(2, '0');
     const noEl = document.getElementById('deck-no'), labelEl = document.getElementById('deck-label');
     const nextBtn = document.getElementById('deck-next'), barEl = document.getElementById('deck-bar');
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
     document.getElementById('deck-total').textContent = pad(total);
     const reduce = SITE.reduce;
-    let current = 0, busy = false, z = 10;
+    let current = 0, busy = true;
 
-    /* ---------- 글자 나누기 : 단어마다 가림막을 씌워 아래에서 올라오게 ---------- */
+    /* ---------- 라인아트 : 원본 PNG를 '펜 경로'를 따라 드러내는 마스크로 그림 ----------
+       경로(story-lines.js)는 선의 중심을 왼쪽 끝→오른쪽 끝 한 줄로 이은 것.
+       펜이 지나간 자리만 원본 이미지가 보이므로 굵기·색·모양은 원본 그대로. */
+    const pens = parts.map((part, i) => {
+      const L = window.STORY_LINES && STORY_LINES[part.dataset.line];
+      const box = part.querySelector('.part__art');
+      if (!L) return null;
+      const id = 'pen-mask-' + i;
+      const svg = document.createElementNS(NS, 'svg');
+      // 선의 양 끝이 화면 밖으로 나가도록 x0~x1 범위만 0vw~100vw 에 맞춤
+      const x0 = L.x0 ?? 0, x1 = L.x1 ?? L.w;
+      svg.setAttribute('viewBox', x0 + ' 0 ' + (x1 - x0) + ' ' + L.h);
+      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      const mask = document.createElementNS(NS, 'mask');
+      mask.setAttribute('id', id);
+      mask.setAttribute('maskUnits', 'userSpaceOnUse');
+      ['x', 'y'].forEach((k) => mask.setAttribute(k, -100));
+      mask.setAttribute('width', L.w + 200); mask.setAttribute('height', L.h + 200);
+      const pen = document.createElementNS(NS, 'path');
+      pen.setAttribute('d', L.d);
+      pen.setAttribute('fill', 'none');
+      pen.setAttribute('stroke', '#fff');
+      pen.setAttribute('stroke-width', (L.stroke * 2).toFixed(1));   // 원본 선보다 넉넉하게
+      pen.setAttribute('stroke-linejoin', 'round');
+      pen.setAttribute('stroke-linecap', 'butt');
+      mask.appendChild(pen);
+      const img = document.createElementNS(NS, 'image');
+      img.setAttribute('href', L.src);
+      img.setAttribute('width', L.w); img.setAttribute('height', L.h);
+      img.setAttribute('mask', 'url(#' + id + ')');
+      svg.append(mask, img);
+      box.appendChild(svg);
+      box.style.setProperty('--ratio', L.h / (x1 - x0));
+      const len = pen.getTotalLength();
+      pen.style.strokeDasharray = len + ' ' + (len * 2 + 10);
+      const s = part.dataset.dir === 'rtl' ? -1 : 1;  // 1: 왼쪽 끝에서 출발, -1: 오른쪽 끝에서 출발
+      pen.style.strokeDashoffset = s * len;           // 처음엔 아무것도 안 보임
+      return { pen, len, s };
+    });
+
+    // 그리기 : 출발하는 끝에서 반대쪽 끝까지 (Part 1·3 은 왼쪽→오른쪽, Part 2·4 는 오른쪽→왼쪽)
+    const draw = (i, dur) => pens[i] && gsap.fromTo(pens[i].pen, { strokeDashoffset: pens[i].s * pens[i].len },
+      { strokeDashoffset: 0, duration: dur, ease: 'power1.inOut', overwrite: true });
+    // 지우기 : 앞으로 갈 땐 그리던 방향 그대로 꼬리가 빠져나가고(dir 1),
+    //          뒤로 갈 땐 출발했던 끝으로 되감김(dir -1)
+    const erase = (i, dir, dur) => pens[i] && gsap.to(pens[i].pen,
+      { strokeDashoffset: (dir > 0 ? -1 : 1) * pens[i].s * pens[i].len, duration: dur, ease: 'power2.in', overwrite: true });
+
+    /* ---------- 큰 글 : 단어마다 아래에서 올라옴 ---------- */
     function prepare() {
       document.querySelectorAll('[data-split]').forEach((el) => {
-        const parts = el.innerHTML.split(/<br\s*\/?>/i);
-        el.innerHTML = parts.map((p) => {
-          const tmp = document.createElement('div'); tmp.innerHTML = p;
-          return tmp.textContent.trim().split(/\s+/).filter(Boolean).map((w) =>
-            '<span class="mw"><span class="mw__in">' + SITE.esc(w) + '</span></span>').join(' ');
-        }).join('<br>');
+        el.innerHTML = el.textContent.trim().split(/\s+/).filter(Boolean)
+          .map((w) => '<span class="mw"><span class="mw__in">' + SITE.esc(w) + '</span></span>').join(' ');
       });
-      document.querySelectorAll('[data-words]').forEach((el) => SITE.splitWords(el));
     }
+    function showText(part, delay) {
+      const tl = gsap.timeline({ delay });
+      tl.fromTo(part.querySelector('.part__meta'), { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0)
+        .fromTo(part.querySelectorAll('.mw__in'), { yPercent: 110 }, { yPercent: 0, duration: 1, ease: 'power3.out', stagger: 0.035 }, 0.05)
+        .fromTo(part.querySelector('.part__body'), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' }, 0.4);
+      return tl;
+    }
+    const hideText = (part) => gsap.to(part.querySelectorAll('.part__top, .part__body'), { opacity: 0, duration: 0.45, ease: 'power2.in' });
 
     function setUI(i) {
       noEl.textContent = pad(i + 1);
-      labelEl.textContent = slides[i].dataset.label || '';
-      nextBtn.textContent = i === total - 1 ? 'Back to top' : 'Next';
+      labelEl.textContent = parts[i].querySelector('[data-t$=".label"]')?.textContent || parts[i].dataset.label || '';
+      nextBtn.textContent = i === total - 1 ? 'Back to first' : 'Next';
       gsap.to(barEl, { scaleX: (i + 1) / total, duration: reduce ? 0 : 0.9, ease: 'power2.inOut' });
+      themeMeta && themeMeta.setAttribute('content', parts[i].dataset.bg);
     }
 
-    /* 한 장의 글이 나타나는 순서 : 선 → 큰 글(단어마다 위로) → 본문 */
-    function reveal(slide) {
-      const tl = gsap.timeline();
-      const rule = slide.querySelector('.slide__rule');
-      const words = slide.querySelectorAll('.mw__in');
-      const dim = slide.querySelectorAll('[data-words] .w');
-      const fades = slide.querySelectorAll('[data-fade], .slide__top > :not(.slide__rule), .slide__inner--intro > .k');
-      if (rule) tl.fromTo(rule, { scaleX: 0 }, { scaleX: 1, duration: 1.1, ease: 'power2.inOut' }, 0);
-      if (words.length) tl.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1, ease: 'power3.out', stagger: 0.035 }, 0.1);
-      if (dim.length) tl.fromTo(dim, { opacity: 0.12 }, { opacity: 1, duration: 0.5, ease: 'none', stagger: 0.06 }, 0.15);
-      tl.fromTo(fades, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out', stagger: 0.08 }, words.length ? 0.45 : 0.3);
-      return tl;
-    }
-
-    /* ---------- 넘기기 : 다음 장이 아래에서 덮으며 올라옴 / 이전 장은 아래로 걷힘 ---------- */
+    /* ---------- 넘기기 : 선 지우기 → 배경색 바뀜 → 다음 선 그리기 ---------- */
     function go(target) {
       if (busy || target === current || target < 0 || target >= total) return;
-      const from = slides[current], to = slides[target], dir = target > current ? 1 : -1;
-      busy = true;
-      current = target;
+      const from = parts[current], to = parts[target], dir = target > current ? 1 : -1;
+      const fromIdx = current;
+      busy = true; current = target;
       setUI(target);
       if (reduce) {
-        gsap.set(from, { autoAlpha: 0 }); gsap.set(to, { autoAlpha: 1, yPercent: 0 });
+        gsap.set(from, { autoAlpha: 0 }); gsap.set(to, { autoAlpha: 1 });
+        root.style.backgroundColor = to.dataset.bg;
+        pens[target] && gsap.set(pens[target].pen, { strokeDashoffset: 0 });
         busy = false; return;
       }
-      const fromInner = from.querySelector('.slide__inner'), toInner = to.querySelector('.slide__inner');
-      // 화면 이동(약 1초)이 끝나면 바로 다음 입력을 받음 — 글자 연출은 따로 이어서 재생
-      const tl = gsap.timeline({ onComplete: quietWait });
-      if (dir > 0) {
-        gsap.set(to, { zIndex: ++z, autoAlpha: 1, yPercent: 100 });
-        tl.to(to, { yPercent: 0, duration: 1.05, ease: 'power3.inOut' }, 0)
-          .to(fromInner, { yPercent: -6, opacity: 0, duration: 0.9, ease: 'power2.inOut' }, 0)
-          .set(from, { autoAlpha: 0 })
-          .set(fromInner, { yPercent: 0, opacity: 1 });
-      } else {
-        gsap.set(from, { zIndex: ++z });
-        gsap.set(to, { zIndex: z - 1, autoAlpha: 1, yPercent: 0 });
-        tl.to(from, { yPercent: 100, duration: 1.05, ease: 'power3.inOut' }, 0)
-          .fromTo(toInner, { yPercent: -6, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1, ease: 'power2.out' }, 0.2)
-          .set(from, { autoAlpha: 0, yPercent: 0 });
-      }
-      reveal(to).delay(dir > 0 ? 0.55 : 0.35);
+      erase(fromIdx, dir, 1.0);
+      hideText(from);
+      gsap.to(root, { backgroundColor: to.dataset.bg, duration: 0.9, ease: 'power1.inOut', delay: 0.45 });
+      gsap.delayedCall(0.9, () => {
+        gsap.set(from, { autoAlpha: 0 });
+        gsap.set(to.querySelectorAll('.part__top, .part__body'), { opacity: 1 });
+        gsap.set(to, { autoAlpha: 1 });
+        draw(target, 2.2);
+        showText(to, 0.15);
+      });
+      gsap.delayedCall(1.5, quietWait);            // 그리는 동안에도 1.5초 뒤부터 다음 입력 가능
     }
 
-    /* 트랙패드처럼 관성으로 계속 들어오는 휠 신호가 멈출 때까지 기다렸다가 다음 입력을 받음
-       → 한 번 쓸어 넘기면 정확히 한 장만 넘어감 */
+    /* 트랙패드 관성처럼 계속 들어오는 휠 신호가 멈출 때까지 기다린 뒤 다음 입력을 받음
+       → 한 번 쓸면 정확히 한 파트만 넘어감 */
     let lastWheel = 0;
     function quietWait() {
       const check = () => (performance.now() - lastWheel > 220 ? (busy = false) : setTimeout(check, 60));
@@ -228,13 +229,17 @@
     });
     nextBtn.addEventListener('click', () => go(current === total - 1 ? 0 : current + 1));
 
-    /* ---------- 시작 : text.txt 글이 들어온 뒤 글자를 나누고 첫 장을 보여줌 ---------- */
-    gsap.set(slides, { autoAlpha: 0 });
+    /* ---------- 시작 : text.txt 글이 들어온 뒤 첫 파트를 그림 ---------- */
+    root.style.backgroundColor = parts[0].dataset.bg;
+    gsap.set(parts, { autoAlpha: 0 });
     SITE.textReady.then(() => {
       prepare();
-      gsap.set(slides[0], { autoAlpha: 1, zIndex: z });
+      gsap.set(parts[0], { autoAlpha: 1 });
       setUI(0);
-      if (!reduce) reveal(slides[0]).delay(0.25);
+      if (reduce) { pens[0] && gsap.set(pens[0].pen, { strokeDashoffset: 0 }); busy = false; return; }
+      gsap.delayedCall(0.3, () => draw(0, 2.4));
+      showText(parts[0], 0.35);
+      gsap.delayedCall(1.2, () => { busy = false; });
     });
   })();
   </script>
