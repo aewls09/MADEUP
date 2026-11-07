@@ -37,10 +37,8 @@ pouch.4.title = (04) Close
 pouch.4.text = 마우스 클릭으로도 빠르게 열고 닫을 수 있습니다.
 pouch.hint = Drag, Scroll, Tap
 
-[Story · 브랜드 스토리 (selected.html)]
+[Story · 4 파트 (selected.html) — 파트마다 라벨 / 큰 글 / 본문]
 # 아래는 모두 더미 텍스트입니다. 실제 브랜드 이야기로 바꿔 주세요.
-story.title = Made up, // made yours.
-story.lead = MADEUP은 감추기 위한 화장이 아니라, 스스로 만들어 가는 아름다움을 이야기합니다. 가방 속 작은 파우치에서 시작된 이야기입니다.
 
 story.1.label = Origin
 story.1.head = It began with a bag full of small things.
@@ -57,9 +55,6 @@ story.3.text = 속이 비치는 오간자는 담긴 것을 숨기지 않고, 안
 story.4.label = Promise
 story.4.head = Something you carry, something that carries you.
 story.4.text = 오래 들고 다녀도 질리지 않는 물건, 꺼낼 때마다 기분이 조금 좋아지는 물건을 만듭니다. 그것이 MADEUP의 약속입니다. (더미 텍스트)
-
-story.manifesto = We make things to be opened, used and carried — light enough to forget, considered enough to remember. Made up, made yours.
-story.sign = MADEUP, Seoul 2026
 
 [About (archive.html)]
 about.intro = From the first idea to the final mock-up. Select any line to open it.
