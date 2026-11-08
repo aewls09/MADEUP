@@ -100,6 +100,8 @@ p{ max-width:62ch; }
   background:var(--mint); opacity:0;
 }
 body[data-page="info"] .veil{ background:var(--ink); }
+/* 파우치에서 넘어온 경우 : 도착한 페이지도 잉크색에서 걷힘 (드나들 때 색이 같도록) */
+.pt-dark .veil{ background:var(--ink); }
 .pt-in .veil{ opacity:1; }
 
 
@@ -126,6 +128,10 @@ body[data-page="info"] .veil{ background:var(--ink); }
   display:flex; justify-content:space-between; gap:16px;
 }
 .hero__foot{ bottom:calc(var(--pad) + env(safe-area-inset-bottom)); color:var(--paper); }
+/* 메인 : 메뉴 줄과 아래 줄의 좌우 여백을 넉넉하게 (휴대폰 ≈26px · 노트북 ≈60~100px) */
+body[data-page="index"]{ --side:clamp(24px, 7vw, 120px); }
+body[data-page="index"] .bar{ padding-left:var(--side); padding-right:var(--side); }
+body[data-page="index"] .hero__foot, body[data-page="index"] .hero__cap{ left:var(--side); right:var(--side); }
 .hero__right{ display:inline-flex; gap:24px; align-items:baseline; }
 .sound[hidden]{ display:none; }
 .hero__cap{ top:calc(80% + 12px); opacity:0; }

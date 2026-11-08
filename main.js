@@ -130,9 +130,11 @@
   let leaving = false;
 
   function leave(href, target) {
-    try { sessionStorage.setItem('pt', target); } catch (e) {}
     const toDark = target === 'info';
-    veil.style.background = toDark ? '#1A0B09' : '#ACE3D9';
+    // 파우치(3D Product)로 들어갈 때와 파우치에서 나갈 때는 같은 잉크색으로 덮음, 그 외는 민트
+    const darkVeil = toDark || page === 'info';
+    try { sessionStorage.setItem('pt', darkVeil ? 'dark' : 'light'); } catch (e) {}
+    veil.style.background = darkVeil ? '#1A0B09' : '#ACE3D9';
     const tl = gsap.timeline({ onComplete: () => go(href) });
     tl.to(veil, { opacity: 1, duration: 0.7, ease: EASE }, 0);
     // 3D Product로 갈 때: 메뉴가 위로 올라가고 글자가 밝아짐
