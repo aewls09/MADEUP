@@ -29,14 +29,6 @@
         <video src="background.mp4" autoplay muted loop playsinline preload="auto"
                disablepictureinpicture disableremoteplayback data-fallback="background.mp4"></video>
       </div>
-      <div class="hero__foot">
-        <span><span class="k">(<span data-t="home.caption">Brand Film</span>)</span> <span class="num"><span data-t="home.city">Seoul</span> <span data-t="home.year">2026</span></span></span>
-        <span class="hero__right">
-          <!-- 소리 켜기/끄기 : 브라우저가 첫 클릭 전에는 소리를 막으므로, 막히면 첫 클릭·터치 때 켜짐 -->
-          <button class="u sound" type="button" id="sound" aria-pressed="false" hidden>Sound On</button>
-          <span data-t="copyright">© 2026</span>
-        </span>
-      </div>
     </section>
   </main>
 
@@ -52,28 +44,65 @@
       const place = () => gsap.set(bar, { y: innerHeight / 2 - bar.offsetHeight / 2 });
       place();
       addEventListener('resize', place);
-      if (!SITE.reduce) gsap.from('.hero__foot', { opacity: 0, duration: 1.2, ease: 'power2.out', delay: 0.4 });
 
       /* ---------- 배경 영상 소리 ----------
          · 브라우저가 허락하면(이 사이트를 이미 클릭한 적 있는 경우 등) 들어오자마자 소리가 남
          · 허락하지 않으면 소리 없이 재생하다가, 첫 클릭·터치·키 입력 때 소리가 부드럽게 켜짐
          · 오른쪽 아래 Sound On / Sound Off 로 직접 켜고 끔 (끈 상태는 다시 와도 유지) */
       const v = document.querySelector('.hero__media video');
-      const btn = document.getElementById('sound');
-      if (!v || !btn) return;
-      btn.hidden = false;
+
+      /* ---------- 영상 밖 여백 색을 영상 가장자리 색에 실시간으로 맞춤 ----------
+         영상(3:2)과 화면 비율이 달라 생기는 여백이 영상 배경(베이지 → 민트)과 이어져 보이게 함.
+         작은 크기로 줄인 화면의 오른쪽 끝·위·아래 줄만 0.25초마다 읽음 (가벼움) */
+      if (v) {
+        const media = v.parentElement;
+        const cv = document.createElement('canvas'); cv.width = 48; cv.height = 32;
+        const cx = cv.getContext('2d', { willReadFrequently: true });
+        const med = (arr) => { arr.sort((a, b) => a - b); return arr[arr.length >> 1]; };
+        const sampleEdge = () => {
+          if (v.readyState < 2 || document.hidden) return;
+          try {
+            cx.drawImage(v, 0, 0, 48, 32);
+            const d = cx.getImageData(0, 0, 48, 32).data, R = [], G = [], B = [];
+            const take = (x, y) => { const i = (y * 48 + x) * 4; R.push(d[i]); G.push(d[i + 1]); B.push(d[i + 2]); };
+            for (let y = 0; y < 32; y++) take(47, y);                                  // 오른쪽 끝
+            for (let x = 16; x < 48; x++) { take(x, 0); take(x, 31); }                // 위·아래 (오른쪽 2/3)
+            media.style.backgroundColor = 'rgb(' + med(R) + ',' + med(G) + ',' + med(B) + ')';
+          } catch (e) { clearInterval(timer); }   // html 을 파일로 바로 연 경우 등 : 기본 색 유지
+        };
+        const timer = setInterval(sampleEdge, 250);
+        v.addEventListener('loadeddata', sampleEdge);
+      }
+      // 메뉴를 영상 가로 폭 안에 맞추기 위해 영상 비율(가로/세로)을 CSS 에 알려 줌
+      if (v) {
+        const setRatio = () => v.videoWidth && document.body.style.setProperty('--vr', (v.videoWidth / v.videoHeight).toFixed(4));
+        v.addEventListener('loadedmetadata', setRatio); setRatio();
+      }
+      const btn = document.getElementById('sound');   // 소리 버튼은 화면에서 뺌 (없어도 첫 클릭에 소리가 켜짐)
+      if (!v) return;
       const store = { get: () => { try { return sessionStorage.getItem('sound'); } catch (e) { return null; } },
                       set: (x) => { try { sessionStorage.setItem('sound', x); } catch (e) {} } };
-      const ui = (on) => { btn.textContent = on ? 'Sound Off' : 'Sound On'; btn.setAttribute('aria-pressed', on); };
+      const ui = (on) => { if (!btn) return; btn.textContent = on ? 'Sound Off' : 'Sound On'; btn.setAttribute('aria-pressed', on); };
       const fade = (to, d, done) => gsap.to(v, { volume: to, duration: d, ease: 'power1.inOut', overwrite: true, onComplete: done });
 
+      // 소리가 막힌 경우 : 바로 소리를 끄고 영상은 계속 재생, 첫 클릭·터치 때 다시 시도
+      function blocked() {
+        v.muted = true; v.play().catch(() => {}); ui(false); armFirstTouch();
+      }
+      // 크롬은 먼저 '재생됨'이라고 답한 뒤 잠시 후 소리 때문에 영상을 멈추기도 함
+      // → 소리를 켠 뒤 2.5초 안에 영상이 멈추면 '막힘'으로 보고 위처럼 처리
+      let tryAt = 0;
+      v.addEventListener('pause', () => {
+        if (!v.muted && performance.now() - tryAt < 2500) blocked();
+      });
       function soundOn() {
+        tryAt = performance.now();
         v.muted = false;
         v.volume = 0;
         const p = v.play();
         (p && p.then ? p : Promise.resolve())
-          .then(() => { fade(1, 1.5); ui(true); })
-          .catch(() => { v.muted = true; v.play().catch(() => {}); ui(false); armFirstTouch(); });
+          .then(() => { if (!v.muted && !v.paused) { fade(1, 1.5); ui(true); } })
+          .catch(blocked);
       }
       function soundOff() { fade(0, 0.5, () => { v.muted = true; }); ui(false); }
 
@@ -91,7 +120,7 @@
         evs.forEach((n) => addEventListener(n, onFirst, true));
       }
 
-      btn.addEventListener('click', () => {
+      btn && btn.addEventListener('click', () => {
         if (v.muted || v.paused) { store.set('on'); soundOn(); }
         else { store.set('off'); soundOff(); }
       });

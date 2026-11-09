@@ -116,11 +116,17 @@ body[data-page="info"] .veil{ background:var(--ink); }
    ========================================================= */
 .hero{ position:relative; height:100svh; overflow:hidden; }
 .hero__media{
-  position:absolute; inset:0; overflow:hidden; background:var(--ink);
+  position:absolute; inset:0; overflow:hidden;
+  /* 영상이 화면 비율과 달라 남는 여백 : 영상 가장자리 색으로 채움 (index.html 에서 실시간으로 맞춤) */
+  background:#D3CDC6; transition:background-color .5s linear;
   clip-path:inset(0% 0% 0% 0%); will-change:clip-path;
 }
 .hero__media > video, .hero__media > img{
-  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; will-change:transform;
+  /* 세로 맞춤 : 영상 높이 = 화면 높이, 가로는 영상 비율대로 가운데 정렬.
+     남는 좌우 여백은 .hero__media 배경(영상 가장자리 색)으로 채워짐.
+     화면이 영상보다 좁으면(세로로 긴 휴대폰 등) 영상 좌우 끝이 화면 밖으로 나감 */
+  position:absolute; top:0; left:50%; height:100%; width:auto; max-width:none;
+  transform:translateX(-50%); object-fit:cover; will-change:transform;
 }
 .hero__media .ph{ background:var(--ink); color:rgba(249,249,247,.4); place-items:end center; padding-bottom:30%; }
 .hero__foot, .hero__cap{
@@ -129,7 +135,13 @@ body[data-page="info"] .veil{ background:var(--ink); }
 }
 .hero__foot{ bottom:calc(var(--pad) + env(safe-area-inset-bottom)); color:var(--paper); }
 /* 메인 : 메뉴 줄과 아래 줄의 좌우 여백을 넉넉하게 (휴대폰 ≈26px · 노트북 ≈60~100px) */
-body[data-page="index"]{ --side:clamp(24px, 7vw, 120px); }
+/* 메인 메뉴 : 영상 가로 폭(왼쪽 끝 ~ 오른쪽 끝) 안에 배치, 영상 폭의 5% 만큼 안쪽으로
+   --vr : 영상 비율(가로/세로). index.html 이 영상에서 읽어 넣음 (기본 1.5 = 1920×1280) */
+body[data-page="index"]{
+  --vr:1.5;
+  --vidw:min(100vw, calc(100svh * var(--vr)));          /* 화면에 보이는 영상 폭 */
+  --side:calc((100vw - var(--vidw)) / 2 + var(--vidw) * .05);
+}
 body[data-page="index"] .bar{ padding-left:var(--side); padding-right:var(--side); }
 body[data-page="index"] .hero__foot, body[data-page="index"] .hero__cap{ left:var(--side); right:var(--side); }
 .hero__right{ display:inline-flex; gap:24px; align-items:baseline; }
