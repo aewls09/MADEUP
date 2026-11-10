@@ -111,6 +111,7 @@
       svg.setAttribute('viewBox', x0 + ' 0 ' + (x1 - x0) + ' ' + L.h);
       svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke-linejoin', 'round');   // 꺾이는 모서리의 뾰족한 삐침 제거
       const mk = (d) => {
         const p = document.createElementNS(NS, 'path');
         p.setAttribute('d', d); p.setAttribute('stroke', L.color); p.setAttribute('stroke-width', L.stroke);
