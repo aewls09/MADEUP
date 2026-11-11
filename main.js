@@ -140,7 +140,8 @@
     // 3D Product로 갈 때: 메뉴가 위로 올라가고 글자가 밝아짐
     if (SITE.bar) {
       tl.to(SITE.bar, { y: 0, duration: 0.8, ease: EASE }, 0);
-      tl.add(() => {
+      // 파우치에서 나갈 때는 메뉴 바를 어두운 상태 그대로 둠 (민트로 바뀌지 않고 잉크색 화면과 함께 덮임)
+      if (page !== 'info') tl.add(() => {
         SITE.bar.classList.toggle('is-light', toDark);
         body.classList.toggle('is-dark', toDark);
       }, 0);
