@@ -114,12 +114,9 @@ body[data-page="info"] .veil{ background:var(--ink); }
 /* =========================================================
    INDEX
    ========================================================= */
-.hero{ position:relative; height:100svh; overflow:hidden; }
+.hero{ position:relative; height:100svh; width:100svw; overflow:hidden; }
 .hero__media{
   position:absolute; inset:0; overflow:hidden;
-  /* 영상이 화면 비율과 달라 남는 여백 : 영상 가장자리 색으로 채움 (index.html 에서 실시간으로 맞춤) */
-  background:#D3CDC6; transition:background-color .5s linear;
-  clip-path:inset(0% 0% 0% 0%); will-change:clip-path;
 }
 .hero__media > video, .hero__media > img{
   /* 세로 맞춤 : 영상 높이 = 화면 높이, 가로는 영상 비율대로 가운데 정렬.
