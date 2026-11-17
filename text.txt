@@ -23,38 +23,38 @@ home.year = 2026
 
 [Pouch · 3D Product (info.html)]
 pouch.1.title = (01) MADEUP Pouch
-pouch.1.text = 매듭의 단아한 아름다움과 섬세한 조형미를 디자인의 핵심 요소로 설정하고, MADEUP의 브랜드 정체성이 자연스럽게 드러나는 제품 디자인 방향을 수립하였습니다.
+pouch.1.text = MADEUP is a bojagi pouch made of sheer organza, the fabric of hanbok. // 한복의 반투명 오간자로 만든 보따리 파우치.
 pouch.2.title = (02) Open
-pouch.2.text = Knotted details and drawstrings reflect MADEUP’s distinctive form and function.
+pouch.2.text = Pull the cord and the cloth gathers into a pouch; loosen it and it opens flat. // 끈을 당기면 천이 모여 주머니가 되고, 풀면 펼쳐집니다.
 pouch.3.title = (03) Detail
 pouch.detail1.label = (Material)
-pouch.detail1.value = Organza, satin lining
+pouch.detail1.value = Sheer hanbok organza
 pouch.detail2.label = (Size)
 pouch.detail2.value = 20 × 00 cm
 pouch.detail3.label = (Colour)
-pouch.detail3.value = Brand Package Color
+pouch.detail3.value = Cheonghong · Hawyeon · Cheonghawng · Sanrok
 pouch.4.title = (04) Close
-pouch.4.text = 마우스 클릭으로도 빠르게 열고 닫을 수 있습니다.
+pouch.4.text = The traditional knot is not decoration. It is the handle. // 전통 매듭은 장식이 아니라 손잡이입니다.
 pouch.hint = Drag, Scroll, Tap
 
 [Story · 4 파트 (selected.html) — 파트마다 라벨 / 큰 글 / 본문]
-# 브랜드북(We Made · We Bind · We Whole) 문장을 그대로 옮김
+# 브랜드 가이드라인(bb살려줘-1.pdf) 문장을 그대로 옮김
 
 story.1.label = We Made
-story.1.head = MADEUP reinterprets familiar materials through a fresh perspective.
-story.1.text = MADEUP은 익숙한 소재에 새로운 시선을 더해 일상 속에서 자연스럽게 어우러지는 가치를 만듭니다. 한복 원단이 지닌 고유한 색감과 매듭의 형태에서 영감을 얻어, 전통적인 소재를 현대적인 감각으로 재해석합니다.
+story.1.head = Defined by the knot, open or closed.
+story.1.text = 한복의 반투명 오간자로 만든 보따리 파우치. 끈을 당기면 천이 모여 주머니가 되고, 풀면 펼쳐집니다. 전통 매듭은 장식이 아니라 손잡이입니다.
 
-story.2.label = We Bind
-story.2.head = The knot embodies MADEUP’s identity through connection and unity.
-story.2.text = 얽힌 선을 통해 연결과 결속의 의미를 표현하며, 매듭의 구조에 현대적이고 간결한 미감을 더합니다. 매듭의 유기적인 연결 구조를 조형적으로 재해석하여, 단아하고도 독창적인 MADEUP만의 아이덴티티를 표현합니다.
+story.2.label = Colorway
+story.2.head = MADEUP’s pouch colors are extracted directly from hanbok organza.
+story.2.text = 파우치 컬러는 한복 오간자에서 직접 추출했습니다. 빛이 비치고 안감과 겹쳐지는 색을 전통색을 바탕으로 현대적으로 조정했고, 대비되는 조화로운 색을 더해 파우치의 이미지를 완성했습니다.
 
-story.3.label = Sub Color
-story.3.head = Inspired by the rich hues of traditional Korean fabrics.
-story.3.text = MADEUP의 서브 컬러 팔레트는 한복 원단이 지닌 다채로운 색감과 섬세한 색의 조화에서 영감을 얻었습니다. 서로 다른 색들이 조화롭게 어우러져 브랜드만의 감각적이고 유연한 시각적 표현을 완성합니다.
+story.3.label = We Bind
+story.3.head = A knot’s character lives in its form, its structure and the way it connects.
+story.3.text = 매듭의 성격은 형태, 구조, 연결 방식에서 드러납니다. 선과 긴장, 구성의 차이가 매듭마다 고유한 모습과 가능성을 만듭니다.
 
 story.4.label = We Whole
-story.4.head = A knot is more than a simple structure.
-story.4.text = 우리는 답을 주지 않는다. 함께 만들어간다. 브랜드만의 관점과 창의적인 메시지로 새로운 영감과 가능성을 제안합니다.
+story.4.head = Scattered marks wrap, secure and finish into a single logo.
+story.4.text = 흩어진 점과 선이 감싸고, 고정하고, 마무리되며 하나의 로고로 완성됩니다. 닫힌 끝은 다시 풀려 처음으로 이어지며, 끝없이 반복되는 하나의 고리를 만듭니다.
 
 [About (archive.html)]
-about.intro = MADEUP Design Identity — We Made, We Bind, We Whole. Select any line to open it.
+about.intro = MADEUP Brand Guidelines — We Made, We Bind, We Whole. Select any line to open it.
