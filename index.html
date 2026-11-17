@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ACE3D9">
-  <title>Home</title>
+  <title>MADEUP</title>
   <script>try{var pt=sessionStorage.getItem('pt');if(pt){document.documentElement.classList.add('pt-in');if(pt==='dark')document.documentElement.classList.add('pt-dark')}}catch(e){}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,27 +51,57 @@
          · 오른쪽 아래 Sound On / Sound Off 로 직접 켜고 끔 (끈 상태는 다시 와도 유지) */
       const v = document.querySelector('.hero__media video');
 
-      /* ---------- 영상 밖 여백 색을 영상 가장자리 색에 실시간으로 맞춤 ----------
-         영상(3:2)과 화면 비율이 달라 생기는 여백이 영상 배경(베이지 → 민트)과 이어져 보이게 함.
-         작은 크기로 줄인 화면의 오른쪽 끝·위·아래 줄만 0.25초마다 읽음 (가벼움) */
+      /* ---------- 영상 밖 여백 색을 영상 배경색과 함께 바꿈 ----------
+         background.mp4(45초)의 가장자리 색을 미리 재어 둔 시간표.  [초, R, G, B]
+         재생 시각에 맞춰 사이 값을 부드럽게 이어 칠하므로, 파일을 바로 열어도 똑같이 동작함.
+         영상을 바꾸면 이 표도 바꿔야 함 (길이가 다른 영상이면 자동으로 화면에서 색을 읽는 방식으로 전환) */
+      const EDGE_TIMELINE = [
+        [0.0,  207, 201, 192],   // 베이지
+        [7.8,  207, 201, 192],
+        [9.2,  141, 182, 168],   // → 민트
+        [42.0, 143, 182, 169],
+        [43.4, 205, 201, 190],   // → 다시 베이지
+        [45.0, 207, 201, 192],
+      ];
+      const EDGE_DURATION = 45;
       if (v) {
         const media = v.parentElement;
+        media.style.transition = 'none';
+        const paint = (r, g, b) => { media.style.backgroundColor = 'rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')'; };
+        const fromTimeline = (t) => {
+          const T = EDGE_TIMELINE;
+          for (let i = 1; i < T.length; i++) {
+            if (t <= T[i][0]) {
+              const k = (t - T[i - 1][0]) / ((T[i][0] - T[i - 1][0]) || 1);
+              return paint(...[1, 2, 3].map((c) => T[i - 1][c] + (T[i][c] - T[i - 1][c]) * k));
+            }
+          }
+          paint(T[T.length - 1][1], T[T.length - 1][2], T[T.length - 1][3]);
+        };
+        // 영상 길이가 시간표와 다르면(다른 영상) : 화면에서 직접 색을 읽음 (웹 서버에서만 가능)
         const cv = document.createElement('canvas'); cv.width = 48; cv.height = 32;
         const cx = cv.getContext('2d', { willReadFrequently: true });
-        const med = (arr) => { arr.sort((a, b) => a - b); return arr[arr.length >> 1]; };
-        const sampleEdge = () => {
-          if (v.readyState < 2 || document.hidden) return;
+        const med = (arr) => { arr.sort((p, q) => p - q); return arr[arr.length >> 1]; };
+        let canRead = true;
+        const fromPixels = () => {
           try {
             cx.drawImage(v, 0, 0, 48, 32);
             const d = cx.getImageData(0, 0, 48, 32).data, R = [], G = [], B = [];
             const take = (x, y) => { const i = (y * 48 + x) * 4; R.push(d[i]); G.push(d[i + 1]); B.push(d[i + 2]); };
-            for (let y = 0; y < 32; y++) take(47, y);                                  // 오른쪽 끝
-            for (let x = 16; x < 48; x++) { take(x, 0); take(x, 31); }                // 위·아래 (오른쪽 2/3)
-            media.style.backgroundColor = 'rgb(' + med(R) + ',' + med(G) + ',' + med(B) + ')';
-          } catch (e) { clearInterval(timer); }   // html 을 파일로 바로 연 경우 등 : 기본 색 유지
+            for (let y = 0; y < 32; y++) take(47, y);
+            for (let x = 16; x < 48; x++) { take(x, 0); take(x, 31); }
+            paint(med(R), med(G), med(B));
+          } catch (e) { canRead = false; }
         };
-        const timer = setInterval(sampleEdge, 250);
-        v.addEventListener('loadeddata', sampleEdge);
+        let last = 0;
+        const loop = (now) => {
+          requestAnimationFrame(loop);
+          if (document.hidden || v.readyState < 1) return;
+          const sameVideo = !v.duration || Math.abs(v.duration - EDGE_DURATION) < 0.6;
+          if (sameVideo) fromTimeline(v.currentTime % EDGE_DURATION);
+          else if (canRead && v.readyState >= 2 && now - last > 200) { last = now; fromPixels(); }
+        };
+        requestAnimationFrame(loop);
       }
       // 메뉴를 영상 가로 폭 안에 맞추기 위해 영상 비율(가로/세로)을 CSS 에 알려 줌
       if (v) {

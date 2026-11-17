@@ -36,25 +36,25 @@
       <!-- 스크롤 단계별 설명 (내용은 자유롭게 수정) -->
       <div class="info-panels">
         <article class="info-panel is-active">
-          <p class="k" data-t="pouch.1.title">(01) The Pouch</p>
-          <p data-t="pouch.1.text">제품을 한 문장으로 소개해 주세요. Drag to turn it, scroll to open it.</p>
+          <p class="k" data-t="pouch.1.title">(01) MADEUP Pouch</p>
+          <p data-t="pouch.1.text">매듭의 단아한 아름다움과 섬세한 조형미를 디자인의 핵심 요소로 설정하고, MADEUP의 브랜드 정체성이 자연스럽게 드러나는 제품 디자인 방향을 수립하였습니다.</p>
         </article>
         <article class="info-panel">
           <p class="k" data-t="pouch.2.title">(02) Open</p>
-          <p data-t="pouch.2.text">파우치가 열리는 구간입니다. 여는 방식이나 구조를 설명해 주세요.</p>
+          <p data-t="pouch.2.text">Knotted details and drawstrings reflect MADEUP’s distinctive form and function.</p>
         </article>
         <article class="info-panel">
           <p class="k" data-t="pouch.3.title">(03) Detail</p>
           <ul>
             <li><span data-t="pouch.detail1.label">(Material)</span><span data-t="pouch.detail1.value">Organza, satin lining</span></li>
-            <li><span data-t="pouch.detail2.label">(Size)</span><span data-t="pouch.detail2.value">00 × 00 cm</span></li>
-            <li><span data-t="pouch.detail3.label">(Colour)</span><span data-t="pouch.detail3.value">Dusty purple, black</span></li>
+            <li><span data-t="pouch.detail2.label">(Size)</span><span data-t="pouch.detail2.value">20 × 00 cm</span></li>
+            <li><span data-t="pouch.detail3.label">(Colour)</span><span data-t="pouch.detail3.value">Brand Package Color</span></li>
           </ul>
         </article>
         <article class="info-panel">
           <p class="k" data-t="pouch.4.title">(04) Close</p>
-          <p><span data-t="pouch.4.text">다시 닫히는 구간입니다. 마무리 문장이나 연락처를 적어 주세요.</span><br>
-             <a class="u" href="mailto:hello@yourdomain.com" data-t="email" data-mail>hello@yourdomain.com</a></p>
+          <p><span data-t="pouch.4.text">마우스 클릭으로도 빠르게 열고 닫을 수 있습니다.</span><br>
+             <a class="u" href="mailto:mjc2team@yahoo.com" data-t="email" data-mail>mjc2team@yahoo.com</a></p>
         </article>
       </div>
 
@@ -64,7 +64,7 @@
   </main>
 
   <footer class="foot tick">
-    <div class="foot__row"><a class="u" href="mailto:hello@yourdomain.com" data-t="email" data-mail>hello@yourdomain.com</a><span data-t="copyright">© 2026</span></div>
+    <div class="foot__row"><a class="u" href="mailto:mjc2team@yahoo.com" data-t="email" data-mail>mjc2team@yahoo.com</a><span data-t="copyright">© 2026</span></div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -87,39 +87,15 @@
      파일은 site 폴더 안의 models 폴더에 넣으세요.
      ========================================================= */
   const POUCH = {
-    closed: 'models/closed.glb',   // 닫힌 파우치
-    open:   'models/open.glb',       // 펼쳐진 파우치
+    closed: 'models/pouch-closed.glb',   // 닫힌 파우치 (Meshy 모델을 웹용으로 줄인 것. 몸통 body + 끈 cord 로 나뉘어 있음)
+    open:   'models/pouch-open.glb',     // 펼쳐진 파우치
 
     size: 3.2,                // 닫힌 파우치의 화면 속 너비 (클수록 커짐)
-    // 천 색 + 끈 색 짝: 페이지에 들어올 때마다 이 중 한 쌍이 무작위로 골라짐 (짝을 더하거나 빼도 됨)
-    colorSets: [
-      { organza: '#75C0D9', cord: '#AD2020' },
-      { organza: '#9CBA21', cord: '#F3B3E2' },
-      { organza: '#E69C8D', cord: '#A9ECFF' },
-      { organza: '#EBBC42', cord: '#00CA9B' },
-    ],
-    lining:  '#F6F1E3',       // 안감 (아이보리, 고정)
-    sheen:   '#ffffff',       // 천 가장자리 광채
-    grain:   0.45,            // 까슬한 결의 세기 (0~1)
-    sheer:   0.55,            // 겉감 불투명도: 낮출수록 안이 더 비침 (0.3 = 많이 비침, 1 = 안 비침)
+    spread: 0.8,              // 다 펼쳤을 때 크기 (1 = 천 길이 그대로, 작을수록 작게 펼쳐짐)
+    flat: 0.55,               // 펼친 모델의 두께 (1 = 모델 그대로, 작을수록 납작)
+    lining: '#F6F1E3',        // 안감 색 (열릴 때 보이는 안쪽)
     lookDown: 52,             // 다 열렸을 때 위에서 내려다보는 각도(도)
-
-    folds:  0.06,             // 열릴 때 몸통에 생기는 큰 물결 주름의 깊이 (0 = 없음)
-    pleats: 0.03,             // 입구 둘레의 촘촘한 개더 주름 깊이 (0 = 없음)
-    pleatCount: 24,           // 입구 둘레 주름 개수
   };
-
-  // 천·끈 색 짝 고르기: 바로 전에 본 짝은 피해서 새로고침할 때마다 다른 색이 나오게
-  (function pickColors() {
-    const list = POUCH.colorSets;
-    let last = null;
-    try { last = sessionStorage.getItem('pouchColor'); } catch (e) {}
-    const pool = list.length > 1 ? list.filter((s) => s.organza !== last) : list;
-    const set = pool[Math.floor(Math.random() * pool.length)];
-    POUCH.organza = set.organza;
-    POUCH.cord = set.cord;
-    try { sessionStorage.setItem('pouchColor', set.organza); } catch (e) {}
-  })();
 
   const SITE = window.SITE, gsap = window.gsap, ScrollTrigger = window.ScrollTrigger;
   const MINT = 0xACE3D9, INK = 0x1A0B09, PAPER = 0xF9F9F7;
@@ -184,187 +160,134 @@
     return new Promise((res, rej) => loader.parse(buf.buffer, '', res, rej));
   }
   const load = (url) => (location.protocol === 'file:' ? loadFromBackup(url) : loadFile(url).catch(() => loadFromBackup(url)));
-  function firstGeometry(gltf) {
-    let geo = null;
-    gltf.scene.updateMatrixWorld(true);
-    gltf.scene.traverse((o) => { if (!geo && o.isMesh) geo = o.geometry.clone().applyMatrix4(o.matrixWorld); });
-    if (!geo.index) {   // 인덱스가 없는 파일도 받아들이기
-      const n = geo.attributes.position.count, idx = new Uint32Array(n);
-      for (let i = 0; i < n; i++) idx[i] = i;
-      geo.setIndex(new THREE.BufferAttribute(idx, 1));
-    }
-    return geo;
+  // 투명도 바꾸기 (완전히 보일 때는 불투명으로 그려서 겹침 오류가 없게)
+  function fade(mesh, o) {
+    const m = mesh.material, tr = o < 0.999;
+    m.opacity = o;
+    if (m.transparent !== tr) { m.transparent = tr; m.needsUpdate = true; }
+    mesh.visible = o > 0.001;
   }
+  const meshesOf = (gltf) => { const list = []; gltf.scene.updateMatrixWorld(true); gltf.scene.traverse((o) => o.isMesh && list.push(o)); return list; };
 
-  // 까슬한 오간자 결 (그림 파일 없이 코드로 만든 노멀맵)
-  function grainTexture(size = 512) {
-    const h = new Float32Array(size * size);
-    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++)
-      h[y * size + x] = 0.35 * Math.sin(x * 1.9) * Math.sin(y * 1.9) + (Math.random() - 0.5) * 1.1;
-    const img = new ImageData(size, size), d = img.data;
-    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-      const i = y * size + x;
-      const dx = h[y * size + (x + 1) % size] - h[y * size + (x - 1 + size) % size];
-      const dy = h[((y + 1) % size) * size + x] - h[((y - 1 + size) % size) * size + x];
-      const nx = -dx * 2.2, ny = -dy * 2.2, l = Math.hypot(nx, ny, 1);
-      d[i * 4] = (nx / l * 0.5 + 0.5) * 255; d[i * 4 + 1] = (ny / l * 0.5 + 0.5) * 255;
-      d[i * 4 + 2] = (1 / l * 0.5 + 0.5) * 255; d[i * 4 + 3] = 255;
-    }
-    const c = document.createElement('canvas'); c.width = c.height = size;
-    c.getContext('2d').putImageData(img, 0, 0);
-    const t = new THREE.CanvasTexture(c);
-    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.NoColorSpace; t.anisotropy = 4;
-    return t;
-  }
-
+  /* 닫힌 파우치가 입구부터 벌어지며 납작한 원판으로 펼쳐지고, 끝에서 펼친 모델로 바뀜 */
   async function buildPouch() {
     const [closedG, openG] = await Promise.all([load(POUCH.closed), load(POUCH.open)]);
-    const closedGeo = firstGeometry(closedG), openGeo = firstGeometry(openG);
+    const parts = meshesOf(closedG);
+    const bodyM = parts.find((m) => !/cord/i.test(m.name)) || parts[0];
+    const cordM = parts.find((m) => /cord/i.test(m.name));
+    const base = bodyM.geometry;                       // 몸통과 끈은 같은 꼭짓점 목록을 함께 씀
+    const posAttr = base.attributes.position, P = posAttr.array, n = posAttr.count;
+    const N0 = Float32Array.from(base.attributes.normal.array);
+    const bodyIdx = base.index.array, cordIdx = cordM ? cordM.geometry.index.array : new Uint32Array(0);
 
-    const grain = grainTexture();
-    const fabric = (extra) => new THREE.MeshPhysicalMaterial({
-      vertexColors: true, roughness: 0.52, metalness: 0,
-      sheen: 1, sheenColor: new THREE.Color(POUCH.sheen), sheenRoughness: 0.38,
-      iridescence: 0.25, iridescenceIOR: 1.3,
-      normalMap: grain, normalScale: new THREE.Vector2(POUCH.grain, POUCH.grain),
-      alphaHash: true, envMapIntensity: 0.9, ...extra,
-    });
-    // 겉감은 반투명 → 뒤에 있는 안감이 비쳐 보임 (끈은 꼭짓점별 투명도로 불투명 유지)
-    const sheerFabric = (extra) => fabric({ alphaHash: false, transparent: true, depthWrite: true, ...extra });
-    const matOuter = sheerFabric({ side: THREE.FrontSide });
-    const matCap = sheerFabric({ side: THREE.FrontSide });
-    const matOpen = sheerFabric({ side: THREE.DoubleSide, opacity: 0 });
-    const matLining = new THREE.MeshPhysicalMaterial({
-      vertexColors: true, side: THREE.BackSide, roughness: 0.32, sheen: 0.6,
-      sheenColor: new THREE.Color('#ffffff'), alphaHash: true,
-    });
-
-    /* 닫힌 파우치: 몸통 중심 찾기 (끈은 위쪽에만 있으니 아래 절반으로 계산) */
-    const P = closedGeo.attributes.position.array, n = P.length / 3, idx = closedGeo.index.array;
+    /* 몸통 중심 · 크기 (끈은 빼고 계산) */
     let minY = Infinity, maxY = -Infinity;
-    for (let i = 0; i < n; i++) { minY = Math.min(minY, P[i * 3 + 1]); maxY = Math.max(maxY, P[i * 3 + 1]); }
+    for (let f = 0; f < bodyIdx.length; f++) { const y = P[bodyIdx[f] * 3 + 1]; if (y < minY) minY = y; if (y > maxY) maxY = y; }
     const R0 = (maxY - minY) / 2, cy = minY + R0;
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
-    for (let i = 0; i < n; i++) if (P[i * 3 + 1] < cy) {
-      x0 = Math.min(x0, P[i * 3]); x1 = Math.max(x1, P[i * 3]);
-      z0 = Math.min(z0, P[i * 3 + 2]); z1 = Math.max(z1, P[i * 3 + 2]);
+    for (let f = 0; f < bodyIdx.length; f++) {
+      const i = bodyIdx[f];
+      if (P[i * 3 + 1] < cy) { x0 = Math.min(x0, P[i * 3]); x1 = Math.max(x1, P[i * 3]); z0 = Math.min(z0, P[i * 3 + 2]); z1 = Math.max(z1, P[i * 3 + 2]); }
     }
     const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
-    closedGeo.computeBoundingBox();
-    const closedWidth = closedGeo.boundingBox.max.x - closedGeo.boundingBox.min.x;
+    base.computeBoundingBox();
+    const closedWidth = base.boundingBox.max.x - base.boundingBox.min.x;
+    const Rf = Math.PI * R0 * POUCH.spread;           // 다 펼쳤을 때 반지름
 
-    /* 펼쳐진 파우치: 같은 자리, 같은 바닥에 놓기 */
-    openGeo.computeBoundingBox();
-    const ob = openGeo.boundingBox;
-    openGeo.translate(cx - (ob.min.x + ob.max.x) / 2, minY - ob.min.y, cz - (ob.min.z + ob.max.z) / 2);
-    openGeo.computeVertexNormals();
-    const OP = openGeo.attributes.position.array, ON = openGeo.attributes.normal.array, on = OP.length / 3;
-    const radii = new Float32Array(on);
-    for (let i = 0; i < on; i++) radii[i] = Math.hypot(OP[i * 3] - cx, OP[i * 3 + 2] - cz);
-    const Rf = Float32Array.from(radii).sort()[Math.floor(on * 0.95)];
-
-    /* 꼭짓점마다 '구'의 좌표로 바꿔 둠 → 이걸 원판으로 펼침 */
+    /* 꼭짓점마다 '구'의 좌표로 바꿔 둠 → 세로선을 펴면서 원판으로 펼침 */
     const theta = new Float32Array(n), cphi = new Float32Array(n), sphi = new Float32Array(n), bump = new Float32Array(n);
-    const foldW = new Float32Array(n), pleatW = new Float32Array(n);   // 주름 모양 (미리 계산)
-    const uv = new Float32Array(n * 2);
     for (let i = 0; i < n; i++) {
       const dx = P[i * 3] - cx, dy = P[i * 3 + 1] - cy, dz = P[i * 3 + 2] - cz;
       const r = Math.hypot(dx, dy, dz) || 1e-6, phi = Math.atan2(dz, dx);
       theta[i] = Math.acos(Math.max(-1, Math.min(1, -dy / r)));
       cphi[i] = Math.cos(phi); sphi[i] = Math.sin(phi); bump[i] = r - R0;
-      const u = theta[i] / Math.PI;
-      // 바닥에서 입구 쪽으로 퍼지는 큰 물결 (두 물결을 섞어 불규칙하게)
-      foldW[i] = (0.6 * Math.sin(9 * phi + 1.3 + 1.5 * u) + 0.4 * Math.sin(14 * phi + 2.7 - 2.2 * u)) * Math.pow(u, 1.5);
-      pleatW[i] = Math.sin(POUCH.pleatCount * phi);
-      uv[i * 2] = (phi / (2 * Math.PI) + 0.5) * 9; uv[i * 2 + 1] = theta[i] / Math.PI * 5;
     }
     const P0 = Float32Array.from(P);
-
-    // 입구(조여진 목) 경계: 이보다 위쪽 면은 '뚜껑'으로 따로 빼고, 경계 근처 주름은 열릴 때 펴줌
-    const MOUTH = 2.75;   // 각도(라디안). 줄이면 입구가 넓어지고, 키우면 좁아짐 (최대 3.14)
+    const MOUTH = 2.75;   // 입구(조여진 목) 경계 각도. 이보다 위쪽 면은 열리는 순간 사라짐
     const rimW = new Float32Array(n);
-    for (let i = 0; i < n; i++) {
-      rimW[i] = smooth(MOUTH - 0.45, MOUTH, theta[i]);
-      pleatW[i] *= smooth(MOUTH - 0.55, MOUTH - 0.05, theta[i]);   // 개더는 입구 띠에만
-    }
+    for (let i = 0; i < n; i++) rimW[i] = smooth(MOUTH - 0.45, MOUTH, theta[i]);
 
-    // 구의 세로선이 펴지면서 납작한 원판이 되고, 주름은 그 위에 얹혀서 따라감
     function writeMorph(out, t) {
       const L = Math.PI * R0 + (Rf - Math.PI * R0) * t;
       const k = (1 - t) * Math.PI / L, keep = 1 - 0.75 * t, rimFlat = Math.min(1, t / 0.25);
-      const fA = POUCH.folds * smooth(0, 0.3, t), pA = POUCH.pleats * smooth(0, 0.15, t);
       for (let i = 0; i < n; i++) {
         const s = theta[i] * L / Math.PI, a = k * s;
         let rho, h;
         if (a > 1e-4) { rho = Math.sin(a) / k; h = (1 - Math.cos(a)) / k; } else { rho = s; h = 0; }
-        const o = bump[i] * keep * (1 - rimFlat * rimW[i]) + fA * foldW[i] + pA * pleatW[i], nr = Math.sin(a) * o;
+        const o = bump[i] * keep * (1 - rimFlat * rimW[i]), nr = Math.sin(a) * o;
         out[i * 3] = cx + (rho + nr) * cphi[i];
         out[i * 3 + 1] = minY + h - Math.cos(a) * o;
         out[i * 3 + 2] = cz + (rho + nr) * sphi[i];
       }
     }
 
-    // 입구를 막고 있던 '뚜껑' 면: 입구 경계선(MOUTH)보다 위에 있는 삼각형
+    /* 입구를 막고 있던 '뚜껑' 면 나누기 */
     const main = [], cap = [];
-    for (let f = 0; f < idx.length; f += 3) {
-      const a = idx[f], b = idx[f + 1], c = idx[f + 2];
+    for (let f = 0; f < bodyIdx.length; f += 3) {
+      const a = bodyIdx[f], b = bodyIdx[f + 1], c = bodyIdx[f + 2];
       (Math.max(theta[a], theta[b], theta[c]) > MOUTH ? cap : main).push(a, b, c);
     }
 
-    const posAttr = closedGeo.attributes.position;
-    posAttr.setUsage(THREE.DynamicDrawUsage);
-    const all = new THREE.BufferGeometry();
-    all.setAttribute('position', posAttr); all.setIndex(closedGeo.index);
-    all.computeVertexNormals();
-    const nor = all.attributes.normal; nor.setUsage(THREE.DynamicDrawUsage);
-    const uvAttr = new THREE.BufferAttribute(uv, 2);
-
-    const cOrg = new THREE.Color(POUCH.organza), cLin = new THREE.Color(POUCH.lining), cCord = new THREE.Color(POUCH.cord);
-    const colors = (count, fn) => {
-      const arr = new Float32Array(count * 3), c = new THREE.Color();
-      for (let i = 0; i < count; i++) { fn(i, c); arr[i * 3] = c.r; arr[i * 3 + 1] = c.g; arr[i * 3 + 2] = c.b; }
-      return new THREE.BufferAttribute(arr, 3);
-    };
-    // 색 + 투명도(4번째 값): fn이 숫자를 돌려주면 그 값이 투명도
-    const colorsA = (count, fn) => {
-      const arr = new Float32Array(count * 4), c = new THREE.Color();
-      for (let i = 0; i < count; i++) {
-        const a = fn(i, c);
-        arr[i * 4] = c.r; arr[i * 4 + 1] = c.g; arr[i * 4 + 2] = c.b; arr[i * 4 + 3] = typeof a === 'number' ? a : 1;
+    /* 매끈한 음영: 텍스처 이음선에서 갈라진 같은 자리 꼭짓점들은 하나로 묶어서 법선 계산 */
+    const group = new Uint32Array(n), keyMap = new Map(); let ng = 0;
+    for (let i = 0; i < n; i++) {
+      const key = Math.round(P[i * 3] * 4000) + ',' + Math.round(P[i * 3 + 1] * 4000) + ',' + Math.round(P[i * 3 + 2] * 4000);
+      let g = keyMap.get(key); if (g === undefined) { g = ng++; keyMap.set(key, g); } group[i] = g;
+    }
+    const allIdx = new Uint32Array(bodyIdx.length + cordIdx.length); allIdx.set(bodyIdx); allIdx.set(cordIdx, bodyIdx.length);
+    const gacc = new Float32Array(ng * 3);
+    const norAttr = new THREE.BufferAttribute(Float32Array.from(N0), 3); norAttr.setUsage(THREE.DynamicDrawUsage);
+    function updateNormals() {
+      const Q = posAttr.array, out = norAttr.array; gacc.fill(0);
+      for (let f = 0; f < allIdx.length; f += 3) {
+        const a = allIdx[f] * 3, b = allIdx[f + 1] * 3, c = allIdx[f + 2] * 3;
+        const ux = Q[b] - Q[a], uy = Q[b + 1] - Q[a + 1], uz = Q[b + 2] - Q[a + 2];
+        const vx = Q[c] - Q[a], vy = Q[c + 1] - Q[a + 1], vz = Q[c + 2] - Q[a + 2];
+        const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+        for (const v of [allIdx[f], allIdx[f + 1], allIdx[f + 2]]) { const g = group[v] * 3; gacc[g] += nx; gacc[g + 1] += ny; gacc[g + 2] += nz; }
       }
-      return new THREE.BufferAttribute(arr, 4);
-    };
-    const isCord = (i) => P[i * 3] < x0 - 0.03;
-    const outerCol = colorsA(n, (i, c) => { c.copy(isCord(i) ? cCord : cOrg); return isCord(i) ? 1 : POUCH.sheer; });
-    const innerCol = colors(n, (i, c) => c.copy(cLin).lerp(cOrg, smooth(0.8, 0.9, theta[i] / Math.PI)));
-    const geo = (index, color) => {
+      for (let i = 0; i < n; i++) {
+        const g = group[i] * 3, l = Math.hypot(gacc[g], gacc[g + 1], gacc[g + 2]) || 1;
+        out[i * 3] = gacc[g] / l; out[i * 3 + 1] = gacc[g + 1] / l; out[i * 3 + 2] = gacc[g + 2] / l;
+      }
+      norAttr.needsUpdate = true;
+    }
+
+    posAttr.setUsage(THREE.DynamicDrawUsage);
+    const geo = (index) => {
       const g = new THREE.BufferGeometry();
-      g.setAttribute('position', posAttr); g.setAttribute('normal', nor);
-      g.setAttribute('uv', uvAttr); g.setAttribute('color', color); g.setIndex(index);
+      g.setAttribute('position', posAttr); g.setAttribute('normal', norAttr); g.setAttribute('uv', base.attributes.uv);
+      g.setIndex(new THREE.BufferAttribute(index instanceof Uint32Array ? index : Uint32Array.from(index), 1));
       return g;
     };
-    const outer = new THREE.Mesh(geo(main, outerCol), matOuter);
-    const inner = new THREE.Mesh(geo(main, innerCol), matLining);
-    const capMesh = new THREE.Mesh(geo(cap, outerCol), matCap);
+    const tex = bodyM.material;
+    for (const t of [tex.map, tex.normalMap, tex.roughnessMap]) if (t) t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    tex.envMapIntensity = 0.9;
+    const mk = (side) => { const m = tex.clone(); m.side = side; return m; };
+    const outer = new THREE.Mesh(geo(main), mk(THREE.FrontSide));                 // 겉감 (모델 텍스처)
+    const lining = new THREE.Mesh(geo(main), new THREE.MeshStandardMaterial({     // 안감 (열리면 보이는 안쪽)
+      color: POUCH.lining, side: THREE.BackSide, roughness: 0.45, metalness: 0 }));
+    const capMesh = new THREE.Mesh(geo(cap), mk(THREE.DoubleSide));
+    const cords = new THREE.Mesh(geo(cordIdx), mk(THREE.DoubleSide));
 
-    const ouv = new Float32Array(on * 2);
-    for (let i = 0; i < on; i++) { ouv[i * 2] = OP[i * 3] * 4.5; ouv[i * 2 + 1] = OP[i * 3 + 2] * 4.5; }
-    openGeo.setAttribute('uv', new THREE.BufferAttribute(ouv, 2));
-    openGeo.setAttribute('color', colorsA(on, (i, c) => {
-      const rr = radii[i] / Rf;
-      if (rr > 1.0) { c.copy(cCord); return 1; }
-      const w = (1 - smooth(0.74, 0.86, rr)) * smooth(-0.1, 0.4, ON[i * 3 + 1]);   // 1 = 안감, 0 = 겉감
-      c.copy(cOrg).lerp(cLin, w);
-      return lerp(POUCH.sheer, 1, w);
-    }));
-    const openMesh = new THREE.Mesh(openGeo, matOpen);
+    /* 펼친 모델: 펼쳐진 원판과 같은 자리 · 같은 크기 · 납작하게 */
+    const openParts = meshesOf(openG), om = openParts[0];
+    const openGeo = om.geometry.clone().applyMatrix4(om.matrixWorld);
+    openGeo.computeBoundingBox();
+    const ob = openGeo.boundingBox;
+    const os = (2 * Rf) / Math.max(ob.max.x - ob.min.x, ob.max.z - ob.min.z);
+    openGeo.translate(-(ob.min.x + ob.max.x) / 2, -ob.min.y, -(ob.min.z + ob.max.z) / 2);
+    openGeo.scale(os, os * POUCH.flat, os);
+    openGeo.translate(cx, minY, cz);
+    const openMat = om.material; openMat.side = THREE.DoubleSide; openMat.envMapIntensity = 0.9;
+    const openMesh = new THREE.Mesh(openGeo, openMat);
 
     // 몸통 중심을 원점에 두고 크기 맞춤
     const space = new THREE.Group();
     space.position.set(-cx, -cy, -cz);
-    space.add(outer, inner, capMesh, openMesh);
-    for (const m of [outer, inner, capMesh, openMesh]) m.frustumCulled = false;
-    inner.renderOrder = 0; outer.renderOrder = 1; capMesh.renderOrder = 1; openMesh.renderOrder = 2;   // 안감 먼저, 겉감은 그 위에
+    space.add(lining, outer, capMesh, cords, openMesh);
+    for (const m of [outer, lining, capMesh, cords, openMesh]) m.frustumCulled = false;
+    lining.renderOrder = 0; outer.renderOrder = 1; capMesh.renderOrder = 1; cords.renderOrder = 1; openMesh.renderOrder = 2;
     const root = new THREE.Group();
     root.add(space);
     const scale = POUCH.size / closedWidth;
@@ -378,16 +301,16 @@
         const mt = smooth(0.02, 0.84, open);
         if (Math.abs(mt - last) > 1e-4) {
           last = mt;
-          if (mt === 0) posAttr.array.set(P0); else writeMorph(posAttr.array, mt);
+          if (mt === 0) { posAttr.array.set(P0); norAttr.array.set(N0); norAttr.needsUpdate = true; }
+          else { writeMorph(posAttr.array, mt); updateNormals(); }
           posAttr.needsUpdate = true;
-          all.computeVertexNormals();
         }
-        const capFade = 1 - smooth(0.01, 0.06, open);
-        const reveal = smooth(0.7, 0.95, open);
-        matCap.opacity = capFade; capMesh.visible = capFade > 0.001;
-        matOuter.opacity = matLining.opacity = 1 - reveal;
-        outer.visible = inner.visible = reveal < 0.999;
-        matOpen.opacity = reveal; openMesh.visible = reveal > 0.001;
+        const reveal = smooth(0.7, 0.95, open);       // 펼친 모델로 바뀌는 정도
+        fade(capMesh, 1 - smooth(0.01, 0.06, open));  // 입구가 열리는 순간 뚜껑 면이 사라짐
+        fade(cords, (1 - smooth(0.05, 0.4, open)));   // 끈은 열리면서 천천히 사라짐
+        fade(outer, 1 - reveal);
+        fade(lining, 1 - reveal);
+        fade(openMesh, reveal);
       },
     };
   }
@@ -427,7 +350,7 @@
   }
   buildPouch().then((m) => { isPouch = true; mount(m); }).catch((err) => {
     console.error('[3D Product] 파우치 파일을 불러오지 못했습니다:', POUCH.closed, POUCH.open, err);
-    loadEl.textContent = 'models 폴더의 closed.glb, open.glb, pouch-data.js를 확인해 주세요 (' + ((err && err.message) || err) + ')';
+    loadEl.textContent = 'models 폴더의 pouch-closed.glb, pouch-open.glb, pouch-data.js를 확인해 주세요 (' + ((err && err.message) || err) + ')';
   });
 
   /* ---------- 상태 ---------- */
