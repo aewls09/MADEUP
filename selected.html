@@ -96,53 +96,43 @@
     const reduce = SITE.reduce;
     let current = 0, busy = true;
 
-    /* ---------- 라인아트 : SVG 선을 펜처럼 직접 그림 ----------
-       story-lines.js 의 runs = 원본 SVG 선을 왼쪽 끝 → 오른쪽 끝 한 줄 순서로 다시 이은 것.
-       보이는 구간 [lo, hi] (전체 길이 대비 0~1) 만큼만 선을 그어 보여 줌.
-       다 그려지면 원본 SVG 선(orig)으로 바꿔서 완성 모습이 원본과 똑같음. */
+    /* ---------- 라인아트 : 한 붓으로 이어진 선을 펜처럼 그림 ----------
+       story-lines.js 의 d = 원본 SVG 매듭 선을 왼쪽 끝 → 오른쪽 끝 한 붓으로 이어 놓은 선 하나.
+       보이는 구간 [lo, hi] (전체 길이 대비 0~1) 만큼만 선을 그어 보여 줌. */
     const M = 0.002;                      // 끝까지 확실히 보이도록 두는 여유
+    const DRAW = 2.6;                     // 선 하나를 그리는 평균 시간(초) — 영상의 장면 전환 박자(약 2.5초)에 맞춤
     const pens = parts.map((part, i) => {
       const L = window.STORY_LINES && STORY_LINES[part.dataset.line];
       const box = part.querySelector('.part__art');
       if (!L) return null;
       const svg = document.createElementNS(NS, 'svg');
-      // 선의 양 끝이 화면 밖으로 나가도록 x0~x1 범위만 0vw~100vw 에 맞춤
-      const x0 = L.x0 ?? 0, x1 = L.x1 ?? L.w;
+      const x0 = L.x0 ?? 0, x1 = L.x1 ?? L.w;                   // x0~x1 이 화면 폭(0~100vw), 선 양 끝은 화면 밖
       svg.setAttribute('viewBox', x0 + ' 0 ' + (x1 - x0) + ' ' + L.h);
       svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       svg.setAttribute('fill', 'none');
-      svg.setAttribute('stroke-linejoin', 'round');   // 꺾이는 모서리의 뾰족한 삐침 제거
-      const mk = (d) => {
-        const p = document.createElementNS(NS, 'path');
-        p.setAttribute('d', d); p.setAttribute('stroke', L.color); p.setAttribute('stroke-width', L.stroke);
-        svg.appendChild(p); return p;
-      };
-      const runs = L.runs.map(mk);
-      const orig = mk(L.orig); orig.style.opacity = 0;          // 완성 모습 (원본 그대로)
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', L.d); p.setAttribute('stroke', L.color); p.setAttribute('stroke-width', L.stroke);
+      p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round');
+      svg.appendChild(p);
       box.appendChild(svg);
       box.style.setProperty('--ratio', L.h / (x1 - x0));
-      // 줄마다 길이와 전체에서의 시작 위치
-      let acc = 0;
-      const seg = runs.map((p) => { const len = p.getTotalLength(); const o = { p, len, s: acc }; acc += len; return o; });
-      const total = acc;
+      const total = p.getTotalLength();
       const s = part.dataset.dir === 'rtl' ? -1 : 1;  // 1: 왼쪽 끝에서 출발, -1: 오른쪽 끝에서 출발
       const win = { lo: 0, hi: 0 };
       const apply = () => {
-        const A = win.lo * total, B = win.hi * total;
-        const full = win.lo <= 0 && win.hi >= 1;
-        orig.style.opacity = full ? 1 : 0;
-        for (const r of seg) {
-          const a = Math.max(A, r.s), b = Math.min(B, r.s + r.len);
-          r.p.style.opacity = full ? 0 : 1;
-          if (b <= a) { r.p.style.strokeDasharray = '0 ' + (r.len * 2 + 10); r.p.style.strokeDashoffset = 0; continue; }
-          r.p.style.strokeDasharray = (b - a) + ' ' + (r.len * 2 + 10);
-          r.p.style.strokeDashoffset = -(a - r.s);
-        }
+        const A = Math.max(0, win.lo) * total, B = Math.min(1, win.hi) * total;
+        if (B - A < 0.5) { p.style.visibility = 'hidden'; return; }
+        p.style.visibility = 'visible';
+        p.style.strokeDasharray = (B - A) + ' ' + (total * 2);
+        p.style.strokeDashoffset = -A;
       };
-      const pen = { s, win, apply };
+      const pen = { s, win, apply, len: total };
       hide(pen);
       return pen;
     });
+    // 선마다 길이가 달라도 같은 빠르기로 그려지도록 (평균 길이 = DRAW 초)
+    const meanLen = pens.reduce((a, p) => a + (p ? p.len : 0), 0) / Math.max(1, pens.filter(Boolean).length);
+    const drawTime = (i) => (pens[i] ? DRAW * pens[i].len / meanLen : DRAW);
 
     // 처음 상태(안 보임) : 출발하는 끝 쪽에 보이는 구간을 0 길이로 둠
     function hide(p) {
@@ -156,8 +146,8 @@
     function draw(i, dur) {
       const p = pens[i]; if (!p) return;
       hide(p);
-      if (p.s > 0) { p.win.lo = -M; return gsap.to(p.win, { hi: 1 + M, duration: dur, ease: 'power1.inOut', onUpdate: p.apply }); }
-      p.win.hi = 1 + M; return gsap.to(p.win, { lo: -M, duration: dur, ease: 'power1.inOut', onUpdate: p.apply });
+      if (p.s > 0) { p.win.lo = -M; return gsap.to(p.win, { hi: 1 + M, duration: dur, ease: 'sine.inOut', onUpdate: p.apply }); }
+      p.win.hi = 1 + M; return gsap.to(p.win, { lo: -M, duration: dur, ease: 'sine.inOut', onUpdate: p.apply });
     }
     // 지우기 : 앞으로 갈 땐 그리던 방향 그대로 꼬리가 빠져나가고(dir 1),
     //          뒤로 갈 땐 출발했던 끝으로 되감김(dir -1)
@@ -214,7 +204,7 @@
         gsap.set(from, { autoAlpha: 0 });
         gsap.set(to.querySelectorAll('.part__top, .part__body'), { opacity: 1 });
         gsap.set(to, { autoAlpha: 1 });
-        draw(target, 2.2);
+        draw(target, drawTime(target));
         showText(to, 0.15);
       });
       gsap.delayedCall(1.5, quietWait);            // 그리는 동안에도 1.5초 뒤부터 다음 입력 가능
@@ -260,7 +250,12 @@
       gsap.set(parts[0], { autoAlpha: 1 });
       setUI(0);
       if (reduce) { pens[0] && showAll(pens[0]); busy = false; return; }
-      gsap.delayedCall(0.3, () => draw(0, 2.4));
+      // 글꼴·페이지 로딩이 끝나 화면이 한가해진 뒤에 그리기 시작 (로딩 중 버벅이며 끊겨 보이지 않게)
+      const loaded = document.readyState === 'complete' ? Promise.resolve() : new Promise((r) => addEventListener('load', r, { once: true }));
+      const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+      Promise.race([Promise.all([loaded, fonts]), new Promise((r) => setTimeout(r, 2500))])
+        .then(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))))
+        .then(() => gsap.delayedCall(0.25, () => draw(0, drawTime(0))));
       showText(parts[0], 0.35);
       gsap.delayedCall(1.2, () => { busy = false; });
     });
