@@ -58,18 +58,20 @@
         </article>
       </div>
 
-      <!-- 디자인 넘기기 : ← 이전 / 다음 → (휴대폰은 좌우로 빠르게 밀기, 키보드 ←→) -->
-      <div class="design-nav">
-        <button class="u design-nav__btn" id="design-prev" type="button" aria-label="Previous design">Prev</button>
-        <div class="design-nav__label">
-          <span class="num" id="design-num">01/04</span>
-          <span id="design-name">Cheonghong</span>
-          <span class="design-nav__note" id="design-note"></span>
-        </div>
-        <button class="u design-nav__btn" id="design-next" type="button" aria-label="Next design">Next</button>
+      <!-- 디자인 넘기기 : 화면 양옆의 < > 버튼 -->
+      <button class="design-arrow design-arrow--prev" id="design-prev" type="button" aria-label="Previous pouch">
+        <svg viewBox="0 0 24 48" aria-hidden="true"><path d="M18 4 L6 24 L18 44"/></svg>
+      </button>
+      <button class="design-arrow design-arrow--next" id="design-next" type="button" aria-label="Next pouch">
+        <svg viewBox="0 0 24 48" aria-hidden="true"><path d="M6 4 L18 24 L6 44"/></svg>
+      </button>
+      <div class="design-label">
+        <span class="num" id="design-num">01/04</span>
+        <span id="design-name">Cheonghong</span>
+        <span class="design-label__note" id="design-note"></span>
       </div>
 
-      <span class="info-step" data-t="pouch.hint">Drag, Scroll, Tap · Swipe for colours</span>
+      <span class="info-step" data-t="pouch.hint">Drag, Scroll, Tap</span>
       <span class="info-progress"></span>
     </section>
   </main>
@@ -109,7 +111,7 @@
   const DESIGNS = [
     { name: 'Cheonghong',  note: 'Design 02 · Aqua organza · Burgundy knot',
       closed: 'models/cheonghong-closed.glb', open: 'models/cheonghong-open.glb', data: 'models/cheonghong-data.js',
-      recolor: { from: D2, to: ['#85D4E0', '#8B222D'] }, openRecolor: { from: D2, to: ['#85D4E0', '#8B222D'] } },
+      recolor: { from: D2, to: ['#85D4E0', '#B22828'] }, openRecolor: { from: D2, to: ['#85D4E0', '#B22828'] } },
     { name: 'Cheonghawng', note: 'Design 01 · Yellow organza · Sky-blue knot',
       closed: 'models/pouch-closed.glb', open: 'models/pouch-open.glb', data: 'models/pouch-data.js',
       recolor: { from: D1, to: ['#FDD85E', '#7BADD4'] }, openRecolor: { from: D1, to: ['#FDD85E', '#7BADD4'] } },
@@ -157,8 +159,11 @@
   const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(3, 5, 4); scene.add(key);
   const rim = new THREE.PointLight(MINT, 2.2, 20, 0); rim.position.set(-4, -1, 3); scene.add(rim);
 
+  const slider = new THREE.Group();   // 좌우로 넘길 때 화면에서 수평으로만 미끄러짐 (회전과 분리)
   const holder = new THREE.Group();   // 회전·기울기는 여기에
-  scene.add(holder);
+  slider.add(holder);
+  scene.add(slider);
+  const SLIDE = 9;                     // 화면 밖으로 나가는 거리
 
   /* ---------- 파우치 불러오기 ---------- */
   const loader = new GLTFLoader();
@@ -445,25 +450,29 @@
   function showLoad(text) { loadEl.style.display = ''; loadEl.textContent = text; gsap.to(loadEl, { opacity: 0.6, duration: 0.3 }); }
   function hideLoad() { gsap.to(loadEl, { opacity: 0, duration: 0.4, onComplete: () => (loadEl.style.display = 'none') }); }
 
-  // 들어오기 : 넘긴 방향 반대편에서 미끄러져 들어옴
+  // 정면으로 돌려 놓기 : 지금까지 돈 각도를 없애서 파우치 앞면이 화면을 향하게
+  function faceFront() {
+    const t = clock ? clock.getElapsedTime() : 0;
+    S.spinV = 0;
+    S.spin = -(S.prog * Math.PI * 1.6 + (SITE.reduce ? 0 : t * 0.06));
+  }
+  // 들어오기 : 넘긴 방향에서 수평으로 미끄러져 들어옴 (크기 변화 없이, 정면 · 닫힌 상태로)
   function enter(m, dir) {
     model = m; isPouch = true;
     holder.add(m.group);
-    m.update(S.open, 0);
-    const s0 = m.group.scale.x;
-    if (SITE.reduce) return;
-    gsap.fromTo(m.group.position, { x: dir * 5 }, { x: 0, duration: 1.1, ease: 'power3.out' });
-    gsap.fromTo(m.group.scale, { x: s0 * 0.8, y: s0 * 0.8, z: s0 * 0.8 }, { x: s0, y: s0, z: s0, duration: 1.1, ease: 'power3.out' });
+    S.open = 0; loopT = -1;
+    m.update(0, 0);
+    faceFront();
+    if (SITE.reduce || !dir) { slider.position.x = 0; return; }
+    gsap.fromTo(slider.position, { x: dir * SLIDE }, { x: 0, duration: 0.9, ease: 'power3.out' });
   }
-  // 나가기 : 넘긴 방향으로 빠져나감
+  // 나가기 : 넘긴 반대 방향으로 수평으로 빠져나감
   function leave(m, dir) {
     if (!m) return Promise.resolve();
-    const s0 = m.group.scale.x;
     if (SITE.reduce) { holder.remove(m.group); return Promise.resolve(); }
     return new Promise((res) => {
-      gsap.to(m.group.scale, { x: s0 * 0.8, y: s0 * 0.8, z: s0 * 0.8, duration: 0.55, ease: 'power2.in' });
-      gsap.to(m.group.position, { x: -dir * 5, duration: 0.55, ease: 'power2.in', onComplete: () => {
-        holder.remove(m.group); m.group.position.x = 0; m.group.scale.setScalar(s0); res();
+      gsap.to(slider.position, { x: -dir * SLIDE, duration: 0.5, ease: 'power2.in', onComplete: () => {
+        holder.remove(m.group); res();
       } });
     });
   }
@@ -490,28 +499,16 @@
   }
 
   setLabel(0);
-  getDesign(0).then((m) => { hideLoad(); enter(m, 0);
-    if (!SITE.reduce) { const s0 = m.group.scale.x; gsap.from(m.group.scale, { x: s0 * 0.85, y: s0 * 0.85, z: s0 * 0.85, duration: 1.8, ease: 'power2.out' }); }
-  }).catch((err) => {
+  getDesign(0).then((m) => { hideLoad(); enter(m, 0); }).catch((err) => {
     console.error('[3D Product] 파우치 파일을 불러오지 못했습니다:', DESIGNS[0], err);
     loadEl.textContent = 'models 폴더의 ' + DESIGNS[0].closed + ', ' + DESIGNS[0].open + ' 를 확인해 주세요 (' + ((err && err.message) || err) + ')';
   });
 
-  document.getElementById('design-prev').addEventListener('click', () => go(-1));
-  document.getElementById('design-next').addEventListener('click', () => go(1));
-  addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') go(1);
-    if (e.key === 'ArrowLeft') go(-1);
-  });
-  // 트랙패드 가로 밀기 → 넘기기
-  let wheelX = 0, wheelT = 0;
-  addEventListener('wheel', (e) => {
-    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-    const now = performance.now();
-    if (now - wheelT > 400) wheelX = 0;
-    wheelT = now; wheelX += e.deltaX;
-    if (Math.abs(wheelX) > 80) { go(wheelX > 0 ? 1 : -1); wheelX = 0; wheelT = now + 600; }
-  }, { passive: true });
+  for (const [id, d] of [['design-prev', -1], ['design-next', 1]]) {
+    const b = document.getElementById(id);
+    b.addEventListener('pointerdown', (e) => e.stopPropagation());   // 화살표를 눌러도 파우치가 열리거나 돌지 않게
+    b.addEventListener('click', (e) => { e.stopPropagation(); go(d); });
+  }
 
   /* ---------- 상태 ---------- */
   const S = { open: 0, openT: 0, spin: 0, spinV: 0, mx: 0, my: 0, tmx: 0, tmy: 0, prog: 0, progT: 0, baseZ: 12 };
@@ -633,6 +630,8 @@
     S.spin += S.spinV; S.spinV *= 0.94;
 
     holder.rotation.y = S.spin + S.prog * Math.PI * 1.6 + (SITE.reduce ? 0 : time * 0.06);
+    // 옆으로 비켜 있을 때도 앞면이 카메라를 보게 → 미끄러질 때 옆면이 보이지 않고 평면처럼 이동
+    slider.rotation.y = Math.atan2(-slider.position.x, camera.position.z || 1);
     holder.rotation.x = S.my * 0.22;
     holder.rotation.z = -S.mx * 0.1;
     holder.position.y = SITE.reduce ? 0 : Math.sin(time * 0.6) * 0.06;
