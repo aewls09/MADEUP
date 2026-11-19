@@ -217,18 +217,31 @@ body[data-page="info"] .foot{ color:var(--paper); }
 .info-panel ul{ display:grid; }
 .info-panel li{ display:flex; justify-content:space-between; gap:16px; padding:6px 0; border-top:1px solid rgba(249,249,247,.25); }
 .info-step{ position:absolute; z-index:2; left:var(--pad); bottom:calc(var(--pad) + env(safe-area-inset-bottom)); opacity:.6; }
-/* 디자인 넘기기 (Prev · 01/04 이름 · Next) — 넓은 화면: 오른쪽 아래 / 휴대폰: 위쪽 가운데 */
-.design-nav{
-  position:absolute; z-index:3; right:var(--pad);
-  bottom:calc(var(--pad) * 2 + 20px + env(safe-area-inset-bottom));
-  display:flex; align-items:center; gap:22px;
+/* 파우치 넘기기 : 화면 양옆 가운데의 < > */
+.design-arrow{
+  position:absolute; z-index:3; top:50%; transform:translateY(-50%);
+  width:56px; height:96px; display:grid; place-items:center;
+  background:none; border:0; padding:0; color:inherit; cursor:pointer;
+  opacity:.6; transition:opacity .3s, transform .3s;
 }
-.design-nav__btn{ background:none; border:0; padding:6px 0; color:inherit; font:inherit; cursor:pointer; opacity:.75; transition:opacity .3s; }
-.design-nav__btn:hover{ opacity:1; }
-.design-nav__label{ display:grid; justify-items:center; gap:2px; min-width:12ch; text-align:center; }
-.design-nav__note{ opacity:.55; font-size:.85em; min-height:1.2em; }
+.design-arrow svg{ width:18px; height:36px; fill:none; stroke:currentColor; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round; }
+.design-arrow--prev{ left:calc(var(--pad) - 16px); }
+.design-arrow--next{ right:calc(var(--pad) - 16px); }
+.design-arrow:hover{ opacity:1; }
+.design-arrow--prev:hover{ transform:translate(-3px,-50%); }
+.design-arrow--next:hover{ transform:translate(3px,-50%); }
+.design-arrow:focus-visible{ opacity:1; outline:1px solid currentColor; outline-offset:-10px; }
+/* 지금 보이는 파우치 이름 (누르는 버튼 아님) */
+.design-label{
+  position:absolute; z-index:2; right:var(--pad);
+  bottom:calc(var(--pad) + env(safe-area-inset-bottom));
+  display:grid; justify-items:end; gap:2px; text-align:right; pointer-events:none;
+}
+.design-label__note{ opacity:.55; font-size:.85em; }
 @media (max-width: 760px){
-  .design-nav{ left:var(--pad); right:var(--pad); bottom:auto; top:calc(var(--bar-h) + 30px); justify-content:space-between; }
+  .design-arrow{ width:44px; height:80px; }
+  .design-arrow svg{ width:14px; height:28px; }
+  .design-label{ left:var(--pad); right:var(--pad); bottom:auto; top:calc(var(--bar-h) + 30px); justify-items:center; text-align:center; }
 }
 .info-progress{
   position:absolute; z-index:2; left:0; bottom:0; height:1px; width:100%;

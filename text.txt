@@ -35,7 +35,7 @@ pouch.detail3.label = (Colour)
 pouch.detail3.value = Cheonghong · Hawyeon · Cheonghawng · Sanrok
 pouch.4.title = (04) Close
 pouch.4.text = The traditional knot is not decoration. It is the handle. // 전통 매듭은 장식이 아니라 손잡이입니다.
-pouch.hint = Drag, Scroll, Tap
+pouch.hint = Drag, Scroll, Tap · Swipe for colours
 
 [Story · 4 파트 (selected.html) — 파트마다 라벨 / 큰 글 / 본문]
 # 브랜드 가이드라인(bb살려줘-1.pdf) 문장을 그대로 옮김
