@@ -58,7 +58,18 @@
         </article>
       </div>
 
-      <span class="info-step" data-t="pouch.hint">Drag, Scroll, Tap</span>
+      <!-- 디자인 넘기기 : ← 이전 / 다음 → (휴대폰은 좌우로 빠르게 밀기, 키보드 ←→) -->
+      <div class="design-nav">
+        <button class="u design-nav__btn" id="design-prev" type="button" aria-label="Previous design">Prev</button>
+        <div class="design-nav__label">
+          <span class="num" id="design-num">01/04</span>
+          <span id="design-name">Cheonghong</span>
+          <span class="design-nav__note" id="design-note"></span>
+        </div>
+        <button class="u design-nav__btn" id="design-next" type="button" aria-label="Next design">Next</button>
+      </div>
+
+      <span class="info-step" data-t="pouch.hint">Drag, Scroll, Tap · Swipe for colours</span>
       <span class="info-progress"></span>
     </section>
   </main>
@@ -86,14 +97,35 @@
      파우치 설정 — 파일 이름과 색은 여기서만 바꾸면 됩니다.
      파일은 site 폴더 안의 models 폴더에 넣으세요.
      ========================================================= */
-  const POUCH = {
-    closed: 'models/pouch-closed.glb',   // 닫힌 파우치 (Meshy 모델을 웹용으로 줄인 것. 몸통 body + 끈 cord 로 나뉘어 있음)
-    open:   'models/pouch-open.glb',     // 펼쳐진 파우치
+  /* 디자인 4종 — 좌우로 넘기면 차례로 바뀜.
+     파일은 models 폴더에. 파일이 아직 없는 디자인은 'Coming soon' 으로 표시되고, 파일을 넣으면 바로 나타남.
+     data = 파일을 더블클릭(file://)으로 열 때 쓰는 예비 파일 (없어도 서버/깃허브에서는 정상 작동) */
+  /* recolor = 같은 디자인 모델의 천·끈 색만 바꿔서 보여 줄 때.
+       from: 모델 텍스처 속 원래 색의 색상각(도) [천, 끈]  /  to: 바꿀 색 [천, 끈]
+       (은색 캡, 흰 안감처럼 채도가 낮은 부분은 그대로 둠) */
+  const D1 = [45, 210];   // 디자인 1 모델(꽃잎 매듭) : 노란 천 · 하늘색 끈
+  const D2 = [200, 350];  // 디자인 2 모델(엮은 매듭) : 하늘색 천 · 자주색 끈
+  // 색은 제품 사진의 파우치 4종에 맞춤 [천, 끈]
+  const DESIGNS = [
+    { name: 'Cheonghong',  note: 'Design 02 · Aqua organza · Burgundy knot',
+      closed: 'models/cheonghong-closed.glb', open: 'models/cheonghong-open.glb', data: 'models/cheonghong-data.js',
+      recolor: { from: D2, to: ['#85D4E0', '#8B222D'] }, openRecolor: { from: D2, to: ['#85D4E0', '#8B222D'] } },
+    { name: 'Cheonghawng', note: 'Design 01 · Yellow organza · Sky-blue knot',
+      closed: 'models/pouch-closed.glb', open: 'models/pouch-open.glb', data: 'models/pouch-data.js',
+      recolor: { from: D1, to: ['#FDD85E', '#7BADD4'] }, openRecolor: { from: D1, to: ['#FDD85E', '#7BADD4'] } },
+    { name: 'Sanrok',      note: 'Design 02 · Lime organza · Pink knot',
+      closed: 'models/cheonghong-closed.glb', open: 'models/cheonghong-open.glb', data: 'models/cheonghong-data.js',
+      recolor: { from: D2, to: ['#B0C64E', '#F4A9C6'] }, openRecolor: { from: D2, to: ['#B0C64E', '#F4A9C6'] } },
+    { name: 'Hawyeon',     note: 'Design 01 · Pink organza · Green knot',
+      closed: 'models/pouch-closed.glb', open: 'models/pouch-open.glb', data: 'models/pouch-data.js',
+      recolor: { from: D1, to: ['#F7B9C1', '#3DAF7E'] }, openRecolor: { from: D1, to: ['#F7B9C1', '#3DAF7E'] } },
+  ];
 
+  const POUCH = {
     size: 3.2,                // 닫힌 파우치의 화면 속 너비 (클수록 커짐)
-    spread: 0.8,              // 다 펼쳤을 때 크기 (1 = 천 길이 그대로, 작을수록 작게 펼쳐짐)
-    flat: 0.55,               // 펼친 모델의 두께 (1 = 모델 그대로, 작을수록 납작)
-    lining: '#F6F1E3',        // 안감 색 (열릴 때 보이는 안쪽)
+    spread: 0.55,             // 다 펼쳤을 때 크기 (1 = 천 길이 그대로, 작을수록 작게 펼쳐짐)
+    flat: 0.8,                // 펼친 모델의 두께 (1 = 모델 그대로, 작을수록 납작)
+    lining: '#F4F2EE',        // 안감 색 (열릴 때 보이는 안쪽 — 펼친 모델의 흰 안감에 맞춤)
     lookDown: 52,             // 다 열렸을 때 위에서 내려다보는 각도(도)
   };
 
@@ -142,24 +174,69 @@
       (err) => { delete progress[url]; rej(err); });
   });
 
-  // 더블클릭(file://)으로 열면 브라우저가 .glb 읽기를 막아서, 글자로 담아 둔 예비 파일(models/pouch-data.js)을 씀
-  let backup = null;
-  const loadBackup = () => backup || (backup = new Promise((res, rej) => {
-    if (window.POUCH_DATA) return res(window.POUCH_DATA);
+  // 더블클릭(file://)으로 열면 브라우저가 .glb 읽기를 막아서, 글자로 담아 둔 예비 파일(models/…-data.js)을 씀
+  const backups = {};
+  const loadBackup = (file) => backups[file] || (backups[file] = new Promise((res, rej) => {
     const s = document.createElement('script');
-    s.src = 'models/pouch-data.js';
-    s.onload = () => (window.POUCH_DATA ? res(window.POUCH_DATA) : rej(new Error('pouch-data.js is empty')));
-    s.onerror = () => rej(new Error('models/pouch-data.js not found'));
+    s.src = file;
+    const before = window.POUCH_DATA;
+    s.onload = () => {
+      if (!window.POUCH_DATA) return rej(new Error(file + ' is empty'));
+      window.POUCH_DATA = Object.assign({}, before || {}, window.POUCH_DATA);   // 여러 예비 파일 내용을 합쳐 둠
+      res(window.POUCH_DATA);
+    };
+    s.onerror = () => rej(new Error(file + ' not found'));
     document.head.appendChild(s);
   }));
-  async function loadFromBackup(url) {
-    const data = await loadBackup();
-    if (!data[url]) throw new Error(url + ' is not in pouch-data.js');
+  async function loadFromBackup(url, file) {
+    if (!(window.POUCH_DATA && window.POUCH_DATA[url])) await loadBackup(file);
+    const data = window.POUCH_DATA || {};
+    if (!data[url]) throw new Error(url + ' is not in ' + file);
     const bin = atob(data[url]), buf = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
     return new Promise((res, rej) => loader.parse(buf.buffer, '', res, rej));
   }
-  const load = (url) => (location.protocol === 'file:' ? loadFromBackup(url) : loadFile(url).catch(() => loadFromBackup(url)));
+  const load = (url, file) => (location.protocol === 'file:' ? loadFromBackup(url, file) : loadFile(url).catch(() => loadFromBackup(url, file)));
+  /* 색 바꾸기 : 텍스처에서 천/끈 색(색상각 기준)만 골라 새 색으로. 명암(주름·결)은 그대로 */
+  function hueOf(r, g, b) {
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    if (!d) return { h: 0, s: 0 };
+    let h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return { h: (h * 60 + 360) % 360, s: d / mx };
+  }
+  const hueDist = (a, b) => { const d = Math.abs(a - b) % 360; return d > 180 ? 360 - d : d; };
+  function recolorMaterial(mat, rc) {
+    const src = mat.map; if (!src || !src.image) return;
+    const img = src.image, w = img.width, h = img.height;
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    const cx2 = cv.getContext('2d', { willReadFrequently: true });
+    cx2.drawImage(img, 0, 0);
+    const im = cx2.getImageData(0, 0, w, h), d = im.data;
+    const to = rc.to.map((c) => new THREE.Color(c)).map((c) => [c.r * 255, c.g * 255, c.b * 255]);
+    // 1차 : 천/끈 픽셀의 평균 밝기 재기
+    const cls = new Uint8Array(w * h), sum = [0, 0], cnt = [0, 0];
+    for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+      const { h: hh, s } = hueOf(d[i], d[i + 1], d[i + 2]);
+      if (s < 0.06) continue;                       // 흰 안감·은색 캡·순백 반사는 그대로
+      const k = hueDist(hh, rc.from[0]) <= hueDist(hh, rc.from[1]) ? 0 : 1;
+      if (hueDist(hh, rc.from[k]) > 40) continue;
+      cls[p] = k + 1;                               // 옅은 광택 부분도 같은 색으로 (하얗게 뜨지 않게)
+      if (s >= 0.16) { sum[k] += Math.max(d[i], d[i + 1], d[i + 2]); cnt[k]++; }
+    }
+    const ref = [sum[0] / (cnt[0] || 1), sum[1] / (cnt[1] || 1)];
+    // 2차 : 새 색 × (픽셀 밝기 / 평균 밝기)
+    for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+      const k = cls[p] - 1; if (k < 0) continue;
+      const f = Math.max(d[i], d[i + 1], d[i + 2]) / ref[k];
+      d[i] = Math.min(255, to[k][0] * f); d[i + 1] = Math.min(255, to[k][1] * f); d[i + 2] = Math.min(255, to[k][2] * f);
+    }
+    cx2.putImageData(im, 0, 0);
+    const t = new THREE.CanvasTexture(cv);
+    t.flipY = src.flipY; t.colorSpace = src.colorSpace; t.wrapS = src.wrapS; t.wrapT = src.wrapT;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    mat.map = t; mat.needsUpdate = true;
+  }
+
   // 투명도 바꾸기 (완전히 보일 때는 불투명으로 그려서 겹침 오류가 없게)
   function fade(mesh, o) {
     const m = mesh.material, tr = o < 0.999;
@@ -170,8 +247,11 @@
   const meshesOf = (gltf) => { const list = []; gltf.scene.updateMatrixWorld(true); gltf.scene.traverse((o) => o.isMesh && list.push(o)); return list; };
 
   /* 닫힌 파우치가 입구부터 벌어지며 납작한 원판으로 펼쳐지고, 끝에서 펼친 모델로 바뀜 */
-  async function buildPouch() {
-    const [closedG, openG] = await Promise.all([load(POUCH.closed), load(POUCH.open)]);
+  async function buildPouch(def) {
+    const [closedG, openG] = await Promise.all([load(def.closed, def.data), load(def.open, def.openData || def.data)]);
+    // 같은 파일을 쓰는 디자인도 따로 읽어 오므로(브라우저가 한 번 받은 파일은 다시 안 받음) 색을 각각 바꿀 수 있음
+    if (def.recolor) recolorMaterial(meshesOf(closedG)[0].material, def.recolor);
+    if (def.openRecolor) recolorMaterial(meshesOf(openG)[0].material, def.openRecolor);
     const parts = meshesOf(closedG);
     const bodyM = parts.find((m) => !/cord/i.test(m.name)) || parts[0];
     const cordM = parts.find((m) => /cord/i.test(m.name));
@@ -204,17 +284,19 @@
     }
     const P0 = Float32Array.from(P);
     const MOUTH = 2.75;   // 입구(조여진 목) 경계 각도. 이보다 위쪽 면은 열리는 순간 사라짐
-    const rimW = new Float32Array(n);
-    for (let i = 0; i < n; i++) rimW[i] = smooth(MOUTH - 0.45, MOUTH, theta[i]);
+
 
     function writeMorph(out, t) {
       const L = Math.PI * R0 + (Rf - Math.PI * R0) * t;
-      const k = (1 - t) * Math.PI / L, keep = 1 - 0.75 * t, rimFlat = Math.min(1, t / 0.25);
+      const k = (1 - t) * Math.PI / L, keep = 1 - 0.75 * t, rimFlat = Math.min(1, t / 0.25), clampT = smooth(0, 0.2, t);
       for (let i = 0; i < n; i++) {
-        const s = theta[i] * L / Math.PI, a = k * s;
+        // 입구 위쪽 점은 입구 둘레로 모아서, 열린 가장자리가 깔끔한 타원이 되게
+        const th = theta[i] > MOUTH ? theta[i] + (MOUTH - theta[i]) * clampT : theta[i];
+        const rw = smooth(MOUTH - 0.9, MOUTH, th);            // 입구 가까운 잔주름일수록 평평하게 펴짐
+        const s = th * L / Math.PI, a = k * s;
         let rho, h;
         if (a > 1e-4) { rho = Math.sin(a) / k; h = (1 - Math.cos(a)) / k; } else { rho = s; h = 0; }
-        const o = bump[i] * keep * (1 - rimFlat * rimW[i]), nr = Math.sin(a) * o;
+        const o = bump[i] * keep * (1 - rimFlat * rw), nr = Math.sin(a) * o;
         out[i * 3] = cx + (rho + nr) * cphi[i];
         out[i * 3 + 1] = minY + h - Math.cos(a) * o;
         out[i * 3 + 2] = cz + (rho + nr) * sphi[i];
@@ -225,7 +307,7 @@
     const main = [], cap = [];
     for (let f = 0; f < bodyIdx.length; f += 3) {
       const a = bodyIdx[f], b = bodyIdx[f + 1], c = bodyIdx[f + 2];
-      (Math.max(theta[a], theta[b], theta[c]) > MOUTH ? cap : main).push(a, b, c);
+      (Math.min(theta[a], theta[b], theta[c]) > MOUTH ? cap : main).push(a, b, c);
     }
 
     /* 매끈한 음영: 텍스처 이음선에서 갈라진 같은 자리 꼭짓점들은 하나로 묶어서 법선 계산 */
@@ -274,8 +356,13 @@
     const openParts = meshesOf(openG), om = openParts[0];
     const openGeo = om.geometry.clone().applyMatrix4(om.matrixWorld);
     openGeo.computeBoundingBox();
+    { // Meshy 가 세워서 만든 경우(두께가 앞뒤 z 방향) → 안감이 위로 오게 바닥에 눕힘
+      const b0 = openGeo.boundingBox;
+      if (b0.max.z - b0.min.z < b0.max.y - b0.min.y) { openGeo.rotateX(-Math.PI / 2); openGeo.computeBoundingBox(); }
+    }
     const ob = openGeo.boundingBox;
-    const os = (2 * Rf) / Math.max(ob.max.x - ob.min.x, ob.max.z - ob.min.z);
+    // 펼친 모델은 양옆(x)에 매듭이 붙어 있어서, 앞뒤 길이(z)로 타원 크기를 재서 펼쳐진 원판과 맞춤
+    const os = (2 * Rf) / ((ob.max.z - ob.min.z) * 0.88);
     openGeo.translate(-(ob.min.x + ob.max.x) / 2, -ob.min.y, -(ob.min.z + ob.max.z) / 2);
     openGeo.scale(os, os * POUCH.flat, os);
     openGeo.translate(cx, minY, cz);
@@ -341,17 +428,90 @@
     return 0;
   }
 
-  let model = null, isPouch = false;
-  function mount(m) {
-    model = m;
-    holder.add(m.group);
-    if (!SITE.reduce) gsap.from(m.group.scale, { x: m.group.scale.x * 0.85, y: m.group.scale.y * 0.85, z: m.group.scale.z * 0.85, duration: 1.8, ease: 'power2.out' });
-    gsap.to(loadEl, { opacity: 0, duration: 0.4, onComplete: () => (loadEl.style.display = 'none') });
+  /* ---------- 디자인 넘기기 (좌우) ---------- */
+  let model = null, isPouch = false, cur = 0, swapping = false;
+  const cache = {};                                   // 한 번 불러온 디자인은 다시 안 불러옴
+  const nameEl = document.getElementById('design-name');
+  const numEl = document.getElementById('design-num');
+  const noteEl = document.getElementById('design-note');
+  const pad2 = (n) => String(n).padStart(2, '0');
+  const getDesign = (i) => cache[i] || (cache[i] = buildPouch(DESIGNS[i]));
+
+  function setLabel(i) {
+    numEl.textContent = pad2(i + 1) + '/' + pad2(DESIGNS.length);
+    nameEl.textContent = DESIGNS[i].name;
+    noteEl.textContent = DESIGNS[i].note || '';
   }
-  buildPouch().then((m) => { isPouch = true; mount(m); }).catch((err) => {
-    console.error('[3D Product] 파우치 파일을 불러오지 못했습니다:', POUCH.closed, POUCH.open, err);
-    loadEl.textContent = 'models 폴더의 pouch-closed.glb, pouch-open.glb, pouch-data.js를 확인해 주세요 (' + ((err && err.message) || err) + ')';
+  function showLoad(text) { loadEl.style.display = ''; loadEl.textContent = text; gsap.to(loadEl, { opacity: 0.6, duration: 0.3 }); }
+  function hideLoad() { gsap.to(loadEl, { opacity: 0, duration: 0.4, onComplete: () => (loadEl.style.display = 'none') }); }
+
+  // 들어오기 : 넘긴 방향 반대편에서 미끄러져 들어옴
+  function enter(m, dir) {
+    model = m; isPouch = true;
+    holder.add(m.group);
+    m.update(S.open, 0);
+    const s0 = m.group.scale.x;
+    if (SITE.reduce) return;
+    gsap.fromTo(m.group.position, { x: dir * 5 }, { x: 0, duration: 1.1, ease: 'power3.out' });
+    gsap.fromTo(m.group.scale, { x: s0 * 0.8, y: s0 * 0.8, z: s0 * 0.8 }, { x: s0, y: s0, z: s0, duration: 1.1, ease: 'power3.out' });
+  }
+  // 나가기 : 넘긴 방향으로 빠져나감
+  function leave(m, dir) {
+    if (!m) return Promise.resolve();
+    const s0 = m.group.scale.x;
+    if (SITE.reduce) { holder.remove(m.group); return Promise.resolve(); }
+    return new Promise((res) => {
+      gsap.to(m.group.scale, { x: s0 * 0.8, y: s0 * 0.8, z: s0 * 0.8, duration: 0.55, ease: 'power2.in' });
+      gsap.to(m.group.position, { x: -dir * 5, duration: 0.55, ease: 'power2.in', onComplete: () => {
+        holder.remove(m.group); m.group.position.x = 0; m.group.scale.setScalar(s0); res();
+      } });
+    });
+  }
+
+  async function go(dir) {
+    if (swapping) return;
+    swapping = true; touched();
+    const i = (cur + dir + DESIGNS.length) % DESIGNS.length;
+    cur = i; setLabel(i);
+    const out = leave(model, dir); model = null;
+    const pending = getDesign(i);
+    let ready = false;
+    pending.then(() => (ready = true), () => (ready = true));
+    await out;
+    if (!ready) showLoad('Loading');
+    try {
+      const m = await pending;
+      if (cur === i) { hideLoad(); enter(m, dir); }
+    } catch (err) {
+      console.warn('[3D Product] ' + DESIGNS[i].name + ' 파일이 아직 없습니다:', DESIGNS[i].closed, DESIGNS[i].open, err);
+      if (cur === i) showLoad('Coming soon');
+    }
+    swapping = false;
+  }
+
+  setLabel(0);
+  getDesign(0).then((m) => { hideLoad(); enter(m, 0);
+    if (!SITE.reduce) { const s0 = m.group.scale.x; gsap.from(m.group.scale, { x: s0 * 0.85, y: s0 * 0.85, z: s0 * 0.85, duration: 1.8, ease: 'power2.out' }); }
+  }).catch((err) => {
+    console.error('[3D Product] 파우치 파일을 불러오지 못했습니다:', DESIGNS[0], err);
+    loadEl.textContent = 'models 폴더의 ' + DESIGNS[0].closed + ', ' + DESIGNS[0].open + ' 를 확인해 주세요 (' + ((err && err.message) || err) + ')';
   });
+
+  document.getElementById('design-prev').addEventListener('click', () => go(-1));
+  document.getElementById('design-next').addEventListener('click', () => go(1));
+  addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') go(1);
+    if (e.key === 'ArrowLeft') go(-1);
+  });
+  // 트랙패드 가로 밀기 → 넘기기
+  let wheelX = 0, wheelT = 0;
+  addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    const now = performance.now();
+    if (now - wheelT > 400) wheelX = 0;
+    wheelT = now; wheelX += e.deltaX;
+    if (Math.abs(wheelX) > 80) { go(wheelX > 0 ? 1 : -1); wheelX = 0; wheelT = now + 600; }
+  }, { passive: true });
 
   /* ---------- 상태 ---------- */
   const S = { open: 0, openT: 0, spin: 0, spinV: 0, mx: 0, my: 0, tmx: 0, tmy: 0, prog: 0, progT: 0, baseZ: 12 };
@@ -388,8 +548,14 @@
     S.spinV += dx * 0.0009;
     if (drag.mouse) S.openT = clamp01(S.openT + dy * 0.004);   // 아래로 끌면 열림 (스크롤 방향과 같게)
   });
-  const endDrag = () => {
-    if (drag && drag.moved < 8 && performance.now() - drag.t < 350) S.openT = S.openT > 0.5 ? 0 : 1;
+  const endDrag = (e) => {
+    if (drag) {
+      const dt = performance.now() - drag.t, dx = (e && e.clientX != null ? e.clientX : drag.lx) - drag.x, dy = (e && e.clientY != null ? e.clientY : drag.ly) - drag.y;
+      if (drag.moved < 8 && dt < 350) S.openT = S.openT > 0.5 ? 0 : 1;                       // 짧게 탭 = 열기/닫기
+      else if (dt < 320 && Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5) {           // 빠르게 좌우로 밀기 = 다른 디자인
+        S.spinV = 0; go(dx < 0 ? 1 : -1);
+      }
+    }
     drag = null;
   };
   addEventListener('pointerup', endDrag);

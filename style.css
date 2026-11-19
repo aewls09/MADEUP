@@ -217,6 +217,19 @@ body[data-page="info"] .foot{ color:var(--paper); }
 .info-panel ul{ display:grid; }
 .info-panel li{ display:flex; justify-content:space-between; gap:16px; padding:6px 0; border-top:1px solid rgba(249,249,247,.25); }
 .info-step{ position:absolute; z-index:2; left:var(--pad); bottom:calc(var(--pad) + env(safe-area-inset-bottom)); opacity:.6; }
+/* 디자인 넘기기 (Prev · 01/04 이름 · Next) — 넓은 화면: 오른쪽 아래 / 휴대폰: 위쪽 가운데 */
+.design-nav{
+  position:absolute; z-index:3; right:var(--pad);
+  bottom:calc(var(--pad) * 2 + 20px + env(safe-area-inset-bottom));
+  display:flex; align-items:center; gap:22px;
+}
+.design-nav__btn{ background:none; border:0; padding:6px 0; color:inherit; font:inherit; cursor:pointer; opacity:.75; transition:opacity .3s; }
+.design-nav__btn:hover{ opacity:1; }
+.design-nav__label{ display:grid; justify-items:center; gap:2px; min-width:12ch; text-align:center; }
+.design-nav__note{ opacity:.55; font-size:.85em; min-height:1.2em; }
+@media (max-width: 760px){
+  .design-nav{ left:var(--pad); right:var(--pad); bottom:auto; top:calc(var(--bar-h) + 30px); justify-content:space-between; }
+}
 .info-progress{
   position:absolute; z-index:2; left:0; bottom:0; height:1px; width:100%;
   background:var(--mint); transform-origin:left; transform:scaleX(0);
@@ -267,9 +280,9 @@ body[data-page="info"] .foot{ color:var(--paper); }
    STORY — 4 파트 (selected.html)
    파트마다 배경색 + 라인아트(한붓그리기). 한 번에 한 파트씩 넘김
    ========================================================= */
-body[data-page="selected"]{ background:#6DC7E6; }
+body[data-page="selected"]{ background:#7ACFEA; }
 body[data-page="selected"] .bar{ background:transparent; }
-.parts{ position:fixed; inset:0; overflow:hidden; background:#6DC7E6; }
+.parts{ position:fixed; inset:0; overflow:hidden; background:#7ACFEA; }
 .part{ position:absolute; inset:0; visibility:hidden; }
 
 /* 라인아트 : 화면 왼쪽 끝(0vw) ~ 오른쪽 끝(100vw), 세로 가운데 */

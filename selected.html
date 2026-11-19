@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#6DC7E6">
+  <meta name="theme-color" content="#7ACFEA">
   <title>Story</title>
   <script>try{var pt=sessionStorage.getItem('pt');if(pt){document.documentElement.classList.add('pt-in');if(pt==='dark')document.documentElement.classList.add('pt-dark')}}catch(e){}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,13 +26,14 @@
        · 한 번 스크롤(또는 한 번 밀기)에 한 파트씩 넘어감
        · 넘길 때 지금 선이 왼쪽→오른쪽으로 지워지고, 배경색이 바뀐 뒤
          다음 선이 화면 왼쪽 끝(0vw)에서 오른쪽 끝(100vw)까지 한붓그리기로 그려짐
-       · 배경색 : data-bg / 라인아트 : data-line (red · green · blue · pink)
+       · 배경색 : data-bg / 선 색 : data-color / 라인아트 모양 : data-line (red · green · blue · pink)
+       · 색은 브랜드북 Color 페이지의 파우치 4색 + 포인트 색 (Cheonghong · Hawyeon · Cheonghawng · Sanrok)
        · 그리는 방향 : 기본은 왼쪽→오른쪽, data-dir="rtl" 이면 오른쪽→왼쪽 (지금 Part 2 · 4)
        · 글 : text.txt 의 [Story] 부분
        ========================================================= -->
   <main class="parts" id="parts">
 
-    <section class="part" data-bg="#6DC7E6" data-line="red" data-label="Origin">
+    <section class="part" data-bg="#7ACFEA" data-line="red" data-color="#D4242B" data-label="Origin">
       <div class="part__top">
         <p class="part__meta"><span class="num"><span class="k">(Part)</span> 01/04</span> <span data-t="story.1.label">We Made</span></p>
         <h2 class="part__head" data-split data-t="story.1.head">Defined by the knot, open or closed.</h2>
@@ -41,7 +42,7 @@
       <p class="part__body" data-t="story.1.text">한복의 반투명 오간자로 만든 보따리 파우치. 끈을 당기면 천이 모여 주머니가 되고, 풀면 펼쳐집니다. 전통 매듭은 장식이 아니라 손잡이입니다.</p>
     </section>
 
-    <section class="part" data-bg="#FFA594" data-line="green" data-label="Philosophy" data-dir="rtl">
+    <section class="part" data-bg="#F7928C" data-line="green" data-color="#2FA641" data-label="Philosophy" data-dir="rtl">
       <div class="part__top">
         <p class="part__meta"><span class="num"><span class="k">(Part)</span> 02/04</span> <span data-t="story.2.label">Colorway</span></p>
         <h2 class="part__head" data-split data-t="story.2.head">MADEUP’s pouch colors are extracted directly from hanbok organza.</h2>
@@ -50,7 +51,7 @@
       <p class="part__body" data-t="story.2.text">파우치 컬러는 한복 오간자에서 직접 추출했습니다. 빛이 비치고 안감과 겹쳐지는 색을 전통색을 바탕으로 현대적으로 조정했고, 대비되는 조화로운 색을 더해 파우치의 이미지를 완성했습니다.</p>
     </section>
 
-    <section class="part" data-bg="#F9C235" data-line="blue" data-label="Material">
+    <section class="part" data-bg="#F6BD1F" data-line="blue" data-color="#6FAAE0" data-label="Material">
       <div class="part__top">
         <p class="part__meta"><span class="num"><span class="k">(Part)</span> 03/04</span> <span data-t="story.3.label">We Bind</span></p>
         <h2 class="part__head" data-split data-t="story.3.head">A knot’s character lives in its form, its structure and the way it connects.</h2>
@@ -59,7 +60,7 @@
       <p class="part__body" data-t="story.3.text">매듭의 성격은 형태, 구조, 연결 방식에서 드러납니다. 선과 긴장, 구성의 차이가 매듭마다 고유한 모습과 가능성을 만듭니다.</p>
     </section>
 
-    <section class="part" data-bg="#74C43C" data-line="pink" data-label="Promise" data-dir="rtl">
+    <section class="part" data-bg="#6BC62E" data-line="pink" data-color="#E5298C" data-label="Promise" data-dir="rtl">
       <div class="part__top">
         <p class="part__meta"><span class="num"><span class="k">(Part)</span> 04/04</span> <span data-t="story.4.label">We Whole</span></p>
         <h2 class="part__head" data-split data-t="story.4.head">Scattered marks wrap, secure and finish into a single logo.</h2>
@@ -111,7 +112,7 @@
       svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       svg.setAttribute('fill', 'none');
       const p = document.createElementNS(NS, 'path');
-      p.setAttribute('d', L.d); p.setAttribute('stroke', L.color); p.setAttribute('stroke-width', L.stroke);
+      p.setAttribute('d', L.d); p.setAttribute('stroke', part.dataset.color || L.color); p.setAttribute('stroke-width', L.stroke);
       p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round');
       svg.appendChild(p);
       box.appendChild(svg);
