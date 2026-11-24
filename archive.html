@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ACE3D9">
-  <title>About</title>
+  <title>About — Brand Book</title>
   <script>try{var pt=sessionStorage.getItem('pt');if(pt){document.documentElement.classList.add('pt-in');if(pt==='dark')document.documentElement.classList.add('pt-dark')}}catch(e){}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body data-page="archive">
+<body data-page="archive" class="is-book">
 
   <header class="bar" id="bar">
     <a class="bar__logo" href="index.html" aria-label="Home"><img src="m_logo.png" alt="M" onerror="this.outerHTML='<span>M</span>'"></a>
@@ -21,266 +21,186 @@
     <a class="u bar__word" href="archive.html" aria-label="About"><img src="About.png" alt="About" onerror="this.outerHTML='About'"></a>
   </header>
 
-  <main>
-    <!-- 소개는 핀 고정, 목록이 그 위로 천천히 덮으며 올라옴 -->
-    <section class="arch-head">
-      <div class="arch-head__inner split">
-        <div>
-          <p class="k">(About)</p>
-          <p class="num"><span class="k">(Entries)</span> <span id="arch-count">00</span></p>
-        </div>
-        <p data-t="about.intro">MADEUP Brand Guidelines — We Made, We Bind, We Whole. Select any line to open it.</p>
-      </div>
-    </section>
-
-    <section class="arch-sheet">
-      <div class="arch-bar">
-        <span>(No.)</span><span>(Title)</span><span>(Category)</span><span>(Note)</span>
-        <span class="num" id="arch-pos" style="justify-self:end">00/00</span>
-      </div>
-      <ol class="arch-list" id="arch-list"></ol>
-    </section>
-  </main>
-
-  <footer class="foot tick">
-    <div class="foot__cols">
-      <div class="foot__links">
-        <a class="u" href="mailto:mjc2team@yahoo.com" data-t="email" data-mail>mjc2team@yahoo.com</a>
-        <a class="u" href="https://instagram.com/" target="_blank" rel="noopener" data-t="instagram" data-href="instagram.link">@madeup</a>
-      </div>
-      <p data-reveal data-t="footer.intro">2026학년도 명지전문대 커뮤니케이션디자인과 졸업전시회 콘텐츠캡스톤디자인 102팀 MADEUP.</p>
+  <main class="book">
+    <div class="book-meta">
+      <span class="k">(About)</span>
+      <span class="k">(MADEUP Brand Book)</span>
     </div>
-    <div class="foot__row"><span data-t="copyright">© 2026</span></div>
-  </footer>
 
-  <!-- 팝업 : 텍스트 + 사진 -->
-  <div class="story-pop" id="story-pop" role="dialog" aria-modal="true" aria-labelledby="sp-title" aria-hidden="true">
-    <article class="story-pop__sheet" data-lenis-prevent>
-      <header class="story-pop__head">
-        <span class="num" id="sp-no">01/08</span>
-        <button class="u" type="button" data-close>Close</button>
-      </header>
-      <figure class="story-pop__fig" id="sp-fig"></figure>
-      <div class="story-pop__text">
-        <div class="sp-meta">
-          <span><span class="k">(Title)</span> <span id="sp-title"></span></span>
-          <span><span class="k">(Category)</span> <span id="sp-cat"></span></span>
-          <span><span class="k">(Note)</span> <span id="sp-kicker"></span></span>
-        </div>
-        <div class="sp-body" id="sp-body"></div>
-      </div>
-      <footer class="story-pop__foot tick">
-        <button class="u" type="button" data-step="-1">Previous</button>
-        <button class="u" type="button" data-step="1">Next</button>
-      </footer>
-    </article>
-  </div>
+    <!-- 책이 들어가는 자리 (StPageFlip) -->
+    <div class="book-stage" id="book-stage"><div class="book-flip" id="book-flip"></div></div>
 
-  <!--
-    예비 데이터: html 파일을 더블클릭으로 바로 열면(file://) 브라우저가 archive.txt를 읽지 못해서
-    그때만 이 내용을 씁니다. 서버/호스팅에 올리면 항상 archive.txt가 우선입니다.
-  -->
-  <script type="text/plain" id="archive-fallback">
-Opening | We Made | Defined by the knot, open or closed | about/01-1.jpg, about/01-2.jpg, about/01-3.jpg, about/01-4.jpg, about/01-5.jpg | MADEUP is a bojagi pouch made of sheer organza, the fabric of hanbok. Pull the cord and the cloth gathers into a pouch; loosen it and it opens flat. The traditional knot is not decoration. It is the handle. // 한복의 반투명 오간자로 만든 보따리 파우치. 끈을 당기면 천이 모여 주머니가 되고, 풀면 펼쳐집니다. 전통 매듭은 장식이 아니라 손잡이입니다.
-Colorway | We Made | Cheonghong · Hawyeon · Cheonghawng · Sanrok | about/02-1.jpg, about/02-2.jpg, about/02-3.jpg, about/02-4.jpg, about/02-5.jpg | MADEUP’s pouch colors are extracted directly from hanbok organza, then modernized from traditional hues. A contrasting, harmonious color completes the look. // 파우치 컬러는 한복 오간자에서 직접 추출했습니다. 빛이 비치고 안감과 겹쳐지는 색을 전통색을 바탕으로 현대적으로 조정했고, 대비되는 조화로운 색을 더해 파우치의 이미지를 완성했습니다.
-Inside the Knot | We Made | Saengjok · Dongsimgyeol · Maehwa | about/03-1.jpg, about/03-2.jpg, about/03-3.jpg, about/03-4.jpg, about/03-5.jpg, about/03-6.jpg | A knot’s character lives in its form, its structure and the way it connects. Differences in line, tension and composition give each knot its own look and its own possibilities. // 매듭의 성격은 형태, 구조, 연결 방식에서 드러납니다. 선과 긴장, 구성의 차이가 매듭마다 고유한 모습과 가능성을 만듭니다. // Saengjok — 한 줄의 끈으로 만드는 단순한 형태, 매듭의 기본이 되는 구조. // Dongsimgyeol — 두 고리가 서로 맞물려 고정됩니다. “같은 마음”을 뜻하며 화합을 상징합니다. // Maehwa — 고리들이 매화 꽃잎처럼 퍼지는 장식 매듭. 고결함을 상징합니다.
-Brand Core | We Bind | Warp · Secure · Finish | about/04-1.jpg, about/04-2.jpg | Warp 감싸기 · Secure 고정하기 · Finish 마무리하기 // Exciting yet Composed — 새로운 것보다, 새로운 가능성을 제안한다. Communicates the potential of products through a refined and composed voice. 제품이 지닌 가능성을 감각적이고 차분한 언어로 전달합니다. // Casual and Witty — 이야기하듯 자연스럽게, 억지스럽지 않게. // Bold and Inspiring — 우리는 답을 주지 않는다. 함께 만들어간다. Inspires new perspectives and possibilities through the brand's distinctive vision and creative messages. 브랜드만의 관점과 창의적인 메시지로 새로운 영감과 가능성을 제안합니다.
-Graphic Motif | We Bind | Loop Motif Variations | about/05-1.jpg, about/05-2.jpg, about/05-3.jpg, about/05-4.jpg | Born from the loop a pulled cord forms, MADEUP’s motif expands into patterns, symbols and large-scale graphics. // MADEUP의 그래픽 모티프는 끈을 당길 때 생기는 고리에서 출발합니다. 하나의 고리를 반복하고 변주해 패턴과 심볼, 큰 그래픽으로 확장합니다. // Keeping line weight and curvature consistent lets the motif read as one brand across any scale or background. // 선의 굵기와 곡률을 일정하게 유지하면, 어떤 크기와 배경에서도 하나의 브랜드로 읽힙니다. // Graphic Motif at Large Scale 확대하여 활용한 그래픽 모티프 · Loop Motif Variations 고리 모티프의 변주 (원형, 마름모, 꽃 형태) · Pattern 그래픽 모티프를 이용한 패턴
-Brand Logo | We Bind | 타이포형 로고 · 심볼형 로고 | about/06-1.jpg, about/06-2.jpg, about/06-3.jpg | Structural Form through Intertwining Lines — 선의 교차를 통한 구조적 형태 // Expressing the organic connection and continuity between lines. — 선의 유기적 연결과 연속성을 표현 // Emphasis on the Point of Convergence and Cohesion — 수렴과 결속 지점의 강조 // Repetition of the Loop Motif into a Symbol — 고리 모티프의 반복을 통한 심볼 구성
-Color | We Bind | Madeup Pale · Madeup Dark Brown · Madeup Ivory | about/07-1.jpg, about/07-2.jpg, about/07-3.jpg | Mint for possibility, brown for trust, ivory for balance. MADEUP's brand colors. // 민트는 새로운 가능성을, 브라운은 신뢰를, 아이보리는 그 사이의 균형을 담은 MADEUP의 브랜드 컬러입니다. // Four colors extracted from hanbok organza, each paired with a contrasting accent for its own character. // 한복 오간자에서 추출한 네 가지 색에 대비되는 포인트 색을 더해, 제품마다 다른 개성을 만듭니다.
-Typography | We Bind | Madeup Thread Font | about/08-1.jpg, about/08-2.jpg | Uppercase — Developed to reflect the brand's distinctive visual characteristics and maintain a consistent typographic identity. // 브랜드 고유의 조형적 특징인 꼬임을 반영한 대문자 서체를 개발하였습니다. // Lowercase — Designed based on the same principles to establish a cohesive and unified typographic system. // 대문자와 동일한 디자인 원칙을 바탕으로 소문자 서체를 개발하여 통일감 있는 타이포그래피 시스템을 구축하였습니다.
-Film & Motion | We Whole | We Made · We Bind · We Whole | about/09-1.jpg, about/09-2.jpg, about/09-3.jpg, about/09-4.jpg, about/09-5.jpg, about/09-6.jpg | Scattered marks wrap, secure and finish into a single logo. The closed end loosens back into the start, forming one loop that never ends. // 흩어진 점과 선이 감싸고, 고정하고, 마무리되며 하나의 로고로 완성됩니다. 닫힌 끝은 다시 풀려 처음으로 이어지며, 끝없이 반복되는 하나의 고리를 만듭니다.
-Package | We Whole | 파우치 색에 따른 네 가지 방향 | about/10-1.jpg, about/10-2.jpg, about/10-3.jpg, about/10-4.jpg | The package emphasizes the point where it cinches, highlighting the defining feature of the MADEUP pouch. The knot in the graphic changes with each pouch color, using a different type of knot for each. // 조여지는 지점을 강조한 패키지로 MADEUP 파우치의 특징을 드러냈습니다. 그래픽 속 매듭은 파우치 색에 따라 서로 다른 종류의 매듭으로 구성했습니다.
-Website | We Whole | Base color and a contrasting knot line | about/11-1.jpg, about/11-2.jpg, about/11-3.jpg, about/11-4.jpg, about/11-5.jpg, about/11-6.jpg | The website takes its colors from the pouches. Each screen pairs a base color with a contrasting knot line that runs across the page, opening with the logo motion before flowing into the brand story. // 웹사이트는 파우치의 색을 그대로 가져와, 화면마다 바탕색과 대비되는 매듭 선으로 구성했습니다. 매듭 그래픽은 화면을 가로질러 이어지고, 로고 모션의 반복으로 브랜드 웹사이트의 유동성을 유지합니다.
-  </script>
+    <span class="book-load num" id="book-load">Loading 0%</span>
+
+    <!-- 넘기기 : 화면 양옆의 < > -->
+    <button class="design-arrow design-arrow--prev" id="book-prev" type="button" aria-label="Previous page">
+      <svg viewBox="0 0 24 48" aria-hidden="true"><path d="M18 4 L6 24 L18 44"/></svg>
+    </button>
+    <button class="design-arrow design-arrow--next" id="book-next" type="button" aria-label="Next page">
+      <svg viewBox="0 0 24 48" aria-hidden="true"><path d="M6 4 L18 24 L6 44"/></svg>
+    </button>
+
+    <span class="book-hint" data-t="about.hint">Drag, Scroll, Tap</span>
+    <span class="book-page num" id="book-page">Cover</span>
+  </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="main.js"></script>
+  <!-- 책 넘김 라이브러리 : StPageFlip (https://nodlik.github.io/StPageFlip/) -->
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
   <script>
-  (async function () {
-    const esc = SITE.esc, pad = (n) => String(n).padStart(2, '0');
-
-    async function loadText() {
-      try {
-        const r = await fetch('archive.txt', { cache: 'no-store' });
-        if (!r.ok) throw new Error(r.status);
-        return await r.text();
-      } catch (e) {
-        return document.getElementById('archive-fallback').textContent;
-      }
-    }
-    // 형식: 제목 | 분류 | 한 줄 소개 | 사진 파일 | 본문
-    const parse = (txt) => txt.split(/\r?\n/).map((l) => l.trim())
-      .filter((l) => l && !l.startsWith('#'))
-      .map((l) => {
-        const [title = '', cat = '', kicker = '', image = '', ...rest] = l.split('|').map((s) => s.trim());
-        return { title, cat, kicker, image, body: rest.join(' | ') };
-      });
-
-    const rows = parse(await loadText());
-    const total = rows.length;
-    const list = document.getElementById('arch-list');
-    const posEl = document.getElementById('arch-pos');
-    document.getElementById('arch-count').textContent = pad(total);
-    posEl.textContent = '01/' + pad(total);
-
-    list.innerHTML = rows.map((r, i) =>
-      '<li class="row"><button type="button" class="row__in tick" data-i="' + i + '" data-cursor="Open">' +
-        '<span class="num"><span class="k">(No.)</span> ' + pad(i + 1) + '</span>' +
-        '<span><span class="k">(Title)</span> <span class="u">' + esc(r.title) + '</span></span>' +
-        '<span><span class="k">(Category)</span> ' + esc(r.cat) + '</span>' +
-        '<span><span class="k">(Note)</span> ' + esc(r.kicker) + '</span>' +
-        '<span class="row__open">Open</span>' +
-      '</button></li>'
-    ).join('');
-    SITE.drawTicks(list);
-
-    const items = gsap.utils.toArray('.row');
-    items.forEach((row, i) => {
-      ScrollTrigger.create({
-        trigger: row, start: 'top 55%', end: 'bottom 55%',
-        onToggle: (self) => { if (self.isActive) posEl.textContent = pad(i + 1) + '/' + pad(total); },
-      });
-    });
-
-    if (!SITE.reduce) {
-      ScrollTrigger.create({ trigger: '.arch-head', start: 'top top', endTrigger: '.arch-sheet', end: 'top top', pin: true, pinSpacing: false });
-      gsap.to('.arch-head__inner', { opacity: 0.15, ease: 'none',
-        scrollTrigger: { trigger: '.arch-sheet', start: 'top bottom', end: 'top top', scrub: true } });
-      gsap.set(items, { opacity: 0 });
-      ScrollTrigger.batch(items, {
-        start: 'top 94%',
-        onEnter: (b) => gsap.to(b, { opacity: 1, duration: 1.2, ease: 'power2.out', stagger: 0.08, overwrite: true, clearProps: 'opacity' }),
-      });
-    }
-
-    /* =========================================================
-       팝업 : 클릭/터치 → 텍스트 + 사진
-       화면 전체가 조용히 바뀌고, 사진은 아래에서 위로 드러남
-       ========================================================= */
-    const pop = document.getElementById('story-pop');
-    const sheet = pop.querySelector('.story-pop__sheet');
-    const fig = document.getElementById('sp-fig');
-    const els = {
-      no: document.getElementById('sp-no'), cat: document.getElementById('sp-cat'),
-      title: document.getElementById('sp-title'), kicker: document.getElementById('sp-kicker'), body: document.getElementById('sp-body'),
+  /* =========================================================
+     브랜드북 — book 폴더의 page-01.jpg ~ page-20.jpg 를 종이처럼 넘김
+     · 01 = 앞표지, 02 = 앞표지 안쪽(빈 면), 03~18 = 내지 1~16쪽, 19 = 뒤표지 안쪽(빈 면), 20 = 뒤표지
+     · 페이지를 바꾸려면 book 폴더 이미지만 같은 이름으로 바꾸면 됨 (가로 1600px 권장)
+     · 파일을 더블클릭(file://)으로 열 때는 book/book-data.js 를 대신 읽음
+     · 표지·내지 모두 같은 얇은 종이로 넘어감
+     · 모서리를 잡고 끌거나, 페이지를 탭/클릭하거나, 휠·← → 키·양옆 < > 로 넘김
+     ========================================================= */
+  (function () {
+    const BOOK = {
+      pages: 20,                 // 전체 면 수 (짝수, 1 = 앞표지, 마지막 = 뒤표지)
+      inner: 16,                 // 내지 쪽 수 (쪽 번호 표시용)
+      w: 1600, h: 1181,          // 한 면의 비율 (가로, 세로)
+      file: (n) => 'book/page-' + String(n).padStart(2, '0') + '.jpg',
+      turn: 900,                 // 한 장 넘기는 시간(ms)
+      shadow: 0.4,               // 넘길 때 휘는 종이 음영 진하기 (0 ~ 1)
+      shade: '150, 104, 48',     // 휘는 종이 음영 색 (R, G, B) — 미색 종이처럼 따뜻한 갈색
+      portraitBelow: 640,        // 화면 너비가 이보다 좁으면 한 면씩 보기
     };
-    const textBox = pop.querySelector('.story-pop__text');
-    let current = -1, lastFocus = null, busy = false;
 
-    function fill(i) {
-      const r = rows[i];
-      els.no.textContent = pad(i + 1) + '/' + pad(total);
-      els.cat.textContent = r.cat;
-      els.title.textContent = r.title;
-      els.kicker.textContent = r.kicker;
-      els.body.innerHTML = r.body.split('//').map((p) => p.trim()).filter(Boolean).map((p) => '<p>' + esc(p) + '</p>').join('');
-      // 사진 여러 장(쉼표로 구분) → 한 장씩 천천히 넘어가는 슬라이드
-      const list = r.image.split(',').map((s) => s.trim()).filter(Boolean);
-      fig.innerHTML = list.length
-        ? '<div class="sp-slides">' + list.map((src, k) =>
-            '<img src="' + esc(src) + '" alt="' + esc(r.title) + ' ' + (k + 1) + '" decoding="async"' + (k ? ' loading="lazy"' : '') +
-            ' data-fallback="' + esc(src) + '"' + (k ? '' : ' class="is-on"') + '>').join('') + '</div>' +
-          (list.length > 1 ? '<span class="sp-count"><span id="sp-cur">1</span>/' + list.length + '</span>' : '')
-        : '<div class="ph"><span>no image</span></div>';
-      SITE.watchMedia(fig);
-      startSlides();
-      sheet.scrollTop = 0; textBox.scrollTop = 0;
+    const flipEl = document.getElementById('book-flip');
+    const stageEl = document.getElementById('book-stage');
+    const loadEl = document.getElementById('book-load');
+    const pageEl = document.getElementById('book-page');
+    const L = BOOK.pages;
+
+    function loadScript(src) {
+      return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
     }
 
-    /* 팝업 사진 슬라이드 : 2.6초마다 다음 사진 (영상 장면 전환 박자), 사진을 누르면 바로 다음 */
-    let slideTimer = null, slideIdx = 0;
-    function showSlide(n) {
-      const im = fig.querySelectorAll('.sp-slides img');
-      if (im.length < 2) return;
-      slideIdx = (n + im.length) % im.length;
-      im.forEach((el, k) => el.classList.toggle('is-on', k === slideIdx));
-      const c = document.getElementById('sp-cur'); if (c) c.textContent = slideIdx + 1;
-    }
-    function startSlides() {
-      clearInterval(slideTimer); slideIdx = 0;
-      if (fig.querySelectorAll('.sp-slides img').length > 1 && !SITE.reduce) slideTimer = setInterval(() => showSlide(slideIdx + 1), 2600);
-    }
-    fig.addEventListener('click', () => { showSlide(slideIdx + 1); startSlidesFrom(); });
-    function startSlidesFrom() { clearInterval(slideTimer); if (!SITE.reduce) slideTimer = setInterval(() => showSlide(slideIdx + 1), 2600); }
-
-    function reveal() {
-      if (SITE.reduce) return;
-      gsap.fromTo(fig, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'power2.inOut' });
-      gsap.fromTo(fig.firstElementChild, { scale: 1.06 }, { scale: 1, duration: 1.6, ease: 'power2.out' });
-      gsap.fromTo(textBox, { opacity: 0 }, { opacity: 1, duration: 0.9, ease: 'power2.out', delay: 0.3 });
+    let loadHidden = false;
+    function hideLoad() {
+      if (loadHidden) return; loadHidden = true;
+      loadEl.style.transition = 'opacity .5s'; loadEl.style.opacity = '0';
+      setTimeout(() => (loadEl.style.display = 'none'), 500);
     }
 
-    function open(i) {
-      if (busy) return;
-      current = i;
-      lastFocus = document.activeElement;
-      fill(i);
-      SITE.hideLabel();
-      pop.classList.add('is-open');
-      pop.setAttribute('aria-hidden', 'false');
-      SITE.lenis && SITE.lenis.stop();
-      document.documentElement.classList.add('pop-lock');
-      if (SITE.reduce) gsap.set(pop, { opacity: 1 });
-      else { gsap.to(pop, { opacity: 1, duration: 0.6, ease: 'power2.inOut' }); reveal(); }
-      setTimeout(() => pop.querySelector('[data-close]').focus({ preventScroll: true }), 50);
+    async function sources() {
+      if (location.protocol === 'file:') {
+        try { await loadScript('book/book-data.js'); return (n) => window.BOOK_DATA[n - 1]; }
+        catch (e) { console.warn('book/book-data.js 를 찾지 못했습니다'); }
+      }
+      return BOOK.file;
     }
 
-    function close() {
-      if (current < 0 || busy) return;
-      busy = true;
-      gsap.to(pop, { opacity: 0, duration: SITE.reduce ? 0 : 0.6, ease: 'power2.inOut', onComplete: () => {
-        pop.classList.remove('is-open');
-        pop.setAttribute('aria-hidden', 'true');
-        SITE.lenis && SITE.lenis.start();
-        document.documentElement.classList.remove('pop-lock');
-        current = -1; busy = false; clearInterval(slideTimer);
-        lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true });
-      } });
+    function label(pf) {
+      const i = pf.getCurrentPageIndex();
+      const portrait = pf.getOrientation() === 'portrait';
+      if (i === 0) return 'Cover';
+      if (i >= L - 1) return 'Back cover';
+      const faces = portrait ? [i + 1] : [i + 1, i + 2];          // 1부터 센 면 번호
+      const nums = faces.map((f) => f - 2).filter((n) => n >= 1 && n <= BOOK.inner);
+      if (!nums.length) return portrait ? (i === 1 ? 'Cover' : 'Back cover') : '';
+      const p = (n) => String(n).padStart(2, '0');
+      return nums.map(p).join('–') + ' / ' + p(BOOK.inner);
     }
 
-    function step(d) {
-      if (current < 0 || busy) return;
-      const next = (current + d + total) % total;
-      current = next;
-      if (SITE.reduce) return fill(next);
-      busy = true;
-      gsap.to([fig, textBox], { opacity: 0, duration: 0.4, ease: 'power2.inOut', onComplete: () => {
-        fill(next);
-        gsap.set([fig, textBox], { opacity: 1 });
-        reveal();
-        busy = false;
-      } });
-    }
+    (async function init() {
+      if (!window.St || !St.PageFlip) { loadEl.textContent = 'Could not load the book'; return; }
+      const src = await sources();
 
-    list.addEventListener('click', (e) => {
-      const b = e.target.closest('.row__in');
-      if (b) open(+b.dataset.i);
-    });
-    pop.addEventListener('click', (e) => {
-      if (e.target.closest('[data-close]')) close();
-      const s = e.target.closest('[data-step]');
-      if (s) step(+s.dataset.step);
-    });
-    addEventListener('keydown', (e) => {
-      if (current < 0) return;
-      if (e.key === 'Escape') close();
-      if (e.key === 'ArrowRight') step(1);
-      if (e.key === 'ArrowLeft') step(-1);
-    });
+      // 면 만들기
+      let done = 0;
+      for (let n = 1; n <= L; n++) {
+        const pg = document.createElement('div');
+        pg.className = 'book-sheet' + (n % 2 ? ' is-right' : ' is-left');
+        const img = new Image();
+        img.alt = n === 1 ? 'MADEUP Brand Book' : '';
+        img.decoding = 'async';
+        img.draggable = false;
+        const tick = () => { done++; loadEl.textContent = 'Loading ' + Math.round(done / L * 100) + '%'; if (done >= Math.min(4, L)) hideLoad(); };
+        img.onload = tick; img.onerror = tick;
+        img.src = src(n);
+        pg.appendChild(img);
+        flipEl.appendChild(pg);
+      }
 
-    // 휴대폰 : 좌우로 밀면 이전/다음, 맨 위에서 아래로 끌면 닫기
-    let sx = 0, sy = 0, st = 0;
-    sheet.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = sheet.scrollTop; }, { passive: true });
-    sheet.addEventListener('touchend', (e) => {
-      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.4) step(dx < 0 ? 1 : -1);
-      else if (dy > 110 && st <= 0 && Math.abs(dy) > Math.abs(dx) * 1.4) close();
-    }, { passive: true });
+      const pf = new St.PageFlip(flipEl, {
+        width: BOOK.w, height: BOOK.h,
+        size: 'stretch',
+        minWidth: 120, maxWidth: 2400, minHeight: 90, maxHeight: 1800,
+        autoSize: false,
+        showCover: true,
+        usePortrait: true,
+        drawShadow: true,
+        maxShadowOpacity: BOOK.shadow,
+        flippingTime: BOOK.turn,
+        showPageCorners: true,
+        mobileScrollSupport: false,
+        swipeDistance: 20,
+        startZIndex: 1,
+      });
+      pf.loadFromHTML(flipEl.querySelectorAll('.book-sheet'));
+      // showCover 를 켜면 라이브러리가 앞·뒤표지를 빳빳하게(hard) 바꾸므로, 모든 면을 다시 얇은 종이(soft)로
+      for (let i = 0; i < pf.getPageCount(); i++) pf.getPage(i).setDensity('soft');
+      // 넘길 때 생기는 음영 : 검정 대신 따뜻한 종이색, 반짝이는 띠 없이 부드럽게 (무광 종이 느낌)
+      const C = BOOK.shade;
+      function matte(el, inner) {
+        new MutationObserver(() => {
+          const s = el.getAttribute('style') || '';
+          const m = s.match(/background: linear-gradient\((to \w+), rgba\(0, 0, 0, ([\d.]+)\)[^;]*;/);
+          if (!m) return;
+          const a = +m[2];
+          const g = inner
+            ? `linear-gradient(${m[1]}, rgba(${C}, ${(a * 0.55).toFixed(3)}) 0%, rgba(${C}, ${(a * 0.22).toFixed(3)}) 45%, rgba(${C}, 0) 100%)`
+            : `linear-gradient(${m[1]}, rgba(${C}, ${(a * 0.6).toFixed(3)}), rgba(${C}, 0))`;
+          el.setAttribute('style', s.replace(m[0], 'background: ' + g + ';'));
+        }).observe(el, { attributes: true, attributeFilter: ['style'] });
+      }
+      flipEl.querySelectorAll('.stf__innerShadow').forEach((el) => matte(el, true));
+      flipEl.querySelectorAll('.stf__outerShadow').forEach((el) => matte(el, false));
 
-    ScrollTrigger.refresh();
+      // 화면 크기에 맞춰 한 면 / 펼친 면 결정
+      function fit() {
+        const r = stageEl.getBoundingClientRect();
+        const portrait = innerWidth < BOOK.portraitBelow;
+        const per = portrait ? 1 : 2;
+        let pw = r.width / per, ph = pw * BOOK.h / BOOK.w;
+        if (ph > r.height) { ph = r.height; pw = ph * BOOK.w / BOOK.h; }
+        flipEl.style.width = Math.floor(pw * per) + 'px';
+        flipEl.style.height = Math.floor(ph) + 'px';
+        pf.getSettings().minWidth = portrait ? pw * 2 : 1;  // 좁은 화면은 한 면 보기
+        pf.update();
+        pageEl.textContent = label(pf);
+      }
+      addEventListener('resize', fit); fit();
+
+      pf.on('flip', () => (pageEl.textContent = label(pf)));
+      pf.on('changeOrientation', () => (pageEl.textContent = label(pf)));
+      pageEl.textContent = label(pf);
+
+      // 화살표 · 키보드 · 휠
+      const next = () => pf.flipNext('bottom');
+      const prev = () => pf.flipPrev('bottom');
+      [['book-prev', prev], ['book-next', next]].forEach(([id, fn]) => {
+        const b = document.getElementById(id);
+        b.addEventListener('pointerdown', (e) => e.stopPropagation());
+        b.addEventListener('click', (e) => { e.stopPropagation(); fn(); });
+      });
+      addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') next(); if (e.key === 'ArrowLeft') prev(); });
+      let wheelLock = 0;
+      addEventListener('wheel', (e) => {
+        const d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+        if (Math.abs(d) < 8) return;
+        const now = performance.now();
+        if (now < wheelLock) { wheelLock = now + 220; return; }  // 한 번의 휠 동작 = 한 장
+        wheelLock = now + BOOK.turn * 0.6;
+        d > 0 ? next() : prev();
+      }, { passive: true });
+    })();
   })();
   </script>
 </body>
